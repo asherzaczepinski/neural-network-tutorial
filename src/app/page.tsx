@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTutorialStore, STEPS } from '@/lib/store';
 
 // Import all step content
@@ -28,199 +28,218 @@ const stepComponents = [
 ];
 
 export default function Home() {
-  const { completedSteps, completeStep, resetProgress } = useTutorialStore();
-  const [activeSection, setActiveSection] = useState(1);
+  const { completedSteps, completeStep } = useTutorialStore();
+  const [currentStep, setCurrentStep] = useState(0); // 0 = home, 1-17 = steps
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  // Handle header visibility on scroll
   useEffect(() => {
+    if (currentStep === 0) return; // Don't apply to home page
+
     const handleScroll = () => {
-      const sections = document.querySelectorAll('[data-step]');
-      let current = 1;
+      const currentScrollY = window.scrollY;
+      const scrollingUp = currentScrollY < lastScrollY.current;
+      const scrollSpeed = Math.abs(currentScrollY - lastScrollY.current);
 
-      sections.forEach((section) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top <= 150) {
-          current = parseInt(section.getAttribute('data-step') || '1');
-        }
-      });
+      // Show header when scrolling up fast or at top
+      if (scrollingUp && scrollSpeed > 5) {
+        setHeaderVisible(true);
+      } else if (!scrollingUp && currentScrollY > 60) {
+        setHeaderVisible(false);
+      }
 
-      setActiveSection(current);
+      // Always show at top
+      if (currentScrollY < 10) {
+        setHeaderVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentStep]);
 
-  const scrollToStep = (stepId: number) => {
-    const element = document.querySelector(`[data-step="${stepId}"]`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const goToStep = (stepId: number) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentStep(stepId);
+      setIsTransitioning(false);
+      setHeaderVisible(true);
+      lastScrollY.current = 0;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 200);
+  };
+
+  const nextStep = () => {
+    if (currentStep < 17) {
+      goToStep(currentStep + 1);
     }
   };
 
-  return (
-    <div className="tutorial-container">
-      {/* Fixed sidebar navigation */}
-      <nav className="nav-sidebar">
-        <div style={{ padding: '0 1.5rem', marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '1.25rem', color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
-            Neural Networks
-          </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
-            From Scratch
-          </p>
-        </div>
+  const prevStep = () => {
+    if (currentStep > 1) {
+      goToStep(currentStep - 1);
+    }
+  };
 
-        <div style={{ marginBottom: '1.5rem', padding: '0 1.5rem' }}>
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${(completedSteps.length / STEPS.length) * 100}%` }}
-            />
+  // Home page
+  if (currentStep === 0) {
+    return (
+      <div className={`home-page ${isTransitioning ? 'transitioning' : ''}`}>
+        <div className="home-content">
+          <div className="home-hero">
+            <h1 className="home-title">
+              Build a Neural Network
+              <span className="home-title-highlight">From Scratch</span>
+            </h1>
+            <p className="home-subtitle">
+              Learn how neural networks actually work by building one yourself.
+              No libraries, no magic — just math you can understand.
+            </p>
           </div>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem', marginBottom: 0 }}>
-            {completedSteps.length} of {STEPS.length} completed
-          </p>
-        </div>
 
-        <div>
-          {STEPS.map((step) => {
-            const isCompleted = completedSteps.includes(step.id);
-            const isActive = activeSection === step.id;
+          <div className="home-section">
+            <h2>What You&apos;ll Build</h2>
+            <p className="home-description">
+              A neural network that predicts whether it will rain based on temperature and humidity.
+              By the end, you&apos;ll understand every single line of code and the math behind it.
+            </p>
+          </div>
 
-            return (
-              <button
-                key={step.id}
-                onClick={() => scrollToStep(step.id)}
-                className={`nav-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
-                style={{ width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer' }}
-              >
-                <span
-                  style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: '700',
-                    background: isCompleted
-                      ? 'var(--accent-green)'
-                      : isActive
-                      ? 'var(--accent-blue)'
-                      : 'var(--bg-tertiary)',
-                    color: isCompleted || isActive ? 'white' : 'var(--text-muted)',
-                    flexShrink: 0,
-                  }}
-                >
-                  {isCompleted ? (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                  ) : (
-                    step.id
-                  )}
-                </span>
-                <span style={{ lineHeight: '1.3' }}>{step.shortTitle}</span>
-              </button>
-            );
-          })}
-        </div>
+          <div className="home-features">
+            <div className="home-feature">
+              <div className="home-feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+                </svg>
+              </div>
+              <h3>Interactive Code</h3>
+              <p>Write and run real Python code in your browser. See your neural network come to life.</p>
+            </div>
+            <div className="home-feature">
+              <div className="home-feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+              </div>
+              <h3>Step by Step</h3>
+              <p>17 focused lessons that build on each other. No jumping ahead or getting lost.</p>
+            </div>
+            <div className="home-feature">
+              <div className="home-feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <h3>Zero Libraries</h3>
+              <p>No NumPy, TensorFlow, or PyTorch. Just pure Python so you understand everything.</p>
+            </div>
+          </div>
 
-        {completedSteps.length > 0 && (
-          <div style={{ padding: '1.5rem' }}>
-            <button
-              className="btn btn-secondary"
-              style={{ width: '100%', fontSize: '0.85rem' }}
-              onClick={() => {
-                if (confirm('Reset all progress? This cannot be undone.')) {
-                  resetProgress();
-                }
-              }}
-            >
-              Reset Progress
+{completedSteps.length > 0 && (
+            <div className="home-progress-section">
+              <div className="home-progress-info">
+                <span>Your Progress</span>
+                <span className="home-progress-count">{completedSteps.length} / {STEPS.length}</span>
+              </div>
+              <div className="home-progress-bar">
+                <div
+                  className="home-progress-fill"
+                  style={{ width: `${(completedSteps.length / STEPS.length) * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="home-cta">
+            <button className="btn btn-primary btn-large" onClick={() => goToStep(completedSteps.length > 0 ? Math.min(Math.max(...completedSteps) + 1, 17) : 1)}>
+              {completedSteps.length > 0 ? 'Continue Learning' : 'Start the Tutorial'}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
             </button>
           </div>
-        )}
-      </nav>
+        </div>
+      </div>
+    );
+  }
 
-      {/* Main content */}
-      <main className="main-content">
-        {/* Hero section */}
-        <div className="step-card" style={{ marginBottom: '3rem', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-            Build a Neural Network From Scratch
-          </h1>
-          <p style={{ fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 1.5rem' }}>
-            No NumPy. No TensorFlow. No PyTorch. Just pure mathematics and your own code.
-            By the end, you&apos;ll truly understand how neural networks learn.
-          </p>
-          <p style={{ fontSize: '1rem', maxWidth: '600px', margin: '0 auto 2rem', color: 'var(--text-secondary)' }}>
-            Throughout this tutorial, we&apos;ll build a neural network that predicts <strong>whether it will rain</strong> based
-            on temperature and humidity — a concrete example that makes every concept click.
-          </p>
+  // Step view
+  const StepComponent = stepComponents[currentStep - 1];
+  const step = STEPS[currentStep - 1];
+  const isCompleted = completedSteps.includes(currentStep);
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--accent-blue)' }}>17</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Steps</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--accent-green)' }}>Rain</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Prediction</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--accent-purple)' }}>0</div>
-              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Libraries</div>
-            </div>
+  return (
+    <div className={`step-page ${isTransitioning ? 'transitioning' : ''}`}>
+      {/* Top navigation bar */}
+      <header className={`step-header ${headerVisible ? 'visible' : 'hidden'}`}>
+        <button className="home-btn" onClick={() => goToStep(0)} title="Home">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+          </svg>
+        </button>
+
+        <div className="step-nav">
+          <button
+            className="nav-arrow"
+            onClick={prevStep}
+            disabled={currentStep === 1}
+            title="Previous"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+
+          <div className="step-dots">
+            {STEPS.map((s) => (
+              <button
+                key={s.id}
+                className={`step-dot ${currentStep === s.id ? 'active' : ''} ${completedSteps.includes(s.id) ? 'completed' : ''}`}
+                onClick={() => goToStep(s.id)}
+                title={s.shortTitle}
+              />
+            ))}
           </div>
 
           <button
-            className="btn btn-primary"
-            style={{ marginTop: '2rem', fontSize: '1.1rem', padding: '1rem 2rem' }}
-            onClick={() => scrollToStep(1)}
+            className="nav-arrow"
+            onClick={nextStep}
+            disabled={currentStep === 17}
+            title="Next"
           >
-            Start Learning
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
             </svg>
           </button>
         </div>
 
-        {/* All steps */}
-        {stepComponents.map((StepComponent, index) => {
-          const stepId = index + 1;
-          const step = STEPS[index];
+        <span className="step-counter">{currentStep} / {STEPS.length}</span>
+      </header>
 
-          return (
-            <section
-              key={stepId}
-              data-step={stepId}
-              className="step-section"
-              style={{ marginBottom: '4rem', scrollMarginTop: '2rem' }}
-            >
-              <div className="step-header-bar">
-                <span className="step-number-badge">Step {stepId}</span>
-                <h2 style={{ fontSize: '1.75rem', margin: 0 }}>{step.title}</h2>
-              </div>
+      {/* Main content area */}
+      <main className="step-main">
+        <div className="step-content-wrapper">
+          <div className="step-title-section">
+            <span className="step-badge">Step {currentStep}</span>
+            <h1>{step.title}</h1>
+            {isCompleted && (
+              <span className="completed-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                Completed
+              </span>
+            )}
+          </div>
 
-              <div className="step-card">
-                <StepComponent onComplete={() => completeStep(stepId)} />
-              </div>
-            </section>
-          );
-        })}
-
-        {/* Footer */}
-        <div style={{
-          textAlign: 'center',
-          padding: '3rem',
-          borderTop: '1px solid var(--border-light)',
-          marginTop: '2rem'
-        }}>
-          <p style={{ color: 'var(--text-muted)', margin: 0 }}>
-            Built with pure math and understanding.
-          </p>
+          <div className="step-content">
+            <StepComponent onComplete={() => completeStep(currentStep)} />
+          </div>
         </div>
       </main>
     </div>
