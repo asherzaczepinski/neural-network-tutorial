@@ -8,6 +8,9 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mon
 export const metadata: Metadata = {
   title: 'Build a Neural Network From Scratch',
   description: 'Learn neural networks by building one yourself - no libraries, just pure math and deep understanding.',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
