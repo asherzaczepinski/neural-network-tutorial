@@ -30,13 +30,8 @@ inputs[1] = 0.8  (humidity - second element)
 You've just built your first data structure from scratch! This list holds
 our weather measurements together in one neat package.
 
-In real weather prediction:
-- A weather station might send 50+ sensor readings at once
-- Historical data might include thousands of past measurements
-- Satellite images become lists of millions of pixel values
-
-All of these are just lists of numbers, exactly like what you just created.
-The neural network processes them the same way regardless of size!`,
+The neural network will process these numbers the same way regardless of
+whether you have 2 inputs or 2 million — the math scales up identically!`,
       };
     }
 
@@ -85,15 +80,6 @@ Then access elements with inputs[0] and inputs[1]`,
           then 28°C becomes 28/40 = 0.7. This &quot;normalization&quot; is crucial for neural networks.</p>
 
         <p><strong>Humidity:</strong> Already a percentage! 80% humidity = 0.8. Easy conversion.</p>
-
-        <p><strong>Wind Direction:</strong> Could use one-hot encoding: North=[1,0,0,0], East=[0,1,0,0], etc.
-          Or convert degrees to sine/cosine pairs to capture the circular nature.</p>
-
-        <p><strong>Cloud Cover:</strong> Often measured in &quot;oktas&quot; (eighths of sky covered): 0=clear, 8=overcast.
-          Normalize to 0-1: cloudy=6/8=0.75.</p>
-
-        <p><strong>Satellite Images:</strong> Each pixel becomes a brightness value. A 256×256 image becomes
-          65,536 numbers. Color images have 3 channels (RGB), so 256×256×3 = 196,608 numbers!</p>
       </ExplanationBox>
 
       <ExplanationBox title="Why Normalization Matters">
@@ -107,10 +93,11 @@ Then access elements with inputs[0] and inputs[1]`,
           By scaling all inputs to similar ranges (typically 0-1 or -1 to 1), we give each feature
           a fair chance to influence the output.
         </p>
-        <p>
-          The formula for min-max normalization is: <code>normalized = (value - min) / (max - min)</code>
-        </p>
       </ExplanationBox>
+
+      <MathFormula label="Normalization Formula">
+        normalized = (value - min) / (max - min)
+      </MathFormula>
 
       <WorkedExample title="Normalizing Temperature">
         <p>Let&apos;s normalize 28°C when our expected range is 0°C to 40°C:</p>
@@ -122,36 +109,6 @@ Then access elements with inputs[0] and inputs[1]`,
           This makes intuitive sense and keeps our numbers in a nice range.
         </p>
       </WorkedExample>
-
-      <ExplanationBox title="Building Our Own Data Structures">
-        <p>
-          In most tutorials, you&apos;d import NumPy and use its arrays. But we&apos;re building from scratch,
-          so we&apos;ll use Python&apos;s built-in lists. A list is an ordered collection of values that you
-          can access by position (index).
-        </p>
-        <p>
-          Understanding lists is essential because neural networks constantly work with collections
-          of numbers — inputs are lists, weights are lists, outputs are lists. Later, we&apos;ll build
-          operations like &quot;dot product&quot; that work on these lists, implementing what NumPy would
-          normally do for us.
-        </p>
-      </ExplanationBox>
-
-      <MathFormula label="List Indexing">
-        inputs = [temp, humidity] → inputs[0] = temp, inputs[1] = humidity
-      </MathFormula>
-
-      <ExplanationBox title="Zero-Based Indexing">
-        <p>
-          Python (and most programming languages) starts counting from 0, not 1. This seems odd
-          at first, but it has mathematical elegance — the index represents the &quot;offset&quot; from
-          the start of the list.
-        </p>
-        <p>
-          So in a list <code>[a, b, c]</code>: a is at index 0, b is at index 1, c is at index 2.
-          The length is 3, but the last valid index is 2 (length - 1).
-        </p>
-      </ExplanationBox>
 
       <TaskBox>
         <p>

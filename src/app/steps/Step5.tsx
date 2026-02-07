@@ -103,37 +103,44 @@ It should multiply corresponding elements and sum them up.`,
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Dot Product Definition">
-        a · b = a₀×b₀ + a₁×b₁ + a₂×b₂ + ... + aₙ×bₙ
+      <MathFormula label="Dot Product for Weather">
+        weather_signal = (temp × temp_weight) + (humidity × humidity_weight)
       </MathFormula>
 
-      <ExplanationBox title="Why the Dot Product Matters">
+      <ExplanationBox title="Why Use the Dot Product?">
         <p>
-          The dot product is everywhere in neural networks:
+          The dot product is the perfect operation for what we&apos;re trying to do: combine multiple
+          pieces of information, each with its own importance, into a single number. Think about
+          what we want our neuron to compute for rain prediction:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Every neuron</strong> computes a dot product of inputs and weights</li>
-          <li><strong>Matrix multiplication</strong> (used between layers) is many dot products</li>
-          <li><strong>Attention mechanisms</strong> in transformers use dot products to measure similarity</li>
-          <li><strong>Convolutional layers</strong> compute dot products between filters and image patches</li>
-        </ul>
         <p style={{ marginTop: '1rem' }}>
-          For our rain prediction, the dot product asks: &quot;How well do these weather conditions
-          match the pattern for rain?&quot; A high positive result = likely rain. Negative = likely dry.
+          &quot;Take the temperature, scale it by how much temperature matters for rain. Take the
+          humidity, scale it by how much humidity matters for rain. Add these together to get
+          one overall rain signal.&quot;
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          That&apos;s exactly what the dot product does! It pairs each input with its corresponding
+          weight, multiplies them, and sums everything up. The result is a single number that
+          represents the combined &quot;vote&quot; of all inputs, weighted by their importance.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="The Geometric Meaning">
+      <ExplanationBox title="The Dot Product as Pattern Matching">
         <p>
-          The dot product has a beautiful geometric interpretation: it measures how &quot;aligned&quot;
-          two vectors are. If two vectors point in the same direction, their dot product is
-          large and positive. If they&apos;re perpendicular, it&apos;s zero. If they point in opposite
-          directions, it&apos;s large and negative.
+          Here&apos;s a powerful way to think about it: the weights represent a &quot;rainy weather pattern&quot;
+          that we&apos;re looking for. Our weights [-0.3, 0.9] say: &quot;Rainy weather tends to have
+          lower temperatures (negative weight) and high humidity (large positive weight).&quot;
         </p>
-        <p>
-          In neural networks, this means: the dot product of inputs and weights is large when
-          the input pattern &quot;matches&quot; what the weights are looking for. A rain-predicting neuron
-          essentially asks &quot;how similar is this weather to rainy weather patterns?&quot;
+        <p style={{ marginTop: '1rem' }}>
+          When we compute the dot product of today&apos;s weather [0.7, 0.8] with this pattern [-0.3, 0.9],
+          we&apos;re asking: &quot;How well does today&apos;s weather match the rainy pattern?&quot; A large positive
+          result means good match (likely rain). A large negative result means opposite of the
+          pattern (likely dry). Near zero means the evidence is mixed.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          Our result of 0.51 is moderately positive — today&apos;s weather somewhat matches the rainy
+          pattern, mainly because the high humidity (0.8 × 0.9 = 0.72) outweighs the warm
+          temperature&apos;s slight vote against rain (0.7 × -0.3 = -0.21).
         </p>
       </ExplanationBox>
 

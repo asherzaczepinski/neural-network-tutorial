@@ -81,20 +81,19 @@ Then calculate z = weighted_sum + bias
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="The Geometric Interpretation">
+      <ExplanationBox title="Bias as a 'Super Weight'">
         <p>
-          Here&apos;s a beautiful way to understand bias geometrically. A neuron with two inputs
-          can be visualized as drawing a line (decision boundary) in 2D space. Points on one
-          side of the line predict &quot;rain&quot;; points on the other side predict &quot;no rain.&quot;
+          Think of bias as a weight that&apos;s always multiplied by 1. While regular weights scale
+          the inputs, bias adds a constant shift — and this shift is incredibly powerful. It lets
+          a neuron have a strong opinion even when inputs are weak or neutral.
         </p>
         <p>
-          Without bias, this line must pass through the origin (0,0). But many patterns require
-          decision boundaries that don&apos;t pass through the origin! Bias shifts the line, allowing
-          it to be placed anywhere in the space. It adds a crucial degree of freedom.
-        </p>
-        <p>
-          Mathematically: the equation <code>w₁×temp + w₂×humid = 0</code> always passes through (0,0).
-          But <code>w₁×temp + w₂×humid + bias = 0</code> can be shifted by adjusting bias.
+          In a network with many neurons, each neuron can have a different bias. A neuron with a
+          large positive bias becomes &quot;eager&quot; — it activates strongly and contributes more to
+          the network&apos;s decision. A neuron with a large negative bias becomes &quot;reluctant&quot; — it
+          needs strong input evidence to activate at all. This diversity is what lets different
+          neurons specialize: some become strong rain predictors, others become cautious detectors
+          that only fire under specific conditions.
         </p>
       </ExplanationBox>
 
@@ -144,16 +143,18 @@ Then calculate z = weighted_sum + bias
       </ExplanationBox>
 
       <WorkedExample title="Effect of Different Bias Values">
-        <p>Same weighted sum (0.51), different biases:</p>
+        <p>Same weighted sum (0.51), different biases — watch how bias determines how &quot;confident&quot; this neuron becomes:</p>
 
-        <CalcStep number={1}>bias = 0.5: z = 0.51 + 0.5 = 1.01 (strongly predicts rain)</CalcStep>
-        <CalcStep number={2}>bias = 0.0: z = 0.51 + 0.0 = 0.51 (neutral baseline)</CalcStep>
-        <CalcStep number={3}>bias = -0.5: z = 0.51 - 0.5 = 0.01 (barely positive)</CalcStep>
-        <CalcStep number={4}>bias = -1.0: z = 0.51 - 1.0 = -0.49 (predicts no rain!)</CalcStep>
+        <CalcStep number={1}>bias = 0.5: z = 0.51 + 0.5 = 1.01 → this neuron strongly predicts rain</CalcStep>
+        <CalcStep number={2}>bias = 0.0: z = 0.51 + 0.0 = 0.51 → this neuron has a neutral baseline</CalcStep>
+        <CalcStep number={3}>bias = -0.5: z = 0.51 - 0.5 = 0.01 → this neuron is barely activated</CalcStep>
+        <CalcStep number={4}>bias = -1.0: z = 0.51 - 1.0 = -0.49 → this neuron predicts no rain</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          See how bias controls the &quot;baseline&quot;? With bias = -1.0, even moderate humidity
-          isn&apos;t enough to predict rain. The region might be in a desert where rain is rare!
+          See how bias controls each neuron&apos;s &quot;personality&quot;? With bias = 0.5, this neuron becomes
+          a confident rain predictor. With bias = -1.0, this neuron becomes skeptical — even moderate
+          humidity isn&apos;t enough to convince it. In a full network, having neurons with different biases
+          means some will fire strongly while others stay quiet, creating a rich mix of signals.
         </p>
       </WorkedExample>
 

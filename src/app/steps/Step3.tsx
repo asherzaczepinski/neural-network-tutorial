@@ -118,29 +118,19 @@ Then multiply:
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="The Mathematics of Importance">
-        <p>
-          Multiplication is the mathematical operation that expresses &quot;importance&quot; or &quot;scaling.&quot;
-          When you multiply a value by 2, you&apos;re saying &quot;this counts double.&quot; When you multiply
-          by 0.5, you&apos;re saying &quot;this counts half.&quot; When you multiply by 0, you&apos;re saying
-          &quot;this doesn&apos;t count at all.&quot;
-        </p>
-        <p>
-          This is why weights work: multiplying an input by its weight scales the input&apos;s
-          contribution. A large weight amplifies the input; a small weight diminishes it.
-        </p>
-      </ExplanationBox>
-
       <ExplanationBox title="Weights Start Random">
         <p>
-          Before training, weights are initialized to small random values. Why random? If all
-          weights started at the same value, all neurons would compute the same thing and learn
-          the same features — they&apos;d be redundant. Random initialization breaks this symmetry,
-          allowing different neurons to specialize.
+          Before training, weights are initialized to small random values (typically between -1 and 1).
+          Why random? In networks with multiple neurons per layer, if all weights started at the same
+          value, every neuron would compute the exact same thing and receive the exact same gradient
+          updates during training — they&apos;d be completely redundant. Random initialization breaks this
+          symmetry, allowing different neurons to specialize and learn different patterns.
         </p>
         <p>
-          For now, we&apos;re using hand-picked weights (-0.3, 0.9) that make meteorological sense.
-          But in Step 16-17, you&apos;ll see the network learn its own weights through training!
+          For now, we&apos;re using hand-picked weights (-0.3, 0.9) that make meteorological sense so you
+          can see meaningful results. But in Steps 16-17, you&apos;ll see the network discover its own
+          weights through training — starting from random values and gradually adjusting them to
+          make accurate predictions!
         </p>
       </ExplanationBox>
 
