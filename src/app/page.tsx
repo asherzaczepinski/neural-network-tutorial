@@ -109,7 +109,7 @@ function CourseContent() {
             disabled={currentStep === 1}
             aria-label="Previous step"
           >
-            ‹
+            ←
           </button>
 
           <div className="step-pagination">
@@ -133,7 +133,7 @@ function CourseContent() {
             disabled={currentStep === 17}
             aria-label="Next step"
           >
-            ›
+            →
           </button>
         </nav>
       </header>
@@ -186,7 +186,7 @@ function CourseContent() {
           border-bottom: 1px solid #eee;
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content: center;
           padding: 0 20px;
           z-index: 100;
           transition: transform 0.3s ease, opacity 0.3s ease;
@@ -203,6 +203,8 @@ function CourseContent() {
         }
 
         .course-logo {
+          position: absolute;
+          left: 20px;
           font-size: 15px;
           font-weight: 600;
           color: #222;
@@ -229,11 +231,9 @@ function CourseContent() {
           border: 1px solid #e5e5e5;
           border-radius: 50%;
           color: #888;
-          font-size: 22px;
-          font-weight: 300;
+          font-size: 18px;
           cursor: pointer;
           transition: all 0.15s;
-          line-height: 1;
         }
 
         .nav-arrow:hover:not(:disabled) {
