@@ -99,32 +99,19 @@ export default function Step4({ onComplete }: StepProps) {
 
       <ExplanationBox title="Applying Weights to Inputs">
         <p>
-          Let's see how we apply weights to our weather inputs to compute each feature's contribution:
+          Now let&apos;s apply weights to our inputs to see each feature&apos;s contribution to the prediction.
         </p>
-        <pre><code>{`# Keep your inputs from before
-inputs = [0.7, 0.8]
+        <CodeRunner code={`# Create the inputs list: [0.7, 0.8] (temperature, humidity)
 
-# Create a weights list: -0.3 for temperature, 0.9 for humidity
-weights = [-0.3, 0.9]
+# Create a weights list: [-0.3, 0.9]
+# (-0.3 for temperature, 0.9 for humidity)
 
-# Multiply each input by its weight
-temp_contribution = inputs[0] * weights[0]
-humidity_contribution = inputs[1] * weights[1]
+# Calculate temp_contribution by multiplying inputs[0] * weights[0]
 
-print("Temperature contribution:", temp_contribution)
-print("Humidity contribution:", humidity_contribution)`}</code></pre>
-        <CodeRunner code={`# Keep your inputs from before
-inputs = [0.7, 0.8]
+# Calculate humidity_contribution by multiplying inputs[1] * weights[1]
 
-# Create a weights list: -0.3 for temperature, 0.9 for humidity
-weights = [-0.3, 0.9]
-
-# Multiply each input by its weight
-temp_contribution = inputs[0] * weights[0]
-humidity_contribution = inputs[1] * weights[1]
-
-print("Temperature contribution:", temp_contribution)
-print("Humidity contribution:", humidity_contribution)`} />
+# Print both contributions
+`} />
         <p>
           The weights encode the RELATIONSHIP between inputs and rain prediction!
         </p>

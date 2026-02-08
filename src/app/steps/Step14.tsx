@@ -123,52 +123,25 @@ export default function Step14({ onComplete }: StepProps) {
 
       <ExplanationBox title="Implementing Derivative Functions">
         <p>
-          Here's how we implement the derivative functions:
+          Implement the derivative functions we need for backpropagation:
         </p>
-        <pre><code>{`E = 2.71828
+        <CodeRunner code={`# Set E = 2.71828
 
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
+# Define sigmoid(z) - returns 1 / (1 + E**(-z))
 
-def sigmoid_derivative(z):
-    s = sigmoid(z)
-    return s * (1 - s)
+# Define sigmoid_derivative(z):
+#   1. Calculate s = sigmoid(z)
+#   2. Return s * (1 - s)
 
-def mse_derivative(prediction, target):
-    return 2 * (prediction - target)
+# Define mse_derivative(prediction, target):
+#   Return 2 * (prediction - target)
 
-# Test sigmoid derivative
-print("Sigmoid derivatives:")
-print("At z=0:", sigmoid_derivative(0))
-print("At z=2:", sigmoid_derivative(2))
-print("At z=-2:", sigmoid_derivative(-2))
+# Test sigmoid derivative at z=0, z=2, z=-2
 
-# Test MSE derivative
-print("MSE derivatives:")
-print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))
-print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))`}</code></pre>
-        <CodeRunner code={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def sigmoid_derivative(z):
-    s = sigmoid(z)
-    return s * (1 - s)
-
-def mse_derivative(prediction, target):
-    return 2 * (prediction - target)
-
-# Test sigmoid derivative
-print("Sigmoid derivatives:")
-print("At z=0:", sigmoid_derivative(0))
-print("At z=2:", sigmoid_derivative(2))
-print("At z=-2:", sigmoid_derivative(-2))
-
-# Test MSE derivative
-print("MSE derivatives:")
-print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))
-print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))`} />
+# Test MSE derivative:
+# pred=0.7, target=1.0 (should be negative - prediction too low)
+# pred=0.3, target=0.0 (should be positive - prediction too high)
+`} />
       </ExplanationBox>
 
       <ExplanationBox title="The Power of Derivatives">

@@ -383,38 +383,20 @@ export default function Step8({ onComplete }: StepProps) {
 
       <ExplanationBox title="Implementing Sigmoid">
         <p>
-          Here&apos;s how we implement the sigmoid function:
+          Now implement the sigmoid function yourself. Remember: sigmoid(z) = 1 / (1 + e^(-z))
         </p>
-        <pre><code>{`E = 2.71828
+        <CodeRunner code={`# Define E = 2.71828 (Euler's number)
 
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
+# Define a function sigmoid(z) that returns:
+# 1 / (1 + E**(-z))
 
-# Test with our weather example
-z = 0.61
-rain_probability = sigmoid(z)
-print("z =", z)
-print("Rain probability =", rain_probability)
+# Test with z = 0.61 (our weather example)
+# Print "z =" and the z value
+# Print "Rain probability =" and sigmoid(z)
 
-# Try other values
-print("sigmoid(-2) =", sigmoid(-2))
-print("sigmoid(0) =", sigmoid(0))
-print("sigmoid(2) =", sigmoid(2))`}</code></pre>
-        <CodeRunner code={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-# Test with our weather example
-z = 0.61
-rain_probability = sigmoid(z)
-print("z =", z)
-print("Rain probability =", rain_probability)
-
-# Try other values
-print("sigmoid(-2) =", sigmoid(-2))
-print("sigmoid(0) =", sigmoid(0))
-print("sigmoid(2) =", sigmoid(2))`} />
+# Try other values:
+# Print sigmoid(-2), sigmoid(0), and sigmoid(2)
+`} />
       </ExplanationBox>
 
       <ExplanationBox title="The Complete Picture So Far">

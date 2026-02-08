@@ -113,52 +113,24 @@ export default function Step9({ onComplete }: StepProps) {
 
       <ExplanationBox title="Building a Complete Neuron">
         <p>
-          Here's how we assemble all the pieces into a complete neuron:
+          Assemble all the pieces into a complete neuron function:
         </p>
-        <pre><code>{`E = 2.71828
+        <CodeRunner code={`# Set E = 2.71828
 
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
+# Define sigmoid(z) - returns 1 / (1 + E**(-z))
 
-def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
+# Define dot_product(a, b) - loop through, multiply pairs, sum results
 
-def neuron(inputs, weights, bias):
-    z = dot_product(inputs, weights) + bias
-    return sigmoid(z)
+# Define neuron(inputs, weights, bias):
+#   1. Calculate z = dot_product(inputs, weights) + bias
+#   2. Return sigmoid(z)
 
-# Test with weather data
-inputs = [0.7, 0.8]    # temperature, humidity
-weights = [-0.3, 0.9]  # learned importance
-bias = 0.1             # baseline
-
-rain_prob = neuron(inputs, weights, bias)
-print("Rain probability:", rain_prob)`}</code></pre>
-        <CodeRunner code={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-def neuron(inputs, weights, bias):
-    z = dot_product(inputs, weights) + bias
-    return sigmoid(z)
-
-# Test with weather data
-inputs = [0.7, 0.8]    # temperature, humidity
-weights = [-0.3, 0.9]  # learned importance
-bias = 0.1             # baseline
-
-rain_prob = neuron(inputs, weights, bias)
-print("Rain probability:", rain_prob)`} />
+# Test with weather data:
+# inputs = [0.7, 0.8]
+# weights = [-0.3, 0.9]
+# bias = 0.1
+# Print "Rain probability:" and neuron(inputs, weights, bias)
+`} />
       </ExplanationBox>
 
       <ExplanationBox title="From Neuron to Network">

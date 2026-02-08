@@ -120,24 +120,19 @@ export default function Step5({ onComplete }: StepProps) {
 
       <ExplanationBox title="Computing z (Pre-activation)">
         <p>
-          Here's how we compute the pre-activation value with bias:
+          Now compute the pre-activation value by combining weights, inputs, and bias:
         </p>
-        <pre><code>{`inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-bias = 0.1
+        <CodeRunner code={`# Set up inputs = [0.7, 0.8]
 
-# Calculate z (pre-activation)
-z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
+# Set up weights = [-0.3, 0.9]
 
-print("Pre-activation z =", z)`}</code></pre>
-        <CodeRunner code={`inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-bias = 0.1
+# Set bias = 0.1
 
-# Calculate z (pre-activation)
-z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
+# Calculate z (pre-activation):
+# z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
 
-print("Pre-activation z =", z)`} />
+# Print the result: "Pre-activation z =", z
+`} />
       </ExplanationBox>
 
       <ExplanationBox title="Where We Are Now">

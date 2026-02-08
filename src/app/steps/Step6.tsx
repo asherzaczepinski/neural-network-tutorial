@@ -132,28 +132,24 @@ export default function Step6({ onComplete }: StepProps) {
 
       <ExplanationBox title="Implementing the Dot Product">
         <p>
-          Here's how we implement the dot product function:
+          Build the dot_product function yourself:
         </p>
-        <pre><code>{`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
+        <CodeRunner code={`# Define a function called dot_product that takes two lists (a, b)
+# def dot_product(a, b):
 
-# Test it
-inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-print("Dot product:", dot_product(inputs, weights))`}</code></pre>
-        <CodeRunner code={`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
+    # Initialize result = 0
 
-# Test it
-inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-print("Dot product:", dot_product(inputs, weights))`} />
+    # Loop through each index i using range(len(a))
+
+        # Add a[i] * b[i] to result
+
+    # Return the final result
+
+# Test it with:
+# inputs = [0.7, 0.8]
+# weights = [-0.3, 0.9]
+# print("Dot product:", dot_product(inputs, weights))
+`} />
       </ExplanationBox>
 
       <ExplanationBox title="A Reusable Building Block">

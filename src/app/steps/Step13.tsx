@@ -115,26 +115,17 @@ average_loss = total_loss / 4`}
 
       <ExplanationBox title="Implementing the Loss Function">
         <p>
-          Here's how we implement the Mean Squared Error loss function:
+          Implement the Mean Squared Error loss function:
         </p>
-        <pre><code>{`def mse_loss(prediction, target):
-    return (prediction - target) ** 2
+        <CodeRunner code={`# Define mse_loss(prediction, target) that returns:
+# (prediction - target) ** 2
 
-# Test cases
-print("Loss tests:")
-print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))
-print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))
-print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))
-print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))`}</code></pre>
-        <CodeRunner code={`def mse_loss(prediction, target):
-    return (prediction - target) ** 2
-
-# Test cases
-print("Loss tests:")
-print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))
-print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))
-print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))
-print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))`} />
+# Test cases - print:
+# mse_loss(0.7, 1.0) - prediction too low
+# mse_loss(0.2, 0.0) - prediction too high
+# mse_loss(1.0, 1.0) - perfect prediction
+# mse_loss(0.0, 0.0) - perfect prediction
+`} />
       </ExplanationBox>
 
       <ExplanationBox title="The Training Objective">

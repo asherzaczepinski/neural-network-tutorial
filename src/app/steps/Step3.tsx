@@ -66,27 +66,21 @@ export default function Step3({ onComplete }: StepProps) {
 
       <ExplanationBox title="Storing Inputs in a List">
         <p>
-          Real neural networks store their inputs as lists (or arrays). Here&apos;s how we create a list
-          to hold our weather data:
+          Real neural networks store their inputs as lists (or arrays). Lists let us group related
+          data together and access elements by their position (index).
         </p>
-        <pre><code>{`# Create a list with temperature and humidity
-inputs = [0.7, 0.8]
+        <p style={{ marginTop: '1rem' }}>
+          Try creating a list with our weather data:
+        </p>
+        <CodeRunner code={`# Create a list called 'inputs' containing [0.7, 0.8]
+# (temperature first, humidity second)
 
-# Access elements by index (starting from 0)
-temperature = inputs[0]  # 0.7
-humidity = inputs[1]     # 0.8
+# Access the first element (index 0) and store it in 'temperature'
 
-print("Temperature:", temperature)
-print("Humidity:", humidity)`}</code></pre>
-        <CodeRunner code={`# Create a list with temperature and humidity
-inputs = [0.7, 0.8]
+# Access the second element (index 1) and store it in 'humidity'
 
-# Access elements by index (starting from 0)
-temperature = inputs[0]  # 0.7
-humidity = inputs[1]     # 0.8
-
-print("Temperature:", temperature)
-print("Humidity:", humidity)`} />
+# Print both values
+`} />
         <p>
           This is exactly how neural networks receive information — as ordered lists of numbers.
           Whether you have 2 inputs or 2 million, the structure is the same.
