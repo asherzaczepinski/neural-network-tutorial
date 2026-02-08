@@ -125,12 +125,6 @@ export default function Step6({ onComplete }: StepProps) {
           Depth without non-linearity is meaningless.
           Non-linearity is what makes deep learning deep.
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          In the next step, we&apos;ll implement the sigmoid function — the classic activation
-          function that adds the non-linearity we need. You&apos;ll see exactly how it transforms
-          our weather signal into a rain probability between 0 and 1, and how its curved shape
-          lets our network learn complex patterns like &quot;rain when warm AND humid.&quot;
-        </p>
       </ExplanationBox>
     </div>
   );
