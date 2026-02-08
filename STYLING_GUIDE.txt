@@ -1,0 +1,139 @@
+NEURAL NETWORK TUTORIAL - STYLING GUIDE
+========================================
+
+DESIGN PHILOSOPHY
+-----------------
+Clean, minimal, academic. Like a well-designed university course page.
+No dark mode, no gradients, no fancy effects. Just readable content.
+
+
+COLOR PALETTE
+-------------
+Background:        #fff (pure white)
+Text Primary:      #222 (near black)
+Text Secondary:    #444 (dark gray for paragraphs)
+Text Muted:        #6b7280, #888, #9ca3af (grays for labels/hints)
+Accent Blue:       #2563eb (links, buttons, highlights)
+Accent Blue Hover: #1d4ed8 (darker blue on hover)
+Success Green:     #22c55e (completed states)
+Warning Yellow:    #fcd34d, #b45309 (hints, task highlights)
+Borders:           #e5e7eb, #eee (light gray lines)
+Light Background:  #f9fafb, #f3f4f6 (subtle section backgrounds)
+
+
+TYPOGRAPHY
+----------
+Font Family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+Code Font:   'SF Mono', 'Fira Code', Consolas, monospace
+Math Font:   'Times New Roman', Georgia, serif
+
+Sizes:
+- Body text: 16px
+- H1: 28px (page titles)
+- H2: 18-20px (section headers)
+- H3: 17px (subsections)
+- Small text: 13px (labels, hints)
+- Code: 14px
+
+Line Heights:
+- Body: 1.6
+- Headings: 1.3
+- Code: 1.5-1.6
+
+
+SPACING
+-------
+- Section margin-bottom: 32px
+- Paragraph margin-bottom: 14px
+- Content max-width: 680px (landing/course pages)
+- Page padding: 48px vertical, 20px horizontal
+- Component padding: 20px (for boxed elements like tasks, formulas)
+
+
+COMPONENTS
+----------
+
+1. Content Sections (.content-section)
+   - No background or border
+   - Just h2 header + flowing text
+   - margin-bottom: 32px
+
+2. Task Section (.task-section)
+   - Light gray background: #f9fafb
+   - Border: 1px solid #e5e7eb
+   - Border-radius: 8px
+   - Padding: 20px
+   - Blue header text: #2563eb
+
+3. Math Formula (.math-formula)
+   - Light gray background: #f9fafb
+   - Border: 1px solid #e5e7eb
+   - Border-radius: 8px
+   - Centered text, serif font
+   - Padding: 20px
+
+4. Code Editor Preview (.code-editor-preview)
+   - Light background: #f9fafb
+   - Border: 1px solid #e5e7eb
+   - Header background: #f3f4f6
+   - Monospace text in dark gray: #374151
+   - Clickable, opens modal
+
+5. Code Editor Modal (.code-editor-modal)
+   - White background
+   - Light header: #f3f4f6
+   - White textarea with gray text
+   - Output panel: #fafafa background
+   - Border-radius: 12px
+
+6. Hint Box (.hint-box)
+   - Yellow-tinted background: #fffbeb
+   - Border: 1px solid #fcd34d
+   - Collapsible with <details>
+   - Amber text: #b45309
+
+7. Calculation Steps (.calc-step)
+   - No background
+   - Blue numbered circle: #2563eb
+   - Monospace text
+   - Simple row layout
+
+8. Buttons (.btn)
+   - Primary: Blue #2563eb, white text
+   - Secondary: Light gray #f5f5f5, border
+   - Success: Green #22c55e
+   - Padding: 10px 18px
+   - Border-radius: 6px
+
+
+NAVIGATION
+----------
+- Fixed header at top, 52px height
+- White background with bottom border
+- Logo on left, dots in center, counter on right
+- Step dots: 8px circles, blue when active, green when completed
+
+
+DO'S AND DON'TS
+---------------
+DO:
+- Use white/light backgrounds
+- Keep spacing consistent
+- Use the blue accent sparingly
+- Make text readable (dark on light)
+- Keep borders subtle (#e5e7eb)
+
+DON'T:
+- Use dark backgrounds
+- Use gradients or shadows
+- Use multiple accent colors
+- Add unnecessary decorations
+- Make things too cramped or too spread out
+
+
+FILE STRUCTURE
+--------------
+/src/app/globals.css       - All global styles
+/src/app/page.tsx          - Course pages with inline styles
+/src/app/landing/page.tsx  - Landing page with inline styles
+/src/components/*.tsx      - Reusable components (use CSS classes)
