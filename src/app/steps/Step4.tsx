@@ -1,69 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step4({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasBias = /bias\s*=\s*0\.1/.test(code) || /bias\s*=\s*\.1/.test(code);
-    const hasZ = /z\s*=/.test(code);
-    const hasAddition = /\+\s*bias/.test(code) || /bias\s*\+/.test(code);
-
-    if (hasBias && hasZ && hasAddition) {
-      return {
-        success: true,
-        output: `Bias added successfully!
-
-inputs = [0.7, 0.8]  (temperature, humidity)
-weights = [-0.3, 0.9]  (learned importance)
-bias = 0.1  (baseline rain tendency)
-
-Calculation:
-  weighted_sum = (0.7 × -0.3) + (0.8 × 0.9) = -0.21 + 0.72 = 0.51
-  z = weighted_sum + bias = 0.51 + 0.1 = 0.61
-
-The pre-activation value z = 0.61
-
-What's this number mean? It's the "raw signal" before transformation.
-- Positive z (like 0.61) leans toward "yes, rain"
-- Negative z would lean toward "no rain"
-- The bias of 0.1 adds a slight "baseline raininess"
-
-This z value will be transformed by the sigmoid function (Step 7)
-to give us a probability between 0 and 1.`,
-      };
-    }
-
-    if (hasBias && !hasZ) {
-      return {
-        success: false,
-        output: `Good! You created the bias.
-
-Now calculate z (the pre-activation value):
-z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
-
-Or if you already have weighted_sum:
-z = weighted_sum + bias`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a variable called 'bias' with value 0.1
-
-Then calculate z = weighted_sum + bias
-(where weighted_sum = inputs[0]*weights[0] + inputs[1]*weights[1])`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -170,22 +117,11 @@ Then calculate z = weighted_sum + bias
         </p>
       </ExplanationBox>
 
-      <TaskBox>
+      <ExplanationBox title="Computing z (Pre-activation)">
         <p>
-          Add a bias term and calculate the pre-activation value z. This completes the
-          linear part of the neuron computation.
+          Here's how we compute the pre-activation value with bias:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Keep your inputs and weights from before</li>
-          <li>Create <code>bias = 0.1</code> (slight baseline rain tendency)</li>
-          <li>Calculate <code>z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias</code></li>
-          <li>Print z to verify you get 0.61</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`inputs = [0.7, 0.8]
+        <pre><code>{`inputs = [0.7, 0.8]
 weights = [-0.3, 0.9]
 bias = 0.1
 
@@ -193,30 +129,8 @@ bias = 0.1
 z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
 
 print("Pre-activation z =", z)
-# Should output: Pre-activation z = 0.61`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`# Your weather inputs and weights
-inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-
-# Add a bias term (baseline rain tendency)
-
-
-# Calculate z = weighted sum + bias
-# z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
-
-
-# Print z
-
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Add bias and calculate z..."
-        minHeight={200}
-      />
+# Should output: Pre-activation z = 0.61`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="Where We Are Now">
         <p>

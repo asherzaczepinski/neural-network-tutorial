@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTutorialStore, STEPS } from '@/lib/store';
 
@@ -32,6 +32,8 @@ function CourseContent() {
   const { completedSteps, completeStep } = useTutorialStore();
   const searchParams = useSearchParams();
   const stepParam = searchParams.get('step');
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
 
   // Start at step 1 by default, or use URL param
   const [currentStep, setCurrentStep] = useState(() => {
@@ -52,10 +54,29 @@ function CourseContent() {
     }
   }, [stepParam]);
 
+  // Handle header visibility on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollingUp = currentScrollY < lastScrollY.current;
+
+      if (scrollingUp || currentScrollY < 100) {
+        setHeaderVisible(true);
+      } else if (currentScrollY > 100) {
+        setHeaderVisible(false);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const goToStep = (stepId: number) => {
     setCurrentStep(stepId);
+    setHeaderVisible(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Update URL without reload
     window.history.pushState({}, '', `/?step=${stepId}`);
   };
 
@@ -78,8 +99,8 @@ function CourseContent() {
   return (
     <div className="course-page">
       {/* Top navigation */}
-      <header className="course-header">
-        <a href="/landing" className="course-logo">Neural Networks</a>
+      <header className={`course-header ${headerVisible ? 'visible' : 'hidden'}`}>
+        <a href="/landing" className="course-logo">Home</a>
 
         <nav className="course-nav">
           <button
@@ -164,10 +185,21 @@ function CourseContent() {
           justify-content: space-between;
           padding: 0 20px;
           z-index: 100;
+          transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .course-header.visible {
+          transform: translateY(0);
+          opacity: 1;
+        }
+
+        .course-header.hidden {
+          transform: translateY(-100%);
+          opacity: 0;
         }
 
         .course-logo {
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 600;
           color: #222;
           text-decoration: none;
@@ -186,7 +218,7 @@ function CourseContent() {
         .nav-btn {
           background: none;
           border: none;
-          font-size: 14px;
+          font-size: 16px;
           color: #666;
           cursor: pointer;
           padding: 6px 10px;
@@ -205,12 +237,12 @@ function CourseContent() {
 
         .step-indicator {
           display: flex;
-          gap: 4px;
+          gap: 5px;
         }
 
         .step-dot {
-          width: 8px;
-          height: 8px;
+          width: 10px;
+          height: 10px;
           border-radius: 50%;
           background: #ddd;
           border: none;
@@ -231,7 +263,7 @@ function CourseContent() {
         }
 
         .step-count {
-          font-size: 13px;
+          font-size: 14px;
           color: #888;
           min-width: 40px;
           text-align: right;
@@ -242,27 +274,27 @@ function CourseContent() {
         }
 
         .course-content {
-          max-width: 680px;
+          max-width: 720px;
           margin: 0 auto;
-          padding: 48px 20px;
+          padding: 48px 24px;
         }
 
         .step-header-section {
-          margin-bottom: 32px;
+          margin-bottom: 36px;
         }
 
         .step-label {
           display: inline-block;
-          font-size: 12px;
+          font-size: 14px;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.5px;
           color: #2563eb;
-          margin-bottom: 8px;
+          margin-bottom: 10px;
         }
 
         .step-header-section h1 {
-          font-size: 28px;
+          font-size: 32px;
           font-weight: 600;
           line-height: 1.2;
           margin: 0;
@@ -271,24 +303,24 @@ function CourseContent() {
 
         .completed-tag {
           display: inline-block;
-          margin-top: 12px;
-          font-size: 12px;
+          margin-top: 14px;
+          font-size: 13px;
           font-weight: 500;
           color: #22c55e;
           background: #f0fdf4;
-          padding: 4px 10px;
+          padding: 5px 12px;
           border-radius: 4px;
         }
 
         .step-body {
-          line-height: 1.6;
+          line-height: 1.7;
         }
 
         .step-footer {
           display: flex;
           align-items: center;
-          margin-top: 48px;
-          padding-top: 24px;
+          margin-top: 56px;
+          padding-top: 28px;
           border-top: 1px solid #eee;
         }
 
@@ -299,8 +331,8 @@ function CourseContent() {
         .footer-btn {
           background: none;
           border: 1px solid #ddd;
-          padding: 10px 20px;
-          font-size: 14px;
+          padding: 12px 24px;
+          font-size: 15px;
           font-weight: 500;
           color: #444;
           border-radius: 6px;
@@ -329,16 +361,16 @@ function CourseContent() {
           }
 
           .step-header-section h1 {
-            font-size: 24px;
+            font-size: 26px;
           }
 
           .step-indicator {
-            gap: 3px;
+            gap: 4px;
           }
 
           .step-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
           }
         }
       `}</style>

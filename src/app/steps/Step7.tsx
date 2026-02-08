@@ -1,79 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step7({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasImport = /import\s+math/.test(code);
-    const hasDef = /def\s+sigmoid\s*\(/.test(code);
-    const hasFormula = /1\s*\/\s*\(1\s*\+/.test(code) && /math\.exp\s*\(/.test(code);
-    const hasReturn = /return/.test(code);
-    const hasTest = /sigmoid\s*\(/.test(code) && /print/.test(code);
-
-    if (hasImport && hasDef && hasFormula && hasReturn && hasTest) {
-      return {
-        success: true,
-        output: `Sigmoid function implemented perfectly!
-
-Testing sigmoid at various inputs:
-  sigmoid(-5)  = 0.0067  (very close to 0 → confident "no")
-  sigmoid(-2)  = 0.1192  (low probability)
-  sigmoid(0)   = 0.5000  (exactly 50/50 — completely uncertain!)
-  sigmoid(2)   = 0.8808  (high probability)
-  sigmoid(5)   = 0.9933  (very close to 1 → confident "yes")
-
-Notice the S-curve behavior:
-• Biggest changes happen near 0 (most sensitive when uncertain)
-• Extremes flatten out (stable when confident)
-• Any input gets squished into (0, 1) — perfect for probabilities!
-
-Your Step 6 layer outputs can now be converted to meaningful
-probabilities that we can interpret and use for predictions.`,
-      };
-    }
-
-    if (hasImport && hasDef && !hasFormula) {
-      return {
-        success: false,
-        output: `Good! You have math imported and the function started.
-
-Now implement the formula inside the function:
-  return 1 / (1 + math.exp(-z))
-
-math.exp(-z) calculates e raised to the power of -z.`,
-      };
-    }
-
-    if (!hasImport) {
-      return {
-        success: false,
-        output: `First, import the math library:
-import math
-
-This gives us math.exp() which calculates e raised to a power.`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create the sigmoid function step by step:
-
-1. import math
-2. Create def sigmoid(z):
-3. Return 1 / (1 + math.exp(-z))
-4. Test it with various values`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -308,22 +245,11 @@ This gives us math.exp() which calculates e raised to a power.`,
         </p>
       </WorkedExample>
 
-      <TaskBox>
+      <ExplanationBox title="Implementing the Sigmoid Function">
         <p>
-          Implement the sigmoid function. Python&apos;s math library has <code>math.exp(x)</code> which
-          calculates e raised to the power of x — perfect for our formula!
+          Here's how we implement the sigmoid function:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Import the math library</li>
-          <li>Create <code>def sigmoid(z):</code></li>
-          <li>Return <code>1 / (1 + math.exp(-z))</code></li>
-          <li>Test it with various values to see the S-curve behavior</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`import math
+        <pre><code>{`import math
 
 def sigmoid(z):
     return 1 / (1 + math.exp(-z))
@@ -332,30 +258,8 @@ def sigmoid(z):
 print("sigmoid(-5) =", sigmoid(-5))
 print("sigmoid(0) =", sigmoid(0))
 print("sigmoid(2) =", sigmoid(2))
-print("sigmoid(5) =", sigmoid(5))`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`import math
-
-# Create the sigmoid function
-def sigmoid(z):
-    # Return 1 / (1 + math.exp(-z))
-    pass
-
-# Test your sigmoid function
-# Try various inputs to see the S-curve behavior
-print("sigmoid(-5) =")
-print("sigmoid(0) =")
-print("sigmoid(2) =")
-print("sigmoid(5) =")
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Implement sigmoid..."
-        minHeight={250}
-      />
+print("sigmoid(5) =", sigmoid(5))`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="You've Built the Core Components!">
         <p>

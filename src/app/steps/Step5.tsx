@@ -1,90 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step5({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasDef = /def\s+dot_product\s*\(/.test(code);
-    const hasLoop = /for\s+/.test(code);
-    const hasReturn = /return/.test(code);
-    const hasCall = /dot_product\s*\(/.test(code);
-
-    if (hasDef && hasLoop && hasReturn && hasCall) {
-      return {
-        success: true,
-        output: `Dot product function created!
-
-def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-Testing with inputs=[0.7, 0.8] and weights=[-0.3, 0.9]:
-dot_product(inputs, weights) = 0.51
-
-This is the same as:
-  inputs[0]*weights[0] + inputs[1]*weights[1]
-  = 0.7*(-0.3) + 0.8*0.9
-  = -0.21 + 0.72
-  = 0.51
-
-You just implemented a fundamental operation from linear algebra! The dot product
-is used billions of times in every neural network forward pass. NumPy does this
-with optimized C code, but you now understand exactly what's happening inside.
-
-For rain prediction, this dot product combines:
-- How warm it is × how much temperature matters
-- How humid it is × how much humidity matters
-Into one single "weather signal" number!`,
-      };
-    }
-
-    if (hasDef && !hasLoop) {
-      return {
-        success: false,
-        output: `Good start! You defined the function.
-
-Now use a for loop to iterate through the elements:
-
-for i in range(len(a)):
-    # multiply a[i] * b[i] and add to result
-
-Don't forget to initialize result = 0 before the loop!`,
-      };
-    }
-
-    if (hasDef && hasLoop && !hasReturn) {
-      return {
-        success: false,
-        output: `Almost there! You have the loop.
-
-Don't forget to return the result at the end of the function:
-
-return result`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a function called dot_product that takes two lists (a and b):
-
-def dot_product(a, b):
-    # your code here
-
-It should multiply corresponding elements and sum them up.`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -203,24 +129,11 @@ It should multiply corresponding elements and sum them up.`,
         </ul>
       </ExplanationBox>
 
-      <TaskBox>
+      <ExplanationBox title="Implementing the Dot Product">
         <p>
-          Create a <code>dot_product</code> function that takes two lists and returns their
-          dot product. This function will be used throughout the rest of the tutorial.
+          Here's how we implement the dot product function:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Define <code>def dot_product(a, b):</code></li>
-          <li>Initialize <code>result = 0</code></li>
-          <li>Loop through indices with <code>for i in range(len(a)):</code></li>
-          <li>Inside the loop: <code>result = result + a[i] * b[i]</code></li>
-          <li><code>return result</code></li>
-          <li>Test it with inputs and weights to verify you get 0.51</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`def dot_product(a, b):
+        <pre><code>{`def dot_product(a, b):
     result = 0
     for i in range(len(a)):
         result = result + a[i] * b[i]
@@ -230,34 +143,8 @@ It should multiply corresponding elements and sum them up.`,
 inputs = [0.7, 0.8]
 weights = [-0.3, 0.9]
 print("Dot product:", dot_product(inputs, weights))
-# Should print: Dot product: 0.51`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`# Create the dot_product function
-def dot_product(a, b):
-    # Initialize result to 0
-
-    # Loop through each index
-
-        # Add a[i] * b[i] to result
-
-    # Return the result
-    pass
-
-# Test your function
-inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-
-result = dot_product(inputs, weights)
-print("Dot product:", result)
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Implement the dot_product function..."
-        minHeight={280}
-      />
+# Should print: Dot product: 0.51`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="A Reusable Building Block">
         <p>

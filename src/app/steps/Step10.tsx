@@ -1,76 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step10({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasHidden = /hidden\s*=\s*layer/.test(code);
-    const hasOutput = /output\s*=\s*layer/.test(code) || /output\s*=\s*neuron/.test(code);
-    const hasPrint = /print/.test(code);
-
-    if (hasHidden && hasOutput && hasPrint) {
-      return {
-        success: true,
-        output: `Two-layer network working!
-
-Input: [0.5, 0.8]
-
-Hidden layer (3 neurons):
-  h[0] = sigmoid(0.5×0.4 + 0.8×0.6 + 0.1) = sigmoid(0.78) = 0.686
-  h[1] = sigmoid(0.5×0.2 + 0.8×(-0.5) + (-0.2)) = sigmoid(-0.5) = 0.378
-  h[2] = sigmoid(0.5×(-0.3) + 0.8×0.8 + 0.3) = sigmoid(0.79) = 0.688
-
-Hidden output: [0.686, 0.378, 0.688]
-
-Output layer (1 neuron):
-  Takes hidden layer output as input!
-  z = 0.686×0.4 + 0.378×0.3 + 0.688×0.5 + 0.1
-  z = 0.274 + 0.113 + 0.344 + 0.1 = 0.831
-  output = sigmoid(0.831) = 0.696
-
-Final network output: 0.696
-
-You just built a 2-layer neural network! Data flows:
-[0.5, 0.8] → Hidden Layer (3 neurons) → [0.686, 0.378, 0.688] → Output Layer (1 neuron) → 0.696
-
-The hidden layer transforms the 2 inputs into 3 intermediate features,
-then the output layer combines those features into a final prediction.`,
-      };
-    }
-
-    if (hasHidden && !hasOutput) {
-      return {
-        success: false,
-        output: `Good! You computed the hidden layer.
-
-Now use the hidden layer OUTPUT as the INPUT to the output layer:
-output = layer(hidden, weights2, biases2)
-
-or for a single output neuron:
-output = neuron(hidden, weights2[0], biases2[0])`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Build a two-layer network:
-
-1. hidden = layer(inputs, weights1, biases1)
-2. output = layer(hidden, weights2, biases2)
-
-The key insight: hidden layer OUTPUT becomes output layer INPUT!`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -182,93 +122,6 @@ The key insight: hidden layer OUTPUT becomes output layer INPUT!`,
           <strong>Final Output:</strong> 0.696
         </p>
       </WorkedExample>
-
-      <TaskBox>
-        <p>
-          Build a two-layer network by connecting your layer function. The hidden layer
-          output becomes the input to the output layer.
-        </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Set up inputs = [0.5, 0.8]</li>
-          <li>Set up weights1 (3×2 matrix) and biases1 (3 values) for hidden layer</li>
-          <li>Compute: <code>hidden = layer(inputs, weights1, biases1)</code></li>
-          <li>Set up weights2 (1×3 matrix) and biases2 (1 value) for output layer</li>
-          <li>Compute: <code>output = layer(hidden, weights2, biases2)</code></li>
-          <li>Print the hidden layer values and final output</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`# Setup
-inputs = [0.5, 0.8]
-
-# Hidden layer: 3 neurons, 2 inputs each
-weights1 = [[0.4, 0.6], [0.2, -0.5], [-0.3, 0.8]]
-biases1 = [0.1, -0.2, 0.3]
-
-# Compute hidden layer
-hidden = layer(inputs, weights1, biases1)
-print("Hidden layer:", hidden)
-
-# Output layer: 1 neuron, 3 inputs (from hidden)
-weights2 = [[0.4, 0.3, 0.5]]
-biases2 = [0.1]
-
-# Compute output layer
-output = layer(hidden, weights2, biases2)
-print("Output:", output)`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`E = 2.71828
-
-def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def neuron(inputs, weights, bias):
-    z = dot_product(inputs, weights) + bias
-    return sigmoid(z)
-
-def layer(inputs, weights, biases):
-    outputs = []
-    for i in range(len(weights)):
-        outputs.append(neuron(inputs, weights[i], biases[i]))
-    return outputs
-
-# Input data
-inputs = [0.5, 0.8]
-
-# Hidden layer parameters (3 neurons, 2 inputs each)
-weights1 = [[0.4, 0.6], [0.2, -0.5], [-0.3, 0.8]]
-biases1 = [0.1, -0.2, 0.3]
-
-# Compute hidden layer
-hidden = # YOUR CODE HERE
-
-print("Hidden layer output:", hidden)
-
-# Output layer parameters (1 neuron, 3 inputs from hidden)
-weights2 = [[0.4, 0.3, 0.5]]
-biases2 = [0.1]
-
-# Compute output layer (use hidden as input!)
-output = # YOUR CODE HERE
-
-print("Final output:", output)
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Connect the layers..."
-        minHeight={480}
-      />
 
       <ExplanationBox title="You Built a Deep Network!">
         <p>

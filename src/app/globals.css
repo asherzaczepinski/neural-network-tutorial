@@ -187,35 +187,27 @@ li {
 }
 
 /* ============================
-   CODE EDITOR PREVIEW
+   PRACTICE CODE BUTTON
    ============================ */
 
-.code-editor-preview {
-  margin: 24px 0;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color 0.15s;
-  overflow: hidden;
-}
-
-.code-editor-preview:hover {
-  border-color: #2563eb;
-}
-
-.preview-header {
-  display: flex;
+.practice-code-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #f3f4f6;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 10px;
+  margin: 28px 0;
+  padding: 14px 24px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
 }
 
-.preview-dots {
-  display: flex;
-  gap: 6px;
+.practice-code-btn:hover {
+  background: #1d4ed8;
 }
 
 .dot {
@@ -227,53 +219,6 @@ li {
 .dot.red { background: #ff5f57; }
 .dot.yellow { background: #febc2e; }
 .dot.green { background: #28c840; }
-
-.preview-filename {
-  margin-left: 8px;
-  color: #6b7280;
-  font-size: 13px;
-  font-family: 'SF Mono', monospace;
-  flex: 1;
-}
-
-.preview-completed {
-  color: #22c55e;
-  display: flex;
-  align-items: center;
-}
-
-.preview-expand {
-  color: #9ca3af;
-  display: flex;
-  align-items: center;
-}
-
-.code-editor-preview:hover .preview-expand {
-  color: #2563eb;
-}
-
-.preview-code {
-  padding: 14px;
-  max-height: 120px;
-  overflow: hidden;
-}
-
-.preview-code pre {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
-.preview-code code {
-  font-family: 'SF Mono', monospace;
-  font-size: 13px;
-  color: #374151;
-  background: none;
-  padding: 0;
-  white-space: pre;
-  line-height: 1.5;
-}
 
 /* ============================
    CODE EDITOR MODAL

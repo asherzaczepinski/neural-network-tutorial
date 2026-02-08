@@ -1,89 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step9({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasDef = /def\s+layer\s*\(/.test(code);
-    const hasLoop = /for\s+/.test(code);
-    const hasNeuron = /neuron\s*\(/.test(code);
-    const hasReturn = /return/.test(code);
-    const hasTest = /layer\s*\(/.test(code) && /print/.test(code);
-
-    if (hasDef && hasLoop && hasNeuron && hasReturn && hasTest) {
-      return {
-        success: true,
-        output: `Layer function created successfully!
-
-Testing layer with 3 neurons, each with its own weights and bias:
-  inputs = [0.7, 0.8]  (temperature, humidity)
-
-Neuron 1 (humidity detector):
-  weights=[0.1, 0.9], bias=-0.3 → output=0.64 (moisture focused)
-
-Neuron 2 (temperature detector):
-  weights=[0.9, 0.1], bias=-0.4 → output=0.54 (heat focused)
-
-Neuron 3 (combined pattern):
-  weights=[0.5, 0.5], bias=0.1 → output=0.69 (balanced view)
-
-Layer output: [0.64, 0.54, 0.69]
-
-This is the essence of neural network layers:
-- Multiple neurons process the SAME inputs in parallel
-- Each neuron has DIFFERENT weights, learning different patterns
-- Together, they create a RICH representation of the input
-
-For weather prediction:
-- One neuron might detect "high humidity → rain"
-- Another might detect "cold fronts"
-- A third might detect "tropical conditions"
-
-The next layer combines these detected features to make the final prediction!`,
-      };
-    }
-
-    if (hasDef && !hasLoop) {
-      return {
-        success: false,
-        output: `Good start! You defined the layer function.
-
-Now loop through each neuron's parameters and compute their outputs:
-
-outputs = []
-for i in range(len(weights)):
-    output = neuron(inputs, weights[i], biases[i])
-    outputs.append(output)
-return outputs`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a function called 'layer' that applies multiple neurons:
-
-def layer(inputs, weights, biases):
-    # weights is a list of weight lists (one per neuron)
-    # biases is a list of biases (one per neuron)
-    # Return a list of outputs
-
-    outputs = []
-    for i in range(len(weights)):
-        # Compute each neuron's output
-        # Append to outputs
-    return outputs`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -196,85 +123,6 @@ biases = [b₁, b₂, b₃]  # One bias per neuron`}
           for neural networks.
         </p>
       </ExplanationBox>
-
-      <TaskBox>
-        <p>
-          Create a <code>layer</code> function that applies multiple neurons to the same inputs.
-          Each neuron has its own weights and bias, producing multiple outputs.
-        </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>You should have the <code>neuron</code> function from before</li>
-          <li>Create <code>def layer(inputs, weights, biases):</code></li>
-          <li>Loop through each neuron (use <code>range(len(weights))</code>)</li>
-          <li>Call <code>neuron(inputs, weights[i], biases[i])</code> for each</li>
-          <li>Collect outputs in a list and return it</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`def layer(inputs, weights, biases):
-    outputs = []
-    for i in range(len(weights)):
-        output = neuron(inputs, weights[i], biases[i])
-        outputs.append(output)
-    return outputs
-
-# Test with 3 neurons
-inputs = [0.7, 0.8]
-weights = [
-    [0.1, 0.9],   # Humidity-focused
-    [0.9, 0.1],   # Temperature-focused
-    [0.5, 0.5],   # Balanced
-]
-biases = [-0.3, -0.4, 0.1]
-
-result = layer(inputs, weights, biases)
-print("Layer output:", result)`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-def neuron(inputs, weights, bias):
-    z = dot_product(inputs, weights) + bias
-    return sigmoid(z)
-
-# Create the layer function
-def layer(inputs, weights, biases):
-    # Loop through each neuron and compute its output
-    # Return a list of all outputs
-    pass
-
-# Test with 3 neurons
-inputs = [0.7, 0.8]  # temperature, humidity
-
-weights = [
-    [0.1, 0.9],   # Neuron 1: humidity-focused
-    [0.9, 0.1],   # Neuron 2: temperature-focused
-    [0.5, 0.5],   # Neuron 3: balanced
-]
-
-biases = [-0.3, -0.4, 0.1]
-
-result = layer(inputs, weights, biases)
-print("Layer output:", result)
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Create the layer function..."
-        minHeight={400}
-      />
 
       <ExplanationBox title="Building Toward Deep Networks">
         <p>

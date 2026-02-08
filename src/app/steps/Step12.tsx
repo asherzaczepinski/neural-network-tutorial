@@ -1,74 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step12({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasMSE = /def\s+mse_loss\s*\(/.test(code);
-    const hasSubtract = /prediction\s*-\s*target/.test(code) || /target\s*-\s*prediction/.test(code);
-    const hasSquare = /\*\*\s*2/.test(code);
-    const hasReturn = /return/.test(code);
-    const hasTest = /mse_loss\s*\(/.test(code) && /print/.test(code);
-
-    if (hasMSE && hasSquare && hasReturn && hasTest) {
-      return {
-        success: true,
-        output: `Loss function implemented!
-
-Testing mse_loss:
-  mse_loss(0.7, 1.0) = (0.7 - 1.0)² = (-0.3)² = 0.09
-  mse_loss(0.2, 0.0) = (0.2 - 0.0)² = (0.2)² = 0.04
-  mse_loss(0.9, 1.0) = (0.9 - 1.0)² = (-0.1)² = 0.01
-  mse_loss(1.0, 1.0) = (1.0 - 1.0)² = (0.0)² = 0.00 (perfect!)
-
-Key insights:
-1. Loss = 0 means perfect prediction
-2. Larger errors → larger loss (squared makes big errors hurt more)
-3. We want to MINIMIZE this value
-
-For our XOR network:
-  If output = 0.65 but target = 0:
-  loss = (0.65 - 0)² = 0.4225 (pretty bad!)
-
-  If output = 0.65 but target = 1:
-  loss = (0.65 - 1)² = 0.1225 (still wrong but less)
-
-The loss tells us exactly how wrong we are. Training will adjust
-weights to make this number as small as possible.`,
-      };
-    }
-
-    if (hasMSE && !hasSquare) {
-      return {
-        success: false,
-        output: `Good start! But the loss needs to be SQUARED.
-
-The formula is: (prediction - target) ** 2
-
-Squaring makes all errors positive and penalizes large errors more.`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a loss function:
-
-def mse_loss(prediction, target):
-    return (prediction - target) ** 2
-
-Then test it with various prediction/target pairs.`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -170,22 +112,11 @@ average_loss = total_loss / 4`}
         </p>
       </WorkedExample>
 
-      <TaskBox>
+      <ExplanationBox title="Implementing the Loss Function">
         <p>
-          Implement the Mean Squared Error loss function. This will tell us how wrong
-          our network&apos;s predictions are.
+          Here's how we implement the Mean Squared Error loss function:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Create <code>mse_loss(prediction, target)</code></li>
-          <li>Return <code>(prediction - target) ** 2</code></li>
-          <li>Test with various prediction/target pairs</li>
-          <li>Verify: perfect prediction (pred == target) gives loss 0</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`def mse_loss(prediction, target):
+        <pre><code>{`def mse_loss(prediction, target):
     return (prediction - target) ** 2
 
 # Test cases
@@ -193,29 +124,8 @@ print("Loss tests:")
 print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))  # 0.09
 print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))  # 0.04
 print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))  # 0.0 (perfect!)
-print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))  # 0.0 (perfect!)`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`# Create the Mean Squared Error loss function
-def mse_loss(prediction, target):
-    # Return (prediction - target) squared
-    pass
-
-# Test your loss function
-print("Testing loss function:")
-print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))
-print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))
-print("mse_loss(0.9, 1.0) =", mse_loss(0.9, 1.0))
-print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))
-print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Implement the loss function..."
-        minHeight={280}
-      />
+print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))  # 0.0 (perfect!)`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="The Training Objective">
         <p>

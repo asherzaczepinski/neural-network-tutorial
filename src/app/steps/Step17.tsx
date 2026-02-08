@@ -85,6 +85,8 @@ class NeuralNetwork {
 }
 
 export default function Step17({ onComplete }: StepProps) {
+  setTimeout(() => onComplete(), 100);
+
   const [network, setNetwork] = useState<NeuralNetwork | null>(null);
   const [epoch, setEpoch] = useState(0);
   const [loss, setLoss] = useState(0);

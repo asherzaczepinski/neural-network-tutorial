@@ -1,84 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step16({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasLearningRate = /learning_rate|lr\s*=/.test(code);
-    const hasUpdate = /w\s*-\s*=|w\s*=\s*w\s*-/.test(code) || /\-=\s*lr|\-=\s*learning_rate/.test(code);
-    const hasLoop = /for\s+/.test(code);
-    const hasPrint = /print/.test(code);
-    const hasImprove = /loss|error/i.test(code);
-
-    if (hasLearningRate && hasUpdate && hasLoop && hasPrint && hasImprove) {
-      return {
-        success: true,
-        output: `Gradient descent working!
-
-Training for 5 iterations with learning_rate = 0.5:
-
-Iteration 0:
-  Before: weight = 0.80, output = 0.622
-  Gradient = -0.088
-  Update: 0.80 - (0.5 × -0.088) = 0.80 + 0.044 = 0.844
-  After: weight = 0.844, output = 0.635
-
-Iteration 1:
-  Gradient = -0.081
-  New weight = 0.885, output = 0.646
-
-Iteration 2:
-  Gradient = -0.074
-  New weight = 0.922, output = 0.656
-
-... (continues improving)
-
-After 5 iterations:
-  Weight: 0.80 → ~1.05
-  Output: 0.622 → ~0.72
-  Loss: 0.143 → ~0.08
-
-The output is moving toward the target (1.0)!
-This is learning - the network adjusts its weights to reduce error.
-
-Key insight: The learning rate (0.5) controls step size.
-Too small = slow learning. Too large = overshooting.`,
-      };
-    }
-
-    if (hasLearningRate && !hasUpdate) {
-      return {
-        success: false,
-        output: `Good! You have a learning rate.
-
-Now update the weight:
-weight = weight - learning_rate * gradient
-
-The minus sign is crucial - we go OPPOSITE to the gradient direction!`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Implement gradient descent:
-
-1. Set learning_rate = 0.5
-2. In a loop:
-   - Compute gradient
-   - Update: weight = weight - learning_rate * gradient
-   - Print to see improvement`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -171,126 +103,6 @@ The minus sign is crucial - we go OPPOSITE to the gradient direction!`,
           runs for hundreds or thousands of epochs until the loss stops improving.
         </p>
       </ExplanationBox>
-
-      <TaskBox>
-        <p>
-          Implement gradient descent for a single weight. Watch the weight change over
-          multiple iterations as it moves toward a better value.
-        </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Set <code>learning_rate = 0.5</code></li>
-          <li>Start with <code>weight = 0.8</code></li>
-          <li>In a loop (5 iterations):</li>
-          <ul style={{ marginLeft: '1rem' }}>
-            <li>Compute prediction using sigmoid(input × weight + bias)</li>
-            <li>Compute gradient using chain rule</li>
-            <li>Update: weight = weight - learning_rate × gradient</li>
-            <li>Print the progress</li>
-          </ul>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def sigmoid_derivative(z):
-    s = sigmoid(z)
-    return s * (1 - s)
-
-# Simple 1-weight example
-input_val = 0.5
-weight = 0.8
-bias = 0.1
-target = 1.0
-learning_rate = 0.5
-
-print("Training a single weight:")
-print("Target:", target)
-print()
-
-for i in range(5):
-    # Forward
-    z = input_val * weight + bias
-    output = sigmoid(z)
-
-    # Backward (chain rule)
-    error = output - target
-    gradient = error * sigmoid_derivative(z) * input_val
-
-    # Print before update
-    print(f"Iteration {i}:")
-    print(f"  Weight: {weight:.4f}, Output: {output:.4f}")
-    print(f"  Gradient: {gradient:.4f}")
-
-    # Update!
-    weight = weight - learning_rate * gradient
-
-    print(f"  New weight: {weight:.4f}")
-    print()
-
-print("Final output:", sigmoid(input_val * weight + bias))`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def sigmoid_derivative(z):
-    s = sigmoid(z)
-    return s * (1 - s)
-
-# Setup
-input_val = 0.5
-weight = 0.8
-bias = 0.1
-target = 1.0
-learning_rate = 0.5  # Try changing this!
-
-print("=== Gradient Descent Training ===")
-print(f"Target: {target}")
-print(f"Learning rate: {learning_rate}")
-print()
-
-# Training loop
-for iteration in range(5):
-    # Forward pass
-    z = input_val * weight + bias
-    output = sigmoid(z)
-    loss = (output - target) ** 2
-
-    # Backward pass (compute gradient)
-    error = output - target
-    gradient = error * sigmoid_derivative(z) * input_val
-
-    print(f"Iteration {iteration}:")
-    print(f"  Weight = {weight:.4f}")
-    print(f"  Output = {output:.4f}")
-    print(f"  Loss = {loss:.4f}")
-    print(f"  Gradient = {gradient:.4f}")
-
-    # Gradient descent update
-    # YOUR CODE: weight = weight - learning_rate * gradient
-
-
-    print(f"  Updated weight = {weight:.4f}")
-    print()
-
-# Final result
-final_output = sigmoid(input_val * weight + bias)
-print(f"Final output: {final_output:.4f} (target was {target})")
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Implement gradient descent..."
-        minHeight={520}
-      />
 
       <ExplanationBox title="You've Built All the Pieces!">
         <p>

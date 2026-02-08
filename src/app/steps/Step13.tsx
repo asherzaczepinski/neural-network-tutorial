@@ -1,73 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step13({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasSigDeriv = /def\s+sigmoid_derivative\s*\(/.test(code);
-    const hasMSEDeriv = /def\s+mse_derivative\s*\(/.test(code);
-    const hasFormula = /\*\s*\(\s*1\s*-/.test(code) && /2\s*\*/.test(code);
-    const hasTest = /sigmoid_derivative\s*\(/.test(code) && /print/.test(code);
-
-    if (hasSigDeriv && hasMSEDeriv && hasFormula && hasTest) {
-      return {
-        success: true,
-        output: `Derivative functions implemented!
-
-Sigmoid derivative:
-  At z=0: sigmoid=0.5, derivative = 0.5 × (1-0.5) = 0.25 (steepest!)
-  At z=2: sigmoid=0.88, derivative = 0.88 × (1-0.88) = 0.105
-  At z=-2: sigmoid=0.12, derivative = 0.12 × (1-0.12) = 0.105
-  At z=5: sigmoid=0.99, derivative = 0.99 × (1-0.99) = 0.007 (nearly flat)
-
-MSE derivative:
-  pred=0.7, target=1.0: derivative = 2×(0.7-1.0) = -0.6
-  pred=0.3, target=0.0: derivative = 2×(0.3-0.0) = 0.6
-
-The negative derivative (-0.6) tells us: prediction is TOO LOW
-The positive derivative (0.6) tells us: prediction is TOO HIGH
-
-These derivatives are the "compass" for training - they point the direction
-we need to move each weight to reduce the error!
-
-Key insight: The sigmoid derivative is largest at z=0 (where the S-curve
-is steepest) and smallest at extremes (where sigmoid "saturates").`,
-      };
-    }
-
-    if (hasSigDeriv && !hasMSEDeriv) {
-      return {
-        success: false,
-        output: `Good! You have sigmoid_derivative.
-
-Now create mse_derivative(prediction, target):
-  return 2 * (prediction - target)
-
-This comes from the power rule: d/dx[x²] = 2x`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create two derivative functions:
-
-1. sigmoid_derivative(z) = sigmoid(z) * (1 - sigmoid(z))
-
-2. mse_derivative(prediction, target) = 2 * (prediction - target)
-
-These are the gradients we'll use for backpropagation.`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -177,21 +120,11 @@ These are the gradients we'll use for backpropagation.`,
         </p>
       </WorkedExample>
 
-      <TaskBox>
+      <ExplanationBox title="Implementing Derivative Functions">
         <p>
-          Implement the derivative functions for sigmoid and MSE. These are the building
-          blocks for backpropagation.
+          Here's how we implement the derivative functions:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Create <code>sigmoid_derivative(z)</code> that returns <code>sigmoid(z) * (1 - sigmoid(z))</code></li>
-          <li>Create <code>mse_derivative(prediction, target)</code> that returns <code>2 * (prediction - target)</code></li>
-          <li>Test both with various inputs to understand their behavior</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`E = 2.71828
+        <pre><code>{`E = 2.71828
 
 def sigmoid(z):
     return 1 / (1 + E**(-z))
@@ -212,45 +145,8 @@ print("At z=-2:", sigmoid_derivative(-2))  # ~0.1
 # Test MSE derivative
 print("\\nMSE derivatives:")
 print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))  # -0.6
-print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))  # 0.6`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-# Create sigmoid derivative
-# Formula: sigmoid(z) * (1 - sigmoid(z))
-def sigmoid_derivative(z):
-    pass
-
-# Create MSE derivative
-# Formula: 2 * (prediction - target)
-def mse_derivative(prediction, target):
-    pass
-
-# Test sigmoid derivative at various points
-print("Sigmoid derivative tests:")
-print("At z=0:", sigmoid_derivative(0))
-print("At z=0.78:", sigmoid_derivative(0.78))
-print("At z=2:", sigmoid_derivative(2))
-print("At z=-2:", sigmoid_derivative(-2))
-print("At z=5:", sigmoid_derivative(5))
-
-# Test MSE derivative
-print("\\nMSE derivative tests:")
-print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))
-print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))
-print("pred=1.0, target=1.0:", mse_derivative(1.0, 1.0))
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Implement the derivative functions..."
-        minHeight={380}
-      />
+print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))  # 0.6`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="The Power of Derivatives">
         <p>

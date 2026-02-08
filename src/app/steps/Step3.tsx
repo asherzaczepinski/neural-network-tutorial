@@ -1,69 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step3({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasWeights = /weights\s*=\s*\[\s*-?0\.3\s*,\s*0\.9\s*\]/.test(code);
-    const hasMultiply = /inputs\s*\[\s*0\s*\]\s*\*\s*weights\s*\[\s*0\s*\]/.test(code) ||
-                        /weights\s*\[\s*0\s*\]\s*\*\s*inputs\s*\[\s*0\s*\]/.test(code);
-
-    if (hasWeights && hasMultiply) {
-      return {
-        success: true,
-        output: `Weights created and applied!
-
-inputs = [0.7, 0.8]  (temperature, humidity)
-weights = [-0.3, 0.9]  (temperature weight, humidity weight)
-
-Weighted values:
-  temperature × w_temp = 0.7 × -0.3 = -0.21
-  humidity × w_humid = 0.8 × 0.9 = 0.72
-
-Interesting! The temperature contribution is NEGATIVE (-0.21).
-The humidity contribution is POSITIVE and larger (0.72).
-
-This captures intuition about weather:
-- Higher humidity → more likely to rain (positive weight 0.9)
-- Higher temperature → slightly less likely to rain (negative weight -0.3)
-  (Hot air can hold more moisture before condensing)
-
-The weights encode the RELATIONSHIP between inputs and rain prediction!`,
-      };
-    }
-
-    if (hasWeights && !hasMultiply) {
-      return {
-        success: false,
-        output: `Good! You created the weights list.
-
-Now multiply each input by its corresponding weight:
-  inputs[0] * weights[0]  →  temperature's contribution
-  inputs[1] * weights[1]  →  humidity's contribution
-
-Store these or print them to see the results.`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a list called 'weights' with values [-0.3, 0.9]
-
-Then multiply:
-  inputs[0] * weights[0]
-  inputs[1] * weights[1]`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -149,22 +96,14 @@ Then multiply:
         </p>
       </WorkedExample>
 
-      <TaskBox>
+      <ExplanationBox title="Applying Weights to Inputs">
         <p>
-          Create weights and apply them to your weather inputs. This is the core operation that
-          makes neural networks work — scaling inputs by importance.
+          Let's see how we apply weights to our weather inputs to compute each feature's contribution:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>You should already have <code>inputs = [0.7, 0.8]</code> from before</li>
-          <li>Create <code>weights = [-0.3, 0.9]</code></li>
-          <li>Calculate <code>inputs[0] * weights[0]</code> (temperature contribution) and print</li>
-          <li>Calculate <code>inputs[1] * weights[1]</code> (humidity contribution) and print</li>
-        </ol>
-      </TaskBox>
+        <pre><code>{`# Keep your inputs from before
+inputs = [0.7, 0.8]
 
-      <Hint>
-        <pre>
-{`inputs = [0.7, 0.8]
+# Create a weights list: -0.3 for temperature, 0.9 for humidity
 weights = [-0.3, 0.9]
 
 # Multiply each input by its weight
@@ -172,28 +111,15 @@ temp_contribution = inputs[0] * weights[0]
 humidity_contribution = inputs[1] * weights[1]
 
 print("Temperature contribution:", temp_contribution)
-print("Humidity contribution:", humidity_contribution)`}
-        </pre>
-      </Hint>
+print("Humidity contribution:", humidity_contribution)
 
-      <CodeEditor
-        initialCode={`# Keep your inputs from before
-inputs = [0.7, 0.8]
-
-# Create a weights list: -0.3 for temperature, 0.9 for humidity
-
-
-# Multiply inputs[0] by weights[0] and print
-
-
-# Multiply inputs[1] by weights[1] and print
-
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Create weights and multiply them with inputs..."
-        minHeight={200}
-      />
+# Output:
+# Temperature contribution: -0.21
+# Humidity contribution: 0.72`}</code></pre>
+        <p>
+          The weights encode the RELATIONSHIP between inputs and rain prediction!
+        </p>
+      </ExplanationBox>
 
       <ExplanationBox title="What Comes Next">
         <p>

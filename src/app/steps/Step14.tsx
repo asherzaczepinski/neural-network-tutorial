@@ -1,79 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step14({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasChain = /dL_dz\s*=/.test(code) || /dl_dz\s*=/.test(code) || /dLoss/.test(code);
-    const hasMultiply = /\*/.test(code);
-    const hasPrint = /print/.test(code);
-    const hasOutput = /output_error|error_output|dL_da/.test(code.toLowerCase()) ||
-                      /sigmoid_derivative/.test(code);
-
-    if (hasChain && hasMultiply && hasPrint && hasOutput) {
-      return {
-        success: true,
-        output: `Chain rule applied!
-
-Given:
-  prediction = 0.7, target = 1.0
-  z (pre-activation) = 0.847 (since sigmoid(0.847) ≈ 0.7)
-
-Step 1: Loss derivative w.r.t. prediction
-  dL/da = 2 × (0.7 - 1.0) = -0.6
-
-Step 2: Sigmoid derivative at z
-  da/dz = sigmoid(0.847) × (1 - sigmoid(0.847))
-  da/dz = 0.7 × 0.3 = 0.21
-
-Step 3: Chain rule - multiply them!
-  dL/dz = dL/da × da/dz
-  dL/dz = -0.6 × 0.21 = -0.126
-
-Interpretation:
-  - The loss changes by -0.126 for each unit increase in z
-  - Negative means: INCREASING z would DECREASE loss
-  - So we should increase z to improve the prediction!
-
-This is the essence of backpropagation: chain derivatives backward
-through the network to find how each parameter affects the final loss.`,
-      };
-    }
-
-    if (hasChain && !hasOutput) {
-      return {
-        success: false,
-        output: `Good start! Remember the chain rule multiplies derivatives:
-
-dL/dz = dL/da × da/dz
-
-where:
-- dL/da is the MSE derivative
-- da/dz is the sigmoid derivative`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Apply the chain rule:
-
-1. Compute dL/da = mse_derivative(prediction, target)
-2. Compute da/dz = sigmoid_derivative(z)
-3. Multiply: dL/dz = dL/da * da/dz
-
-This tells us how the loss changes with respect to the pre-activation z.`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -169,100 +106,6 @@ This tells us how the loss changes with respect to the pre-activation z.`,
           That&apos;s why it&apos;s called <strong>backpropagation</strong> - the error flows backward!
         </p>
       </ExplanationBox>
-
-      <TaskBox>
-        <p>
-          Apply the chain rule to compute dL/dz. This is the core computation that makes
-          backpropagation work.
-        </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Set prediction = 0.7, target = 1.0</li>
-          <li>Compute z such that sigmoid(z) = 0.7 (approximately 0.847)</li>
-          <li>Compute dL/da using mse_derivative</li>
-          <li>Compute da/dz using sigmoid_derivative</li>
-          <li>Multiply them to get dL/dz (the delta)</li>
-          <li>Verify: negative delta means we should increase z</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def sigmoid_derivative(z):
-    s = sigmoid(z)
-    return s * (1 - s)
-
-def mse_derivative(prediction, target):
-    return 2 * (prediction - target)
-
-# Our values
-prediction = 0.7
-target = 1.0
-z = 0.847  # sigmoid(0.847) ≈ 0.7
-
-# Step 1: Loss derivative w.r.t. activation
-dL_da = mse_derivative(prediction, target)
-print("dL/da =", dL_da)
-
-# Step 2: Sigmoid derivative
-da_dz = sigmoid_derivative(z)
-print("da/dz =", da_dz)
-
-# Step 3: Chain rule!
-dL_dz = dL_da * da_dz
-print("dL/dz =", dL_dz)
-
-print("\\nInterpretation:", "increase z" if dL_dz < 0 else "decrease z")`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def sigmoid_derivative(z):
-    s = sigmoid(z)
-    return s * (1 - s)
-
-def mse_derivative(prediction, target):
-    return 2 * (prediction - target)
-
-# Setup
-prediction = 0.7
-target = 1.0
-z = 0.847  # chosen so sigmoid(z) ≈ 0.7
-
-print("Given:")
-print("  prediction =", prediction)
-print("  target =", target)
-print("  z =", z)
-print("  sigmoid(z) =", sigmoid(z))
-
-# Step 1: Compute dL/da (loss derivative w.r.t. activation)
-dL_da = # YOUR CODE
-
-# Step 2: Compute da/dz (sigmoid derivative)
-da_dz = # YOUR CODE
-
-# Step 3: Apply chain rule to get dL/dz
-dL_dz = # YOUR CODE
-
-print("\\nChain rule computation:")
-print("  dL/da =", dL_da)
-print("  da/dz =", da_dz)
-print("  dL/dz = dL/da × da/dz =", dL_dz)
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Apply the chain rule..."
-        minHeight={420}
-      />
 
       <ExplanationBox title="From Delta to Weight Gradients">
         <p>

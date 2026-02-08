@@ -1,77 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step8({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasDef = /def\s+neuron\s*\(/.test(code);
-    const hasDot = /dot_product/.test(code);
-    const hasSigmoid = /sigmoid/.test(code);
-    const hasReturn = /return/.test(code);
-    const hasTest = /neuron\s*\(/.test(code) && /print/.test(code);
-
-    if (hasDef && hasDot && hasSigmoid && hasReturn && hasTest) {
-      return {
-        success: true,
-        output: `Complete neuron function created!
-
-def neuron(inputs, weights, bias):
-    z = dot_product(inputs, weights) + bias
-    return sigmoid(z)
-
-Testing with weather data:
-  inputs = [0.7, 0.8]    (temperature, humidity)
-  weights = [-0.3, 0.9]  (learned importance)
-  bias = 0.1             (baseline rain tendency)
-
-Step-by-step:
-  1. Dot product: 0.7×(-0.3) + 0.8×0.9 = -0.21 + 0.72 = 0.51
-  2. Add bias: z = 0.51 + 0.1 = 0.61
-  3. Sigmoid: sigmoid(0.61) = 0.648
-
-rain_probability = neuron([0.7, 0.8], [-0.3, 0.9], 0.1) = 0.648
-
-Your neuron says: "There's about a 65% chance of rain given
-temperature=0.7 and humidity=0.8!"
-
-This single function encapsulates everything a neuron does:
-receive inputs → weight them → sum them → add bias → activate
-
-Congratulations! You've built a complete artificial neuron from scratch!`,
-      };
-    }
-
-    if (hasDef && !hasDot) {
-      return {
-        success: false,
-        output: `Good! You started the neuron function.
-
-Now use dot_product to compute the weighted sum:
-z = dot_product(inputs, weights) + bias
-
-Then apply sigmoid: return sigmoid(z)`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a function called 'neuron' that takes inputs, weights, and bias:
-
-def neuron(inputs, weights, bias):
-    # Compute z = dot_product(inputs, weights) + bias
-    # Return sigmoid(z)`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -171,23 +110,11 @@ def neuron(inputs, weights, bias):
         </p>
       </ExplanationBox>
 
-      <TaskBox>
+      <ExplanationBox title="Building a Complete Neuron">
         <p>
-          Create a complete <code>neuron</code> function that combines everything. This reusable
-          function will be the building block for all our neural networks.
+          Here's how we assemble all the pieces into a complete neuron:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>You should have <code>dot_product</code> and <code>sigmoid</code> from before</li>
-          <li>Create <code>def neuron(inputs, weights, bias):</code></li>
-          <li>Compute <code>z = dot_product(inputs, weights) + bias</code></li>
-          <li>Return <code>sigmoid(z)</code></li>
-          <li>Test with our weather data to verify you get ~0.648</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`E = 2.71828
+        <pre><code>{`E = 2.71828
 
 def sigmoid(z):
     return 1 / (1 + E**(-z))
@@ -208,44 +135,8 @@ weights = [-0.3, 0.9]  # learned importance
 bias = 0.1             # baseline
 
 rain_prob = neuron(inputs, weights, bias)
-print("Rain probability:", rain_prob)`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`E = 2.71828
-
-def sigmoid(z):
-    return 1 / (1 + E**(-z))
-
-def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-# Create the complete neuron function
-def neuron(inputs, weights, bias):
-    # Step 1: Compute z = dot_product(inputs, weights) + bias
-
-    # Step 2: Apply sigmoid and return
-
-    pass
-
-# Test with weather data
-inputs = [0.7, 0.8]    # temperature=0.7, humidity=0.8
-weights = [-0.3, 0.9]  # temperature weight, humidity weight
-bias = 0.1             # baseline rain tendency
-
-rain_prob = neuron(inputs, weights, bias)
-print("Rain probability:", rain_prob)
-# Should output approximately 0.648
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Assemble the complete neuron..."
-        minHeight={350}
-      />
+print("Rain probability:", rain_prob)`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="From Neuron to Network">
         <p>

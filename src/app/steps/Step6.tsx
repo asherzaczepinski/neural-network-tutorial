@@ -1,72 +1,16 @@
 'use client';
 
-import CodeEditor from '@/components/CodeEditor';
 import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import TaskBox from '@/components/TaskBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import Hint from '@/components/Hint';
 
 interface StepProps {
   onComplete: () => void;
 }
 
 export default function Step6({ onComplete }: StepProps) {
-  const validateCode = (code: string) => {
-    const hasLinear = /def\s+linear_neuron/.test(code);
-    const hasTest = /linear_neuron\s*\(/.test(code);
-    const hasPrint = /print/.test(code);
-
-    if (hasLinear && hasTest && hasPrint) {
-      return {
-        success: true,
-        output: `Linear neuron demonstration complete!
-
-You've proven that stacking linear neurons is equivalent to a single linear neuron.
-
-Two-layer network:
-  Hidden: h = 0.7×(-0.3) + 0.8×0.9 = -0.21 + 0.72 = 0.51
-  Output: out = h × 0.5 = 0.51 × 0.5 = 0.255
-
-But we can collapse this to one operation:
-  Effective weight for temp = -0.3 × 0.5 = -0.15
-  Effective weight for humid = 0.9 × 0.5 = 0.45
-  Direct: out = 0.7×(-0.15) + 0.8×0.45 = -0.105 + 0.36 = 0.255
-
-Same answer! This proves the devastating fact:
-No matter how many linear layers you stack, you can always
-collapse them into a single linear layer.
-
-THIS IS WHY WE NEED NON-LINEARITY!
-
-For rain prediction, a linear model could only learn simple patterns like
-"more humidity = more rain." But real weather is complex! Rain depends on
-combinations of factors in non-linear ways. That's why we need activation functions.`,
-      };
-    }
-
-    if (hasLinear && !hasTest) {
-      return {
-        success: false,
-        output: `Good! You created the linear_neuron function.
-
-Now test it by calling linear_neuron with your inputs, weights, and bias.
-Print the result to see the output.`,
-      };
-    }
-
-    return {
-      success: false,
-      output: `Create a function linear_neuron(inputs, weights, bias) that:
-1. Computes the dot product of inputs and weights
-2. Adds the bias
-3. Returns the result (NO activation function - just linear!)
-
-def linear_neuron(inputs, weights, bias):
-    ...`,
-    };
-  };
+  setTimeout(() => onComplete(), 100);
 
   return (
     <div>
@@ -163,22 +107,11 @@ def linear_neuron(inputs, weights, bias):
         </p>
       </ExplanationBox>
 
-      <TaskBox>
+      <ExplanationBox title="Demonstrating Linear Layer Collapse">
         <p>
-          Let&apos;s verify that linear layers collapse by building a linear neuron (no activation)
-          and showing that stacking them is equivalent to a single computation.
+          Here's code that proves linear layers collapse:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '1rem' }}>
-          <li>Create <code>linear_neuron(inputs, weights, bias)</code> that returns dot_product + bias</li>
-          <li>Compute a two-layer result: hidden = linear_neuron(...), then output = hidden * weight2</li>
-          <li>Compute the collapsed single-layer equivalent</li>
-          <li>Verify both give the same answer!</li>
-        </ol>
-      </TaskBox>
-
-      <Hint>
-        <pre>
-{`def dot_product(a, b):
+        <pre><code>{`def dot_product(a, b):
     result = 0
     for i in range(len(a)):
         result = result + a[i] * b[i]
@@ -190,7 +123,7 @@ def linear_neuron(inputs, weights, bias):
 # Two-layer calculation
 inputs = [0.7, 0.8]
 w1 = [-0.3, 0.9]
-b1 = 0  # using 0 bias to simplify
+b1 = 0
 w2 = 0.5
 
 hidden = linear_neuron(inputs, w1, b1)  # = 0.51
@@ -202,42 +135,8 @@ direct = dot_product(inputs, effective_w)  # = 0.255
 
 print("Two layers:", output)
 print("Collapsed:", direct)
-print("Same?", abs(output - direct) < 0.0001)`}
-        </pre>
-      </Hint>
-
-      <CodeEditor
-        initialCode={`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-# Create a linear neuron (no activation function!)
-def linear_neuron(inputs, weights, bias):
-    # Just return weighted sum + bias, nothing else
-    pass
-
-# Test: show that two linear layers collapse to one
-inputs = [0.7, 0.8]
-w1 = [-0.3, 0.9]
-b1 = 0
-w2 = 0.5
-
-# Calculate through two layers
-
-
-# Calculate the collapsed single-layer equivalent
-
-
-# Print both to show they're equal
-
-`}
-        onValidate={validateCode}
-        onSuccess={onComplete}
-        placeholder="# Prove that linear layers collapse..."
-        minHeight={350}
-      />
+print("Same?", abs(output - direct) < 0.0001)`}</code></pre>
+      </ExplanationBox>
 
       <ExplanationBox title="The Key Insight">
         <p>
