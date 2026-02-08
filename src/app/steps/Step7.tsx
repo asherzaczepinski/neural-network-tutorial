@@ -241,10 +241,94 @@ export default function Step7({ onComplete }: StepProps) {
         </p>
       </ExplanationBox>
 
+      <ExplanationBox title="The Two Big Things Sigmoid Does">
+        <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '1rem' }}>
+          Sigmoid isn&apos;t just a fancy mathematical trick — it fundamentally changes what neural networks can do:
+        </p>
+
+        <div style={{
+          background: '#f0f9ff',
+          border: '2px solid #0ea5e9',
+          borderRadius: '12px',
+          padding: '1.25rem',
+          marginBottom: '1rem'
+        }}>
+          <h4 style={{ margin: '0 0 0.75rem 0', color: '#0369a1' }}>
+            1. True Probabilities, Not Just Yes/No
+          </h4>
+          <p>
+            Without sigmoid, you just get a raw number. Is 0.61 high? Is -2.3 low? Who knows!
+            But sigmoid <strong>squishes everything into the 0-1 range</strong>, giving you actual probabilities.
+          </p>
+          <p style={{ marginTop: '0.75rem' }}>
+            Now instead of &quot;rain&quot; or &quot;no rain&quot;, you get <strong>&quot;64.8% chance of rain&quot;</strong>.
+            That&apos;s real information you can use! You could still take derivatives from the slope
+            to measure certainty, but sigmoid condenses everything into one intuitive probability value.
+          </p>
+        </div>
+
+        <div style={{
+          background: '#fdf4ff',
+          border: '2px solid #c026d3',
+          borderRadius: '12px',
+          padding: '1.25rem',
+          marginBottom: '1rem'
+        }}>
+          <h4 style={{ margin: '0 0 0.75rem 0', color: '#a21caf' }}>
+            2. Curved Boundaries That Can Learn Complex Patterns
+          </h4>
+          <p>
+            This is where it gets interesting. When we &quot;squish&quot; the function down, different
+            input values get squished by different amounts. This creates <strong>curvature</strong>.
+          </p>
+          <p style={{ marginTop: '0.75rem' }}>
+            Think about our 2D temperature/humidity graph. With a linear function, you can only
+            draw one straight line to divide &quot;rain&quot; from &quot;no rain&quot;. That&apos;s pretty limiting!
+          </p>
+          <p style={{ marginTop: '0.75rem' }}>
+            But with sigmoid&apos;s curvature, the boundary can <strong>bend and curve</strong> to
+            capture more complex relationships. The network can learn that rain happens when
+            it&apos;s humid AND warm, but NOT when it&apos;s too hot (even if humid).
+          </p>
+        </div>
+
+        <div style={{
+          background: '#fefce8',
+          border: '2px solid #ca8a04',
+          borderRadius: '12px',
+          padding: '1.25rem'
+        }}>
+          <h4 style={{ margin: '0 0 0.75rem 0', color: '#a16207' }}>
+            What About Higher Dimensions?
+          </h4>
+          <p>
+            Our weather example uses 2 inputs (temperature, humidity), so we can visualize it
+            on a 2D graph. But real neural networks might have 4, 100, or even millions of inputs!
+          </p>
+          <p style={{ marginTop: '0.75rem' }}>
+            With 3 inputs, you&apos;d need a 3D space. With 4 inputs, a 4D space (which we can&apos;t
+            visualize!). This is where <strong>Euclidean geometry</strong> comes in — it&apos;s the
+            math that lets us work with distances and boundaries in any number of dimensions.
+          </p>
+          <p style={{ marginTop: '0.75rem' }}>
+            The cool part: sigmoid&apos;s curvature works the same way in 4D, 100D, or any dimension.
+            Instead of a curved line, you get a curved &quot;hypersurface&quot; that can divide up the
+            space in complex ways. Each neuron carves out its own region, and stacking layers
+            lets you combine these regions into incredibly sophisticated decision boundaries.
+          </p>
+          <p style={{ marginTop: '0.75rem', fontStyle: 'italic', color: '#666' }}>
+            Example: To find how &quot;far&quot; a point is from a decision boundary in 4D, you use
+            the Euclidean distance formula: √(x₁² + x₂² + x₃² + x₄²). The math scales perfectly!
+          </p>
+        </div>
+      </ExplanationBox>
+
       <ExplanationBox title="See It For Yourself">
         <p>
           Play with the sliders below. Watch how the linear version always collapses
-          to one layer, but the sigmoid version creates something unique:
+          to one layer, but the sigmoid version creates something unique. Notice how
+          the sigmoid graph shows a <strong>gradient of colors</strong> — that&apos;s the
+          probability changing smoothly, not just jumping between &quot;rain&quot; and &quot;no rain&quot;:
         </p>
         <LayerCollapseDemo />
       </ExplanationBox>
