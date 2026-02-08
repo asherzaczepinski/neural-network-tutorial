@@ -7,9 +7,9 @@ interface ExplanationBoxProps {
 
 export default function ExplanationBox({ title, children }: ExplanationBoxProps) {
   return (
-    <div className="explanation-box">
-      <h3>{title}</h3>
+    <section className="content-section">
+      <h2>{title}</h2>
       <div>{children}</div>
-    </div>
+    </section>
   );
 }

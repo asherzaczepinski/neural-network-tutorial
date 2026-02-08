@@ -8,11 +8,7 @@ interface MathFormulaProps {
 export default function MathFormula({ children, label }: MathFormulaProps) {
   return (
     <div className="math-formula">
-      {label && (
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
-          {label}
-        </div>
-      )}
+      {label && <div className="math-label">{label}</div>}
       {children}
     </div>
   );

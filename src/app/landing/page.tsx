@@ -11,7 +11,7 @@ export default function LandingPage() {
             Build a neural network from scratch. No libraries, no magic—just
             the math and code you need to understand how ML actually works.
           </p>
-          <a href="/" className="cta-button">Start Learning →</a>
+          <a href="/?step=1" className="cta-button">Start Learning →</a>
         </div>
       </section>
 
@@ -141,7 +141,7 @@ export default function LandingPage() {
       <section className="final-cta">
         <div className="container">
           <h2>Ready to understand ML for real?</h2>
-          <a href="/" className="cta-button">Start the Course →</a>
+          <a href="/?step=1" className="cta-button">Start the Course →</a>
         </div>
       </section>
 

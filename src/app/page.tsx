@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useTutorialStore, STEPS } from '@/lib/store';
 
 // Import all step content
@@ -27,51 +28,35 @@ const stepComponents = [
   Step10, Step11, Step12, Step13, Step14, Step15, Step16, Step17
 ];
 
-export default function Home() {
+function CourseContent() {
   const { completedSteps, completeStep } = useTutorialStore();
-  const [currentStep, setCurrentStep] = useState(0); // 0 = home, 1-17 = steps
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [headerVisible, setHeaderVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchParams = useSearchParams();
+  const stepParam = searchParams.get('step');
 
-  // Handle header visibility on scroll
+  // Start at step 1 by default, or use URL param
+  const [currentStep, setCurrentStep] = useState(() => {
+    if (stepParam) {
+      const parsed = parseInt(stepParam, 10);
+      if (parsed >= 1 && parsed <= 17) return parsed;
+    }
+    return 1;
+  });
+
+  // Update when URL changes
   useEffect(() => {
-    if (currentStep === 0) return; // Don't apply to home page
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollingUp = currentScrollY < lastScrollY.current;
-      const scrollSpeed = Math.abs(currentScrollY - lastScrollY.current);
-
-      // Show header when scrolling up fast or at top
-      if (scrollingUp && scrollSpeed > 5) {
-        setHeaderVisible(true);
-      } else if (!scrollingUp && currentScrollY > 60) {
-        setHeaderVisible(false);
+    if (stepParam) {
+      const parsed = parseInt(stepParam, 10);
+      if (parsed >= 1 && parsed <= 17) {
+        setCurrentStep(parsed);
       }
-
-      // Always show at top
-      if (currentScrollY < 10) {
-        setHeaderVisible(true);
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [currentStep]);
+    }
+  }, [stepParam]);
 
   const goToStep = (stepId: number) => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentStep(stepId);
-      setIsTransitioning(false);
-      setHeaderVisible(true);
-      lastScrollY.current = 0;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 200);
+    setCurrentStep(stepId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Update URL without reload
+    window.history.pushState({}, '', `/?step=${stepId}`);
   };
 
   const nextStep = () => {
@@ -86,116 +71,26 @@ export default function Home() {
     }
   };
 
-  // Home page
-  if (currentStep === 0) {
-    return (
-      <div className={`home-page ${isTransitioning ? 'transitioning' : ''}`}>
-        <div className="home-content">
-          <div className="home-hero">
-            <h1 className="home-title">
-              Build a Neural Network
-              <span className="home-title-highlight">From Scratch</span>
-            </h1>
-            <p className="home-subtitle">
-              Learn how neural networks actually work by building one yourself.
-              No libraries, no magic — just math you can understand.
-            </p>
-          </div>
-
-          <div className="home-section">
-            <h2>What You&apos;ll Build</h2>
-            <p className="home-description">
-              A neural network that predicts whether it will rain based on temperature and humidity.
-              By the end, you&apos;ll understand every single line of code and the math behind it.
-            </p>
-          </div>
-
-          <div className="home-features">
-            <div className="home-feature">
-              <div className="home-feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
-                </svg>
-              </div>
-              <h3>Interactive Code</h3>
-              <p>Write and run real Python code in your browser. See your neural network come to life.</p>
-            </div>
-            <div className="home-feature">
-              <div className="home-feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-                </svg>
-              </div>
-              <h3>Step by Step</h3>
-              <p>17 focused lessons that build on each other. No jumping ahead or getting lost.</p>
-            </div>
-            <div className="home-feature">
-              <div className="home-feature-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
-              <h3>Zero Libraries</h3>
-              <p>No NumPy, TensorFlow, or PyTorch. Just pure Python so you understand everything.</p>
-            </div>
-          </div>
-
-{completedSteps.length > 0 && (
-            <div className="home-progress-section">
-              <div className="home-progress-info">
-                <span>Your Progress</span>
-                <span className="home-progress-count">{completedSteps.length} / {STEPS.length}</span>
-              </div>
-              <div className="home-progress-bar">
-                <div
-                  className="home-progress-fill"
-                  style={{ width: `${(completedSteps.length / STEPS.length) * 100}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="home-cta">
-            <button className="btn btn-primary btn-large" onClick={() => goToStep(completedSteps.length > 0 ? Math.min(Math.max(...completedSteps) + 1, 17) : 1)}>
-              {completedSteps.length > 0 ? 'Continue Learning' : 'Start the Tutorial'}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Step view
   const StepComponent = stepComponents[currentStep - 1];
   const step = STEPS[currentStep - 1];
   const isCompleted = completedSteps.includes(currentStep);
 
   return (
-    <div className={`step-page ${isTransitioning ? 'transitioning' : ''}`}>
-      {/* Top navigation bar */}
-      <header className={`step-header ${headerVisible ? 'visible' : 'hidden'}`}>
-        <button className="home-btn" onClick={() => goToStep(0)} title="Home">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-          </svg>
-        </button>
+    <div className="course-page">
+      {/* Top navigation */}
+      <header className="course-header">
+        <a href="/landing" className="course-logo">Neural Networks</a>
 
-        <div className="step-nav">
+        <nav className="course-nav">
           <button
-            className="nav-arrow"
+            className="nav-btn"
             onClick={prevStep}
             disabled={currentStep === 1}
-            title="Previous"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-            </svg>
+            ←
           </button>
 
-          <div className="step-dots">
+          <div className="step-indicator">
             {STEPS.map((s) => (
               <button
                 key={s.id}
@@ -207,41 +102,254 @@ export default function Home() {
           </div>
 
           <button
-            className="nav-arrow"
+            className="nav-btn"
             onClick={nextStep}
             disabled={currentStep === 17}
-            title="Next"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-            </svg>
+            →
           </button>
-        </div>
+        </nav>
 
-        <span className="step-counter">{currentStep} / {STEPS.length}</span>
+        <span className="step-count">{currentStep}/{STEPS.length}</span>
       </header>
 
-      {/* Main content area */}
-      <main className="step-main">
-        <div className="step-content-wrapper">
-          <div className="step-title-section">
-            <span className="step-badge">Step {currentStep}</span>
+      {/* Main content */}
+      <main className="course-main">
+        <div className="course-content">
+          <div className="step-header-section">
+            <span className="step-label">Module {currentStep}</span>
             <h1>{step.title}</h1>
-            {isCompleted && (
-              <span className="completed-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                </svg>
-                Completed
-              </span>
-            )}
+            {isCompleted && <span className="completed-tag">Completed</span>}
           </div>
 
-          <div className="step-content">
+          <div className="step-body">
             <StepComponent onComplete={() => completeStep(currentStep)} />
+          </div>
+
+          {/* Bottom navigation */}
+          <div className="step-footer">
+            {currentStep > 1 && (
+              <button className="footer-btn prev" onClick={prevStep}>
+                ← Previous
+              </button>
+            )}
+            <div className="footer-spacer" />
+            {currentStep < 17 && (
+              <button className="footer-btn next" onClick={nextStep}>
+                Next →
+              </button>
+            )}
           </div>
         </div>
       </main>
+
+      <style jsx>{`
+        .course-page {
+          min-height: 100vh;
+          background: #fff;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          color: #222;
+        }
+
+        .course-header {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 52px;
+          background: #fff;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 20px;
+          z-index: 100;
+        }
+
+        .course-logo {
+          font-size: 14px;
+          font-weight: 600;
+          color: #222;
+          text-decoration: none;
+        }
+
+        .course-logo:hover {
+          color: #2563eb;
+        }
+
+        .course-nav {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .nav-btn {
+          background: none;
+          border: none;
+          font-size: 14px;
+          color: #666;
+          cursor: pointer;
+          padding: 6px 10px;
+          border-radius: 4px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+          background: #f5f5f5;
+          color: #222;
+        }
+
+        .nav-btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+
+        .step-indicator {
+          display: flex;
+          gap: 4px;
+        }
+
+        .step-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #ddd;
+          border: none;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+
+        .step-dot:hover {
+          background: #bbb;
+        }
+
+        .step-dot.active {
+          background: #2563eb;
+        }
+
+        .step-dot.completed {
+          background: #22c55e;
+        }
+
+        .step-count {
+          font-size: 13px;
+          color: #888;
+          min-width: 40px;
+          text-align: right;
+        }
+
+        .course-main {
+          padding-top: 52px;
+        }
+
+        .course-content {
+          max-width: 680px;
+          margin: 0 auto;
+          padding: 48px 20px;
+        }
+
+        .step-header-section {
+          margin-bottom: 32px;
+        }
+
+        .step-label {
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #2563eb;
+          margin-bottom: 8px;
+        }
+
+        .step-header-section h1 {
+          font-size: 28px;
+          font-weight: 600;
+          line-height: 1.2;
+          margin: 0;
+          color: #222;
+        }
+
+        .completed-tag {
+          display: inline-block;
+          margin-top: 12px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #22c55e;
+          background: #f0fdf4;
+          padding: 4px 10px;
+          border-radius: 4px;
+        }
+
+        .step-body {
+          line-height: 1.6;
+        }
+
+        .step-footer {
+          display: flex;
+          align-items: center;
+          margin-top: 48px;
+          padding-top: 24px;
+          border-top: 1px solid #eee;
+        }
+
+        .footer-spacer {
+          flex: 1;
+        }
+
+        .footer-btn {
+          background: none;
+          border: 1px solid #ddd;
+          padding: 10px 20px;
+          font-size: 14px;
+          font-weight: 500;
+          color: #444;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.15s;
+        }
+
+        .footer-btn:hover {
+          border-color: #2563eb;
+          color: #2563eb;
+        }
+
+        .footer-btn.next {
+          background: #2563eb;
+          border-color: #2563eb;
+          color: #fff;
+        }
+
+        .footer-btn.next:hover {
+          background: #1d4ed8;
+        }
+
+        @media (max-width: 640px) {
+          .course-content {
+            padding: 32px 16px;
+          }
+
+          .step-header-section h1 {
+            font-size: 24px;
+          }
+
+          .step-indicator {
+            gap: 3px;
+          }
+
+          .step-dot {
+            width: 6px;
+            height: 6px;
+          }
+        }
+      `}</style>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#fff' }} />}>
+      <CourseContent />
+    </Suspense>
   );
 }
