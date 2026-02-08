@@ -593,9 +593,16 @@ export default function LayerCollapseDemo() {
           The sigmoid formula is <code style={{ background: '#d1fae5', padding: '2px 6px', borderRadius: '4px' }}>1 / (1 + e^(-x))</code>.
           But why use e specifically? Why not 2 or 10?
         </p>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8', background: '#d1fae5', padding: '1rem', borderRadius: '8px' }}>
+          <strong>First, what&apos;s a derivative?</strong> A derivative tells you how fast something is changing.
+          If you&apos;re driving and your position is changing by 60 miles every hour, your derivative (speed) is 60 mph.
+          For a function like y = x², the derivative tells you: &quot;if I nudge x a tiny bit, how much does y change?&quot;
+          At x=2, the derivative is 4 — meaning y is changing 4 times as fast as x. At x=10, the derivative is 20.
+          Derivatives are how neural networks figure out which direction to adjust their weights to get better.
+        </p>
         <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
           <strong>The magic of e:</strong> It&apos;s the only number where the derivative of e^x equals e^x itself.
-          This means when we calculate gradients during backpropagation, the math stays clean and simple.
+          This means when we calculate gradients during training, the math stays clean and simple.
           The derivative of sigmoid turns out to be just <code style={{ background: '#d1fae5', padding: '2px 6px', borderRadius: '4px' }}>sigmoid(x) × (1 - sigmoid(x))</code> —
           beautifully simple because of e&apos;s special property.
         </p>
@@ -603,6 +610,12 @@ export default function LayerCollapseDemo() {
           <strong>What if we used 2 instead?</strong> The derivative of 2^x is 2^x × ln(2) ≈ 2^x × 0.693.
           That extra ln(2) factor would propagate through every gradient calculation, making training slower
           and the math messier. With e, we get ln(e) = 1, so it just disappears.
+        </p>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
+          Later you&apos;ll learn about <strong>backpropagation</strong> — how networks learn by working backwards
+          from their errors. This requires taking derivatives over and over, chaining them together through every
+          layer. Using e makes these &quot;reverse derivatives&quot; smooth and efficient. If we used a different base,
+          we&apos;d be multiplying by ugly constants at every step, slowing everything down.
         </p>
         <p style={{ margin: '0', lineHeight: '1.8', fontStyle: 'italic', color: '#065f46' }}>
           e isn&apos;t arbitrary — it&apos;s the natural choice that makes calculus work smoothly. It&apos;s called

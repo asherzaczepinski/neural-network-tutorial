@@ -107,6 +107,25 @@ export default function Step14({ onComplete }: StepProps) {
         </p>
       </ExplanationBox>
 
+      <ExplanationBox title="Why e Matters Here">
+        <p>
+          Remember when we introduced sigmoid using e ≈ 2.71828? This is where it pays off.
+          Notice how clean the sigmoid derivative is: <code>sigmoid(z) × (1 - sigmoid(z))</code>.
+          We just multiply the output by (1 minus the output) — no messy constants anywhere.
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          If sigmoid used base 2 instead of e, that derivative would have an extra ln(2) ≈ 0.693
+          multiplied in. Every single chain rule calculation would carry this extra factor.
+          Across millions of neurons and thousands of training steps, that adds up to slower
+          training and messier code.
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          The number e is special because the derivative of e^x equals e^x itself — no extra
+          constants. This mathematical elegance flows through the entire backpropagation algorithm,
+          making everything cleaner and faster.
+        </p>
+      </ExplanationBox>
+
       <ExplanationBox title="From Delta to Weight Gradients">
         <p>
           Now we know how the loss changes with z. But we want to know how the loss
