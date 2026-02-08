@@ -545,6 +545,71 @@ export default function LayerCollapseDemo() {
           <li><span style={{color: '#dc2626', fontWeight: 600}}>Weights</span> control the angle/steepness of the boundary</li>
         </ul>
       </div>
+
+      {/* UNIFORM VS NON-UNIFORM SIGNIFICANCE */}
+      <div style={{
+        marginTop: '1.5rem',
+        padding: '1.25rem',
+        background: '#faf5ff',
+        borderRadius: '12px',
+        fontSize: '14px',
+        border: '2px solid #c4b5fd'
+      }}>
+        <h4 style={{ margin: '0 0 1rem 0', color: '#6d28d9' }}>
+          Why Sigmoid Works: Non-Uniform Significance
+        </h4>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
+          In a linear function, every value has <strong>uniform significance</strong> — the jump from x=1 to x=2
+          creates the exact same change in output as the jump from x=100 to x=101. The slope is constant everywhere.
+          If your slope is 0.5, then x=1 gives y=0.5, x=3 gives y=1.5, and x=100 gives y=50. The &quot;meaning&quot; of
+          each unit of x is identical no matter where you are on the number line.
+        </p>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
+          Sigmoid breaks this uniformity by <strong>squishing values probabilistically</strong>. Values near zero
+          get spread out (high sensitivity — small changes matter a lot), while extreme values get compressed
+          (low sensitivity — the network has already &quot;made up its mind&quot;). This means x=0.1 vs x=0.2 might
+          represent a meaningful difference, while x=10 vs x=10.1 barely matters at all.
+        </p>
+        <p style={{ margin: '0', lineHeight: '1.8', fontStyle: 'italic', color: '#5b21b6' }}>
+          This non-uniform squishing is what allows different regions of the input space to have different
+          &quot;meanings&quot; — enabling the curved boundaries you see above. Each layer can focus its sensitivity
+          on different ranges, creating complex decision regions that a straight line could never capture.
+        </p>
+      </div>
+
+      {/* WHY e? */}
+      <div style={{
+        marginTop: '1.5rem',
+        padding: '1.25rem',
+        background: '#ecfdf5',
+        borderRadius: '12px',
+        fontSize: '14px',
+        border: '2px solid #6ee7b7'
+      }}>
+        <h4 style={{ margin: '0 0 1rem 0', color: '#047857' }}>
+          Why e ≈ 2.71828? (And Not Some Other Number)
+        </h4>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
+          The sigmoid formula is <code style={{ background: '#d1fae5', padding: '2px 6px', borderRadius: '4px' }}>1 / (1 + e^(-x))</code>.
+          But why use e specifically? Why not 2 or 10?
+        </p>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
+          <strong>The magic of e:</strong> It&apos;s the only number where the derivative of e^x equals e^x itself.
+          This means when we calculate gradients during backpropagation, the math stays clean and simple.
+          The derivative of sigmoid turns out to be just <code style={{ background: '#d1fae5', padding: '2px 6px', borderRadius: '4px' }}>sigmoid(x) × (1 - sigmoid(x))</code> —
+          beautifully simple because of e&apos;s special property.
+        </p>
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
+          <strong>What if we used 2 instead?</strong> The derivative of 2^x is 2^x × ln(2) ≈ 2^x × 0.693.
+          That extra ln(2) factor would propagate through every gradient calculation, making training slower
+          and the math messier. With e, we get ln(e) = 1, so it just disappears.
+        </p>
+        <p style={{ margin: '0', lineHeight: '1.8', fontStyle: 'italic', color: '#065f46' }}>
+          e isn&apos;t arbitrary — it&apos;s the natural choice that makes calculus work smoothly. It&apos;s called
+          the &quot;natural&quot; base for a reason: it&apos;s the base where exponential growth and its rate of change
+          are perfectly aligned. Neural networks inherit this mathematical elegance.
+        </p>
+      </div>
     </div>
   );
 }
