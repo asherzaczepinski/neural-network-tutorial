@@ -5,6 +5,7 @@ import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
 import CodeRunner from '@/components/CodeRunner';
+import LayerCollapseDemo from '@/components/LayerCollapseDemo';
 
 interface StepProps {
   onComplete: () => void;
@@ -47,6 +48,7 @@ export default function Step7({ onComplete }: StepProps) {
           <li><strong>Small positive</strong> (like our 0.61) → becomes slightly above 0.5 (leaning toward rain)</li>
         </ul>
       </ExplanationBox>
+
 
       <WorkedExample title="Let's Apply Sigmoid to Our Weather Calculation">
         <p>Remember our pre-activation from Step 4? Let&apos;s convert it to a rain probability:</p>
@@ -170,7 +172,7 @@ export default function Step7({ onComplete }: StepProps) {
         <p style={{ marginTop: '1rem' }}><strong>Can we replicate this with one layer?</strong></p>
         <p>
           Try to find ANY weights that give 0.578 from inputs [0.7, 0.8] in one step.
-          <strong> You can&apos;t!</strong> The curved sigmoid transformation creates a result
+          <strong> You can&apos;t!</strong> The sigmoid transformation creates a result
           that no single linear combination can produce.
         </p>
 
@@ -183,14 +185,115 @@ export default function Step7({ onComplete }: StepProps) {
 
       <ExplanationBox title="What This Means for Weather Prediction">
         <p>
-          Real weather has complex rules like &quot;rain when warm AND humid, but not
-          when hot AND dry.&quot; That&apos;s not a straight line — it&apos;s a curved boundary.
+          Think about what a single layer without sigmoid can do. It can only learn
+          <strong> one simple rule</strong>. Something like:
+        </p>
+        <p style={{ marginTop: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '8px' }}>
+          &quot;If humidity is above 0.6, predict rain. Otherwise, predict no rain.&quot;
         </p>
         <p style={{ marginTop: '1rem' }}>
-          A single layer can only draw straight decision boundaries. But with sigmoid
-          between layers, each layer bends the boundary a little more. Stack enough
-          layers, and the network can learn any curved pattern — including the complex
-          relationships in real weather data.
+          That&apos;s it. One rule. One cutoff. The network looks at humidity, checks if it&apos;s
+          above or below 0.6, and makes its prediction. It completely ignores any
+          complex relationships between temperature AND humidity together.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="But Real Weather Doesn't Follow One Simple Rule">
+        <p>
+          Real rain depends on <strong>combinations</strong> of things:
+        </p>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li>High humidity AND moderate temperature → rain</li>
+          <li>High humidity BUT freezing cold → snow, not rain</li>
+          <li>High humidity BUT extremely hot → the moisture evaporates, no rain</li>
+          <li>Low humidity → no rain, regardless of temperature</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          See how the answer depends on checking multiple conditions together?
+          A single layer can&apos;t do this. It can only check one thing at a time.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Why Sigmoid Makes Each Layer 'Mean Something Different'">
+        <p>
+          Here&apos;s the key insight: sigmoid <strong>warps</strong> the numbers.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          Without sigmoid, if layer 1 outputs 0.51, layer 2 just multiplies it.
+          The 0.51 passes through unchanged in meaning — it&apos;s still just &quot;0.51&quot;.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          With sigmoid, that 0.51 gets transformed to 0.625. But here&apos;s the magic:
+          sigmoid doesn&apos;t transform all numbers the same way. Small numbers get
+          pushed toward 0.5. Big positive numbers get pushed toward 1. Big negative
+          numbers get pushed toward 0.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          This &quot;warping&quot; means <strong>each layer&apos;s output now has a different meaning</strong>.
+          Layer 1&apos;s output of 0.625 isn&apos;t just a number anymore — it&apos;s been squeezed
+          into a range where it represents &quot;how confident am I about this first question?&quot;
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          When layer 2 receives 0.625, it&apos;s receiving a <em>confidence level</em>, not just
+          a raw number. It can then ask its own question and output its own confidence.
+          The layers stay separate because each one is working with transformed,
+          meaningful values — not just raw numbers that can be collapsed.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="See It For Yourself">
+        <p>
+          Play with the sliders below. Watch how the linear version always collapses
+          to one layer, but the sigmoid version creates something unique:
+        </p>
+        <LayerCollapseDemo />
+      </ExplanationBox>
+
+      <ExplanationBox title="How This Lets Us Check Multiple Conditions">
+        <p>
+          Because sigmoid keeps each layer&apos;s meaning separate, we can stack layers
+          where each one asks a different question:
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Layer 1 asks:</strong> &quot;Is it warm enough for rain?&quot;
+          <br />
+          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Layer 2 asks:</strong> &quot;Is it too hot for rain?&quot;
+          <br />
+          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Layer 3 asks:</strong> &quot;Is humidity high enough?&quot;
+          <br />
+          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Final layer combines them:</strong> &quot;Warm enough AND not too hot AND humid?&quot;
+          <br />
+          Only if ALL conditions are right, predict rain.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          Without sigmoid, all these layers would mathematically collapse into one.
+          You&apos;d be stuck with one simple rule. Sigmoid is what keeps each layer&apos;s
+          question separate and meaningful.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="The Simple Summary">
+        <p>
+          <strong>Without sigmoid:</strong> Your network can only learn one simple rule,
+          no matter how many layers you add. &quot;If X is above some number, predict yes.&quot;
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>With sigmoid:</strong> Each layer can ask a new question. More layers
+          means you can check more conditions. &quot;Is A true? Is B true? Is C true?
+          Only if all of them, predict yes.&quot;
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          That&apos;s why sigmoid (and activation functions like it) are essential.
+          They let neural networks learn complex patterns instead of just simple rules.
         </p>
       </ExplanationBox>
 
