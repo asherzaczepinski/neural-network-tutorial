@@ -35,7 +35,7 @@ export const TOTAL_STEPS = 18;
 
 export const STEPS = [
   { id: 1, title: 'Welcome', shortTitle: 'Intro' },
-  { id: 2, title: 'What is a Neuron?', shortTitle: 'Neuron Basics' },
+  { id: 2, title: 'What is a Neural Network?', shortTitle: 'Overview' },
   { id: 3, title: 'Representing Weather as Numbers', shortTitle: 'Data & Inputs' },
   { id: 4, title: 'Weights: How Much Each Factor Matters', shortTitle: 'Weights' },
   { id: 5, title: 'Bias: The Baseline Rain Tendency', shortTitle: 'Bias' },

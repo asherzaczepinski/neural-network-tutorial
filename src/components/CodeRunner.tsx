@@ -1,34 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface CodeRunnerProps {
   code: string;
 }
 
 export default function CodeRunner({ code }: CodeRunnerProps) {
-  const [isOpen, setIsOpen] = useState(false);
   const [editableCode, setEditableCode] = useState(code);
-  const [output, setOutput] = useState('Click "Run" to execute the code...');
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsOpen(false);
-    };
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  const [output, setOutput] = useState<string | null>(null);
+  const [hasRun, setHasRun] = useState(false);
 
   const runCode = () => {
     try {
-      // Simple Python-like output simulation
-      // In a real implementation, you'd send this to a backend
       const lines = editableCode.split('\n');
       const outputs: string[] = [];
       const variables: Record<string, number | string | number[]> = {};
@@ -37,12 +21,18 @@ export default function CodeRunner({ code }: CodeRunnerProps) {
         const trimmed = line.trim();
         if (!trimmed || trimmed.startsWith('#')) continue;
 
+        // Handle function definitions
+        const funcMatch = trimmed.match(/^def\s+(\w+)\s*\(([^)]*)\)\s*:/);
+        if (funcMatch) {
+          // Skip function definitions for now - they're handled in eval
+          continue;
+        }
+
         // Handle variable assignments
         const assignMatch = trimmed.match(/^(\w+)\s*=\s*(.+)$/);
         if (assignMatch) {
           const [, varName, value] = assignMatch;
           try {
-            // Try to evaluate the expression
             const evaluated = evalExpression(value, variables);
             variables[varName] = evaluated;
           } catch {
@@ -62,13 +52,15 @@ export default function CodeRunner({ code }: CodeRunnerProps) {
       if (outputs.length > 0) {
         setOutput(outputs.join('\n'));
       } else {
-        setOutput('Code executed successfully!\n\nVariables defined:\n' +
-          Object.entries(variables)
-            .map(([k, v]) => `${k} = ${JSON.stringify(v)}`)
-            .join('\n'));
+        const varList = Object.entries(variables)
+          .map(([k, v]) => `${k} = ${Array.isArray(v) ? `[${v.join(', ')}]` : v}`)
+          .join('\n');
+        setOutput(varList ? `Variables defined:\n${varList}` : 'Code executed successfully!');
       }
+      setHasRun(true);
     } catch (err) {
       setOutput(`Error: ${err}`);
+      setHasRun(true);
     }
   };
 
@@ -109,7 +101,6 @@ export default function CodeRunner({ code }: CodeRunnerProps) {
 
     // Simple math evaluation (basic)
     try {
-      // Only allow safe characters
       if (/^[\d\s+\-*/().]+$/.test(e)) {
         return Function(`"use strict"; return (${e})`)();
       }
@@ -160,56 +151,49 @@ export default function CodeRunner({ code }: CodeRunnerProps) {
 
   const resetCode = () => {
     setEditableCode(code);
-    setOutput('Click "Run" to execute the code...');
+    setOutput(null);
+    setHasRun(false);
   };
 
+  // Count lines for line numbers
+  const lineCount = editableCode.split('\n').length;
+
   return (
-    <>
-      <button className="run-code-btn" onClick={() => setIsOpen(true)}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8 5v14l11-7z" />
-        </svg>
-        Run Code
-      </button>
+    <div className="code-runner-inline">
+      <div className="code-editor-container">
+        <div className="code-line-numbers">
+          {Array.from({ length: lineCount }, (_, i) => (
+            <div key={i + 1} className="line-number">{i + 1}</div>
+          ))}
+        </div>
+        <textarea
+          className="code-editor"
+          value={editableCode}
+          onChange={(e) => setEditableCode(e.target.value)}
+          spellCheck={false}
+        />
+      </div>
 
-      {isOpen && (
-        <div className="code-runner-overlay" onClick={() => setIsOpen(false)}>
-          <div className="code-runner-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="code-runner-header">
-              <span>Python Editor</span>
-              <button className="code-runner-close" onClick={() => setIsOpen(false)}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-              </button>
-            </div>
+      <div className="code-actions">
+        <button className="run-btn" onClick={runCode}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          Run Code
+        </button>
+        {hasRun && (
+          <button className="reset-btn" onClick={resetCode}>
+            Reset
+          </button>
+        )}
+      </div>
 
-            <div className="code-runner-body">
-              <div className="code-runner-editor">
-                <textarea
-                  value={editableCode}
-                  onChange={(e) => setEditableCode(e.target.value)}
-                  spellCheck={false}
-                />
-              </div>
-              <div className="code-runner-output">
-                <div className="code-runner-output-label">Output</div>
-                <pre>{output}</pre>
-              </div>
-            </div>
-
-            <div className="code-runner-footer">
-              <button className="code-runner-reset" onClick={resetCode}>Reset</button>
-              <button className="code-runner-run" onClick={runCode}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                Run
-              </button>
-            </div>
-          </div>
+      {output !== null && (
+        <div className="code-output">
+          <div className="output-label">Output</div>
+          <pre>{output}</pre>
         </div>
       )}
-    </>
+    </div>
   );
 }

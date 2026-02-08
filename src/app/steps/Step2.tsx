@@ -1,7 +1,6 @@
 'use client';
 
 import ExplanationBox from '@/components/ExplanationBox';
-import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -13,53 +12,87 @@ export default function Step2({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="Our Mission: Predict Rain">
+      <ExplanationBox title="The Quick Overview">
         <p>
-          Throughout this course, we&apos;re building a neural network that predicts whether it will
-          rain based on two weather measurements: <strong>temperature</strong> and <strong>humidity</strong>.
-        </p>
-        <p>
-          Think about it intuitively. When you step outside on a hot, sticky summer afternoon and
-          the air feels thick with moisture, you might think &quot;it&apos;s probably going to rain later.&quot;
-          That&apos;s exactly what our neural network will learn to do — but with math instead of intuition.
+          You&apos;ve probably heard bits and pieces of how neural networks work. Before we dive into
+          the actual math and code, here&apos;s a quick non-technical overview of what&apos;s actually
+          happening when a neural network learns.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Representing Weather as Numbers">
+      <ExplanationBox title="Step 1: Data Goes In">
         <p>
-          Let&apos;s represent a warm, humid day that might lead to rain. Neural networks need everything
-          as numbers between 0 and 1, so:
+          Everything starts with <strong>inputs</strong> — numbers that represent something real.
+          For our rain prediction project, that&apos;s temperature and humidity. For image recognition,
+          it might be pixel values. For language models, it&apos;s numbers representing words.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Temperature = 0.7</strong> means a warm day (70% of max expected temp)</li>
-          <li><strong>Humidity = 0.8</strong> means 80% humidity</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          Try creating these variables yourself:
-        </p>
-        <CodeRunner code={`# Create a variable called 'temperature' and set it to 0.7
-
-# Create a variable called 'humidity' and set it to 0.8
-
-# Print both values using print("Temperature:", temperature)
-# and print("Humidity:", humidity)
-`} />
         <p>
-          These two numbers are our first neural network inputs. They&apos;ll flow through weights,
-          get added up, and eventually produce a rain prediction.
+          The key insight: <strong>everything becomes numbers</strong>. Neural networks don&apos;t
+          &quot;see&quot; images or &quot;read&quot; text — they process lists of numbers.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Why These Values Matter">
+      <ExplanationBox title="Step 2: Numbers Get Weighted">
         <p>
-          You just saw the data that will flow through your neural network. In the real world,
-          this data might come from weather sensors, but the principle is the same: <strong>everything
-          in a neural network is a number</strong>.
+          Each input gets multiplied by a <strong>weight</strong> — a number that says &quot;how
+          important is this input?&quot; High weight means the input matters a lot. Low weight
+          means it barely affects the output. Negative weight means it works against the prediction.
         </p>
         <p>
-          In the next module, we&apos;ll learn how to organize multiple inputs together and introduce
-          <strong> weights</strong> — the values that tell our neuron how much each input matters for
-          predicting rain.
+          Think of it like voting: each input casts a vote, but some votes count more than others.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Step 3: Add It All Up">
+        <p>
+          All those weighted inputs get added together into a single number. This is called the
+          <strong> weighted sum</strong>. It&apos;s basically asking: &quot;considering all the evidence
+          and how much each piece matters, what&apos;s our total signal?&quot;
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Step 4: Squish It">
+        <p>
+          That sum could be any number — positive, negative, huge, tiny. We pass it through an
+          <strong> activation function</strong> (like sigmoid) that squishes it into a useful range,
+          like 0 to 1. Now we have an actual probability: &quot;65% chance of rain.&quot;
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Step 5: Check How Wrong We Were">
+        <p>
+          We compare our prediction to reality. Did it actually rain? The <strong>loss function</strong>
+          measures how far off we were. Big difference = big loss. Perfect prediction = zero loss.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Step 6: Figure Out Who&apos;s Responsible">
+        <p>
+          Here&apos;s where the magic happens. We work backwards through the network asking:
+          &quot;which weights caused this error?&quot; This is called <strong>backpropagation</strong>.
+          It figures out exactly how much each weight contributed to the mistake.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Step 7: Adjust and Repeat">
+        <p>
+          We nudge each weight slightly in the direction that reduces the error. This is
+          <strong> gradient descent</strong> — literally descending toward lower error, step by step.
+        </p>
+        <p>
+          Then we do it again. And again. Thousands of times. Each cycle, the weights get a little
+          better. Eventually, the network &quot;learns&quot; the pattern.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="That&apos;s It. That&apos;s Neural Networks.">
+        <p>
+          Data in → multiply by weights → add up → squish → check error → adjust weights → repeat.
+        </p>
+        <p>
+          Everything else is details. Important details that we&apos;ll cover, but the core loop is
+          exactly this simple. In the next few steps, we&apos;ll turn each of these concepts into
+          actual code you can run.
         </p>
       </ExplanationBox>
     </div>

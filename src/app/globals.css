@@ -660,3 +660,126 @@ tr:hover td {
     margin: 12px;
   }
 }
+
+/* ============================
+   INLINE CODE RUNNER
+   ============================ */
+
+.code-runner-inline {
+  margin: 20px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.code-editor-container {
+  display: flex;
+  background: #1e1e2e;
+  border-bottom: 1px solid #313244;
+}
+
+.code-line-numbers {
+  padding: 16px 0;
+  background: #181825;
+  color: #6c7086;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: right;
+  user-select: none;
+  min-width: 45px;
+}
+
+.line-number {
+  padding: 0 12px;
+}
+
+.code-editor {
+  flex: 1;
+  padding: 16px;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border: none;
+  outline: none;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  min-height: 120px;
+}
+
+.code-editor::placeholder {
+  color: #6c7086;
+}
+
+.code-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.run-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.run-btn:hover {
+  background: #16a34a;
+}
+
+.reset-btn {
+  padding: 8px 14px;
+  background: #fff;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.reset-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.code-output {
+  background: #f9fafb;
+}
+
+.code-output .output-label {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.code-output pre {
+  margin: 0;
+  padding: 16px;
+  background: transparent;
+  border: none;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #22c55e;
+  white-space: pre-wrap;
+}
