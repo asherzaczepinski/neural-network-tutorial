@@ -15,142 +15,132 @@ export default function Step4({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="Why Do We Need Bias?">
+      <ExplanationBox title="What Are Weights, Really?">
         <p>
-          Imagine a neuron with no bias, just inputs multiplied by weights. If all the inputs
-          are zero, the output is always zero, no matter what the weights are. This is a problem
-          because sometimes we want the neuron to &quot;fire&quot; (produce a non-zero output) even when
-          the inputs are all zero or very small.
+          Weights are the most important concept in neural networks. When someone says a neural
+          network has &quot;175 billion parameters,&quot; they&apos;re mostly talking about weights. When we
+          &quot;train&quot; a network, we&apos;re finding the right weight values. When we &quot;save&quot; a trained
+          model, we&apos;re saving its weights.
         </p>
         <p>
-          For rain prediction: maybe your region has a baseline 30% chance of rain on any given day,
-          regardless of current temperature and humidity. The bias captures this baseline tendency.
-          Without it, a day with temp=0 and humidity=0 would always predict 0% rain chance.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Bias as a 'Super Weight'">
-        <p>
-          Think of bias as a weight that&apos;s always multiplied by 1. While regular weights scale
-          the inputs, bias adds a constant shift — and this shift is incredibly powerful. It lets
-          a neuron have a strong opinion even when inputs are weak or neutral.
-        </p>
-        <p>
-          In a network with many neurons, each neuron can have a different bias. A neuron with a
-          large positive bias becomes &quot;eager&quot; — it activates strongly and contributes more to
-          the network&apos;s decision. A neuron with a large negative bias becomes &quot;reluctant&quot; — it
-          needs strong input evidence to activate at all. This diversity is what lets different
-          neurons specialize: some become strong rain predictors, others become cautious detectors
-          that only fire under specific conditions.
+          A weight is simply a number that controls how much an input influences the output.
+          Think of it as a volume knob — turning it up makes that input louder in the final mix,
+          turning it down makes it quieter, and turning it negative makes it work in reverse
+          (opposing the output instead of supporting it).
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Pre-activation (z)">
-        z = (temperature × w₁) + (humidity × w₂) + bias
+      <ExplanationBox title="Weights for Rain Prediction">
+        <p>
+          For predicting rain, we&apos;ll use these weights:
+        </p>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li><strong>Temperature weight: -0.3</strong> — Higher temperature slightly reduces rain prediction
+            (hot air can hold more moisture before condensing)</li>
+          <li><strong>Humidity weight: 0.9</strong> — Higher humidity strongly increases rain prediction
+            (more moisture = more likely to rain)</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          These weights capture real meteorological relationships! Of course, in reality,
+          the network would <em>learn</em> these weights from data rather than us setting them.
+        </p>
+      </ExplanationBox>
+
+      <MathFormula label="Weighted Input">
+        weighted_value = input × weight
       </MathFormula>
 
-      <ExplanationBox title="Why 'z' and 'Pre-activation'?">
-        <p>
-          The value we calculate (weighted sum plus bias) is commonly called <strong>z</strong>
-          in neural network literature. It&apos;s also called the <strong>pre-activation</strong> because
-          it&apos;s the value <em>before</em> we apply the activation function.
-        </p>
-        <p>
-          The sequence is: inputs → weights → weighted sum → add bias → z (pre-activation) →
-          activation function → output (rain probability). We&apos;re building toward the activation function,
-          but first we need to compute z correctly.
-        </p>
-      </ExplanationBox>
+      <WorkedExample title="Understanding Weight Effects">
+        <p>Let&apos;s see how different weights would affect our humidity reading of 0.8:</p>
 
-      <WorkedExample title="Computing z Step by Step">
-        <p>With inputs = [0.7, 0.8], weights = [-0.3, 0.9], and bias = 0.1:</p>
-
-        <CalcStep number={1}>Temperature contribution: 0.7 × -0.3 = -0.21</CalcStep>
-        <CalcStep number={2}>Humidity contribution: 0.8 × 0.9 = 0.72</CalcStep>
-        <CalcStep number={3}>Weighted sum: -0.21 + 0.72 = 0.51</CalcStep>
-        <CalcStep number={4}>Add bias: z = 0.51 + 0.1 = 0.61</CalcStep>
+        <CalcStep number={1}>Weight = 1.0: 0.8 × 1.0 = 0.8 (unchanged)</CalcStep>
+        <CalcStep number={2}>Weight = 2.0: 0.8 × 2.0 = 1.6 (doubled importance)</CalcStep>
+        <CalcStep number={3}>Weight = 0.5: 0.8 × 0.5 = 0.4 (halved importance)</CalcStep>
+        <CalcStep number={4}>Weight = 0.0: 0.8 × 0.0 = 0.0 (completely ignored!)</CalcStep>
+        <CalcStep number={5}>Weight = -1.0: 0.8 × -1.0 = -0.8 (works AGAINST prediction)</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          Our pre-activation value is <strong>z = 0.61</strong>. This positive number suggests
-          the neuron is leaning toward &quot;rain.&quot; After passing through sigmoid (Step 7),
-          this will become a probability around 65% rain chance.
+          That last one is key — negative weights let us express &quot;this input should DECREASE
+          the output.&quot; For temperature, we use -0.3 because hot days are slightly less rainy
+          (the heat can evaporate moisture before it becomes rain).
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Bias Can Be Negative Too">
+      <ExplanationBox title="Weights Start Random">
         <p>
-          Like weights, bias can be positive or negative. A positive bias makes the neuron
-          more likely to predict rain (shifts output upward). A negative bias makes it less
-          likely to predict rain (shifts output downward, making the neuron more &quot;skeptical&quot;).
+          Before training, weights are initialized to small random values (typically between -1 and 1).
+          Why random? In networks with multiple neurons per layer, if all weights started at the same
+          value, every neuron would compute the exact same thing and receive the exact same gradient
+          updates during training — they&apos;d be completely redundant. Random initialization breaks this
+          symmetry, allowing different neurons to specialize and learn different patterns.
         </p>
         <p>
-          During training, the network learns appropriate bias values along with weights.
-          Some neurons end up with positive biases (easily activated), others with negative
-          biases (hard to activate). This diversity helps the network represent complex patterns.
+          For now, we&apos;re using hand-picked weights (-0.3, 0.9) that make meteorological sense so you
+          can see meaningful results. But in Steps 16-17, you&apos;ll see the network discover its own
+          weights through training — starting from random values and gradually adjusting them to
+          make accurate predictions!
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Effect of Different Bias Values">
-        <p>Same weighted sum (0.51), different biases — watch how bias determines how &quot;confident&quot; this neuron becomes:</p>
+      <WorkedExample title="Our Specific Calculation">
+        <p>With inputs = [0.7, 0.8] (temp, humidity) and weights = [-0.3, 0.9]:</p>
 
-        <CalcStep number={1}>bias = 0.5: z = 0.51 + 0.5 = 1.01 → this neuron strongly predicts rain</CalcStep>
-        <CalcStep number={2}>bias = 0.0: z = 0.51 + 0.0 = 0.51 → this neuron has a neutral baseline</CalcStep>
-        <CalcStep number={3}>bias = -0.5: z = 0.51 - 0.5 = 0.01 → this neuron is barely activated</CalcStep>
-        <CalcStep number={4}>bias = -1.0: z = 0.51 - 1.0 = -0.49 → this neuron predicts no rain</CalcStep>
+        <CalcStep number={1}>Temperature: input[0] × weight[0] = 0.7 × -0.3</CalcStep>
+        <CalcStep number={2}>Calculate: 0.7 × -0.3 = -0.21</CalcStep>
+        <CalcStep number={3}>Humidity: input[1] × weight[1] = 0.8 × 0.9</CalcStep>
+        <CalcStep number={4}>Calculate: 0.8 × 0.9 = 0.72</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          See how bias controls each neuron&apos;s &quot;personality&quot;? With bias = 0.5, this neuron becomes
-          a confident rain predictor. With bias = -1.0, this neuron becomes skeptical — even moderate
-          humidity isn&apos;t enough to convince it. In a full network, having neurons with different biases
-          means some will fire strongly while others stay quiet, creating a rich mix of signals.
+          Humidity contributes much more (0.72 vs -0.21). The high humidity is pushing
+          toward &quot;rain,&quot; while the warm temperature is slightly pushing against it.
+          When we sum these (next step), we&apos;ll see the combined effect.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="One Bias Per Neuron">
+      <ExplanationBox title="Applying Weights to Inputs">
         <p>
-          Each neuron has exactly one bias value, regardless of how many inputs it has.
-          If a neuron has 100 inputs (like 100 weather measurements), it has 100 weights
-          (one per input) but still just 1 bias.
+          Let's see how we apply weights to our weather inputs to compute each feature's contribution:
         </p>
+        <pre><code>{`# Keep your inputs from before
+inputs = [0.7, 0.8]
+
+# Create a weights list: -0.3 for temperature, 0.9 for humidity
+weights = [-0.3, 0.9]
+
+# Multiply each input by its weight
+temp_contribution = inputs[0] * weights[0]
+humidity_contribution = inputs[1] * weights[1]
+
+print("Temperature contribution:", temp_contribution)
+print("Humidity contribution:", humidity_contribution)`}</code></pre>
+        <CodeRunner code={`# Keep your inputs from before
+inputs = [0.7, 0.8]
+
+# Create a weights list: -0.3 for temperature, 0.9 for humidity
+weights = [-0.3, 0.9]
+
+# Multiply each input by its weight
+temp_contribution = inputs[0] * weights[0]
+humidity_contribution = inputs[1] * weights[1]
+
+print("Temperature contribution:", temp_contribution)
+print("Humidity contribution:", humidity_contribution)`} />
         <p>
-          The bias is added after all the weighted inputs are summed. It&apos;s a single final
-          adjustment to the total, not separate adjustments per input.
+          The weights encode the RELATIONSHIP between inputs and rain prediction!
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Computing z (Pre-activation)">
+      <ExplanationBox title="What Comes Next">
         <p>
-          Here's how we compute the pre-activation value with bias:
-        </p>
-        <pre><code>{`inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-bias = 0.1
-
-# Calculate z (pre-activation)
-z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
-
-print("Pre-activation z =", z)`}</code></pre>
-        <CodeRunner code={`inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-bias = 0.1
-
-# Calculate z (pre-activation)
-z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
-
-print("Pre-activation z =", z)`} />
-      </ExplanationBox>
-
-      <ExplanationBox title="Where We Are Now">
-        <p>
-          You&apos;ve computed the <strong>pre-activation value z = 0.61</strong>. This represents
-          the raw &quot;signal strength&quot; for our rain prediction before any transformation.
-          But neural networks need something more — they need non-linearity.
+          You now have two weighted values: -0.21 (temperature&apos;s contribution) and 0.72
+          (humidity&apos;s contribution). But a neuron produces a single output, not two separate values.
+          In the next step, we&apos;ll add these weighted values together, plus a &quot;bias&quot; term,
+          to create one combined prediction signal.
         </p>
         <p>
-          In the next step, we&apos;ll learn about the <strong>dot product</strong> — a cleaner way
-          to compute what we just did. Then we&apos;ll explore <em>why</em> non-linearity is essential
-          (spoiler: without it, deep networks are useless), before finally implementing the
-          sigmoid activation function in Step 7.
+          This addition step is called the <strong>weighted sum</strong> or <strong>dot product</strong>,
+          and it&apos;s mathematically beautiful — we&apos;ll see why it&apos;s the perfect way to combine
+          multiple inputs into one number.
         </p>
       </ExplanationBox>
     </div>

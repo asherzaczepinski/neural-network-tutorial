@@ -15,132 +15,89 @@ export default function Step3({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="What Are Weights, Really?">
+      <ExplanationBox title="Everything is Numbers">
         <p>
-          Weights are the most important concept in neural networks. When someone says a neural
-          network has &quot;175 billion parameters,&quot; they&apos;re mostly talking about weights. When we
-          &quot;train&quot; a network, we&apos;re finding the right weight values. When we &quot;save&quot; a trained
-          model, we&apos;re saving its weights.
+          Neural networks only understand numbers. They can&apos;t see images, read text, or sense weather —
+          they only process numerical data. This means before we can use a neural network, we must
+          convert our data into numbers. This conversion is called <strong>encoding</strong> or
+          <strong> representation</strong>.
         </p>
         <p>
-          A weight is simply a number that controls how much an input influences the output.
-          Think of it as a volume knob — turning it up makes that input louder in the final mix,
-          turning it down makes it quieter, and turning it negative makes it work in reverse
-          (opposing the output instead of supporting it).
+          For our rain prediction task, the conversion is straightforward: temperature becomes a
+          decimal (0.7 = warm), humidity becomes a decimal (0.8 = 80% humidity). But the same principle
+          applies to everything neural networks process.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Weights for Rain Prediction">
+      <ExplanationBox title="How Real Weather Data Becomes Numbers">
+        <p><strong>Temperature:</strong> We normalize to 0-1 scale. If typical temperatures range from 0°C to 40°C,
+          then 28°C becomes 28/40 = 0.7. This &quot;normalization&quot; is crucial for neural networks.</p>
+
+        <p><strong>Humidity:</strong> Already a percentage! 80% humidity = 0.8. Easy conversion.</p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Why Normalization Matters">
         <p>
-          For predicting rain, we&apos;ll use these weights:
+          Notice we&apos;re using values between 0 and 1 (0.7 and 0.8), not large numbers like 28 or 50000.
+          This is called <strong>normalization</strong>, and it&apos;s crucial for neural network performance.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Temperature weight: -0.3</strong> — Higher temperature slightly reduces rain prediction
-            (hot air can hold more moisture before condensing)</li>
-          <li><strong>Humidity weight: 0.9</strong> — Higher humidity strongly increases rain prediction
-            (more moisture = more likely to rain)</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          These weights capture real meteorological relationships! Of course, in reality,
-          the network would <em>learn</em> these weights from data rather than us setting them.
+        <p>
+          Imagine if temperature ranged from 0-40 and humidity from 0-100. The larger humidity values would
+          completely dominate the calculations, making it nearly impossible to learn from temperature.
+          By scaling all inputs to similar ranges (typically 0-1 or -1 to 1), we give each feature
+          a fair chance to influence the output.
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Weighted Input">
-        weighted_value = input × weight
+      <MathFormula label="Normalization Formula">
+        normalized = (value - min) / (max - min)
       </MathFormula>
 
-      <WorkedExample title="Understanding Weight Effects">
-        <p>Let&apos;s see how different weights would affect our humidity reading of 0.8:</p>
-
-        <CalcStep number={1}>Weight = 1.0: 0.8 × 1.0 = 0.8 (unchanged)</CalcStep>
-        <CalcStep number={2}>Weight = 2.0: 0.8 × 2.0 = 1.6 (doubled importance)</CalcStep>
-        <CalcStep number={3}>Weight = 0.5: 0.8 × 0.5 = 0.4 (halved importance)</CalcStep>
-        <CalcStep number={4}>Weight = 0.0: 0.8 × 0.0 = 0.0 (completely ignored!)</CalcStep>
-        <CalcStep number={5}>Weight = -1.0: 0.8 × -1.0 = -0.8 (works AGAINST prediction)</CalcStep>
-
+      <WorkedExample title="Normalizing Temperature">
+        <p>Let&apos;s normalize 28°C when our expected range is 0°C to 40°C:</p>
+        <CalcStep number={1}>Original value: 28°C, min: 0°C, max: 40°C</CalcStep>
+        <CalcStep number={2}>normalized = (28 - 0) / (40 - 0)</CalcStep>
+        <CalcStep number={3}>normalized = 28 / 40 = 0.7</CalcStep>
         <p style={{ marginTop: '1rem' }}>
-          That last one is key — negative weights let us express &quot;this input should DECREASE
-          the output.&quot; For temperature, we use -0.3 because hot days are slightly less rainy
-          (the heat can evaporate moisture before it becomes rain).
+          A temperature of 28°C becomes 0.7 — 70% of the way between minimum and maximum.
+          This makes intuitive sense and keeps our numbers in a nice range.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Weights Start Random">
+      <ExplanationBox title="Storing Inputs in a List">
         <p>
-          Before training, weights are initialized to small random values (typically between -1 and 1).
-          Why random? In networks with multiple neurons per layer, if all weights started at the same
-          value, every neuron would compute the exact same thing and receive the exact same gradient
-          updates during training — they&apos;d be completely redundant. Random initialization breaks this
-          symmetry, allowing different neurons to specialize and learn different patterns.
+          Real neural networks store their inputs as lists (or arrays). Here&apos;s how we create a list
+          to hold our weather data:
         </p>
+        <pre><code>{`# Create a list with temperature and humidity
+inputs = [0.7, 0.8]
+
+# Access elements by index (starting from 0)
+temperature = inputs[0]  # 0.7
+humidity = inputs[1]     # 0.8
+
+print("Temperature:", temperature)
+print("Humidity:", humidity)`}</code></pre>
+        <CodeRunner code={`# Create a list with temperature and humidity
+inputs = [0.7, 0.8]
+
+# Access elements by index (starting from 0)
+temperature = inputs[0]  # 0.7
+humidity = inputs[1]     # 0.8
+
+print("Temperature:", temperature)
+print("Humidity:", humidity)`} />
         <p>
-          For now, we&apos;re using hand-picked weights (-0.3, 0.9) that make meteorological sense so you
-          can see meaningful results. But in Steps 16-17, you&apos;ll see the network discover its own
-          weights through training — starting from random values and gradually adjusting them to
-          make accurate predictions!
+          This is exactly how neural networks receive information — as ordered lists of numbers.
+          Whether you have 2 inputs or 2 million, the structure is the same.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Our Specific Calculation">
-        <p>With inputs = [0.7, 0.8] (temp, humidity) and weights = [-0.3, 0.9]:</p>
-
-        <CalcStep number={1}>Temperature: input[0] × weight[0] = 0.7 × -0.3</CalcStep>
-        <CalcStep number={2}>Calculate: 0.7 × -0.3 = -0.21</CalcStep>
-        <CalcStep number={3}>Humidity: input[1] × weight[1] = 0.8 × 0.9</CalcStep>
-        <CalcStep number={4}>Calculate: 0.8 × 0.9 = 0.72</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          Humidity contributes much more (0.72 vs -0.21). The high humidity is pushing
-          toward &quot;rain,&quot; while the warm temperature is slightly pushing against it.
-          When we sum these (next step), we&apos;ll see the combined effect.
-        </p>
-      </WorkedExample>
-
-      <ExplanationBox title="Applying Weights to Inputs">
+      <ExplanationBox title="Looking Ahead">
         <p>
-          Let's see how we apply weights to our weather inputs to compute each feature's contribution:
-        </p>
-        <pre><code>{`# Keep your inputs from before
-inputs = [0.7, 0.8]
-
-# Create a weights list: -0.3 for temperature, 0.9 for humidity
-weights = [-0.3, 0.9]
-
-# Multiply each input by its weight
-temp_contribution = inputs[0] * weights[0]
-humidity_contribution = inputs[1] * weights[1]
-
-print("Temperature contribution:", temp_contribution)
-print("Humidity contribution:", humidity_contribution)`}</code></pre>
-        <CodeRunner code={`# Keep your inputs from before
-inputs = [0.7, 0.8]
-
-# Create a weights list: -0.3 for temperature, 0.9 for humidity
-weights = [-0.3, 0.9]
-
-# Multiply each input by its weight
-temp_contribution = inputs[0] * weights[0]
-humidity_contribution = inputs[1] * weights[1]
-
-print("Temperature contribution:", temp_contribution)
-print("Humidity contribution:", humidity_contribution)`} />
-        <p>
-          The weights encode the RELATIONSHIP between inputs and rain prediction!
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="What Comes Next">
-        <p>
-          You now have two weighted values: -0.21 (temperature&apos;s contribution) and 0.72
-          (humidity&apos;s contribution). But a neuron produces a single output, not two separate values.
-          In the next step, we&apos;ll add these weighted values together, plus a &quot;bias&quot; term,
-          to create one combined prediction signal.
-        </p>
-        <p>
-          This addition step is called the <strong>weighted sum</strong> or <strong>dot product</strong>,
-          and it&apos;s mathematically beautiful — we&apos;ll see why it&apos;s the perfect way to combine
-          multiple inputs into one number.
+          You&apos;ve seen how to store weather data in a list. In the next step, we&apos;ll introduce
+          <strong> weights</strong> — the numbers that determine how important each input is for predicting rain.
+          Should humidity matter more than temperature? The weights decide!
         </p>
       </ExplanationBox>
     </div>

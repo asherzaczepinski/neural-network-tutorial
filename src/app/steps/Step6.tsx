@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -14,116 +15,161 @@ export default function Step6({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="The Problem with Linear Networks">
+      <ExplanationBox title="What Is a Dot Product?">
         <p>
-          Here&apos;s one of the most important insights in deep learning: <strong>without non-linearity,
-          depth is useless</strong>. You could stack 100 linear layers and get exactly the same
-          expressive power as 1 layer. Let&apos;s prove this mathematically.
+          The dot product (also called inner product or scalar product) is one of the most
+          important operations in mathematics and machine learning. It takes two lists of
+          numbers and produces a single number by multiplying corresponding elements and
+          summing the results.
         </p>
         <p>
-          A &quot;linear&quot; neuron is one without an activation function — it just computes the
-          weighted sum plus bias and outputs that directly. Everything we&apos;ve built so far
-          (dot products, bias addition) is linear. If we chain linear operations, we get...
-          another linear operation.
+          We&apos;ve actually been computing dot products all along! When we calculated
+          <code>inputs[0]*weights[0] + inputs[1]*weights[1]</code>, that <em>is</em> the dot
+          product of inputs and weights. Now we&apos;ll create a reusable function that works
+          for lists of any length — whether you have 2 weather measurements or 2 million.
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Linear Composition Collapses">
-        y = W₂ × (W₁ × x) = (W₂ × W₁) × x = W_combined × x
+      <MathFormula label="Dot Product for Weather">
+        weather_signal = (temp × temp_weight) + (humidity × humidity_weight)
       </MathFormula>
 
-      <ExplanationBox title="The Mathematical Proof">
+      <ExplanationBox title="Why Use the Dot Product?">
         <p>
-          Consider two linear layers in sequence:
+          The dot product is the perfect operation for what we&apos;re trying to do: combine multiple
+          pieces of information, each with its own importance, into a single number. Think about
+          what we want our neuron to compute for rain prediction:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li>Layer 1: h = W₁ · x (where x is input, W₁ is first weights, h is hidden output)</li>
-          <li>Layer 2: y = W₂ · h (where h is input to layer 2, W₂ is second weights)</li>
-        </ol>
         <p style={{ marginTop: '1rem' }}>
-          Substituting: y = W₂ · (W₁ · x) = (W₂ · W₁) · x
+          &quot;Take the temperature, scale it by how much temperature matters for rain. Take the
+          humidity, scale it by how much humidity matters for rain. Add these together to get
+          one overall rain signal.&quot;
         </p>
-        <p>
-          The product W₂ · W₁ is just another set of weights! We could precompute it once and use
-          that single combined layer. Two layers collapse into one. This extends to any
-          number of layers — they all collapse into a single linear transformation.
+        <p style={{ marginTop: '1rem' }}>
+          That&apos;s exactly what the dot product does! It pairs each input with its corresponding
+          weight, multiplies them, and sums everything up. The result is a single number that
+          represents the combined &quot;vote&quot; of all inputs, weighted by their importance.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Proving It With Weather Data">
-        <p>Let&apos;s trace through a two-layer linear network for rain prediction:</p>
+      <ExplanationBox title="The Dot Product as Pattern Matching">
+        <p>
+          Here&apos;s a powerful way to think about it: the weights represent a &quot;rainy weather pattern&quot;
+          that we&apos;re looking for. Our weights [-0.3, 0.9] say: &quot;Rainy weather tends to have
+          lower temperatures (negative weight) and high humidity (large positive weight).&quot;
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          When we compute the dot product of today&apos;s weather [0.7, 0.8] with this pattern [-0.3, 0.9],
+          we&apos;re asking: &quot;How well does today&apos;s weather match the rainy pattern?&quot; A large positive
+          result means good match (likely rain). A large negative result means opposite of the
+          pattern (likely dry). Near zero means the evidence is mixed.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          Our result of 0.51 is moderately positive — today&apos;s weather somewhat matches the rainy
+          pattern, mainly because the high humidity (0.8 × 0.9 = 0.72) outweighs the warm
+          temperature&apos;s slight vote against rain (0.7 × -0.3 = -0.21).
+        </p>
+      </ExplanationBox>
 
-        <p style={{ marginTop: '1rem' }}><strong>Setup:</strong></p>
-        <CalcStep number={1}>Input: [temperature=0.7, humidity=0.8]</CalcStep>
-        <CalcStep number={2}>Layer 1 weights: [-0.3, 0.9]</CalcStep>
-        <CalcStep number={3}>Layer 2 weight: 0.5</CalcStep>
+      <WorkedExample title="Computing Dot Product By Hand">
+        <p>Let&apos;s compute dot_product([0.7, 0.8], [-0.3, 0.9]):</p>
 
-        <p style={{ marginTop: '1rem' }}><strong>Two-layer computation:</strong></p>
-        <CalcStep number={4}>Hidden: h = 0.7×(-0.3) + 0.8×0.9 = -0.21 + 0.72 = 0.51</CalcStep>
-        <CalcStep number={5}>Output: y = 0.51 × 0.5 = 0.255</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Collapsing to one layer:</strong></p>
-        <CalcStep number={6}>Effective w_temp = -0.3 × 0.5 = -0.15</CalcStep>
-        <CalcStep number={7}>Effective w_humid = 0.9 × 0.5 = 0.45</CalcStep>
-        <CalcStep number={8}>Direct: y = 0.7×(-0.15) + 0.8×0.45 = -0.105 + 0.36 = 0.255</CalcStep>
+        <CalcStep number={1}>First pair: 0.7 × -0.3 = -0.21</CalcStep>
+        <CalcStep number={2}>Second pair: 0.8 × 0.9 = 0.72</CalcStep>
+        <CalcStep number={3}>Sum: -0.21 + 0.72 = 0.51</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          <strong>Same answer!</strong> The two-layer network computed the exact same thing as a
-          single-layer network with combined weights. The extra layer added no capability.
+          Result: <strong>0.51</strong>
+        </p>
+        <p>
+          With 3 elements [a, b, c] · [x, y, z]: a×x + b×y + c×z
+        </p>
+        <p>
+          With 100 weather measurements: same pattern, just more terms to add.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Why This Matters for Weather Prediction">
+      <ExplanationBox title="Building the Function">
         <p>
-          Think about real weather patterns. When does it rain? It&apos;s not a simple formula like
-          &quot;more humidity = more rain.&quot; Real weather is complex:
+          We&apos;ll build a <code>dot_product</code> function step by step:
+        </p>
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>Initialize a result variable to 0</strong> — we&apos;ll accumulate the sum here</li>
+          <li><strong>Loop through each index</strong> — using <code>range(len(a))</code> to get indices 0, 1, 2...</li>
+          <li><strong>Multiply corresponding elements</strong> — <code>a[i] * b[i]</code></li>
+          <li><strong>Add to the running total</strong> — <code>result = result + a[i] * b[i]</code></li>
+          <li><strong>Return the final sum</strong></li>
+        </ol>
+      </ExplanationBox>
+
+      <WorkedExample title="Tracing Through the Loop">
+        <p>Let&apos;s trace dot_product([0.7, 0.8], [-0.3, 0.9]):</p>
+
+        <CalcStep number={1}>Initialize: result = 0</CalcStep>
+        <CalcStep number={2}>i=0: result = 0 + (0.7 × -0.3) = 0 + (-0.21) = -0.21</CalcStep>
+        <CalcStep number={3}>i=1: result = -0.21 + (0.8 × 0.9) = -0.21 + 0.72 = 0.51</CalcStep>
+        <CalcStep number={4}>Loop ends, return 0.51</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}>
+          The loop accumulates each product into the running total. This pattern is called
+          an &quot;accumulator&quot; and it&apos;s fundamental to many algorithms.
+        </p>
+      </WorkedExample>
+
+      <ExplanationBox title="Why We're Building This Ourselves">
+        <p>
+          In production code, you&apos;d use NumPy&apos;s <code>np.dot()</code> which is 100x faster
+          because it&apos;s implemented in optimized C and uses CPU vector instructions. But by
+          building it ourselves:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>A <strong>warm, humid</strong> day might have thunderstorms</li>
-          <li>A <strong>warm, dry</strong> day stays clear</li>
-          <li>A <strong>cool, humid</strong> day might have light drizzle</li>
-          <li>A <strong>cool, dry</strong> day is probably clear</li>
+          <li>You understand exactly what&apos;s happening — no magic</li>
+          <li>You can see how simple the core operation really is</li>
+          <li>You could implement this in any language, on any platform</li>
+          <li>Debugging becomes easier when you understand the fundamentals</li>
+        </ul>
+      </ExplanationBox>
+
+      <ExplanationBox title="Implementing the Dot Product">
+        <p>
+          Here's how we implement the dot product function:
+        </p>
+        <pre><code>{`def dot_product(a, b):
+    result = 0
+    for i in range(len(a)):
+        result = result + a[i] * b[i]
+    return result
+
+# Test it
+inputs = [0.7, 0.8]
+weights = [-0.3, 0.9]
+print("Dot product:", dot_product(inputs, weights))`}</code></pre>
+        <CodeRunner code={`def dot_product(a, b):
+    result = 0
+    for i in range(len(a)):
+        result = result + a[i] * b[i]
+    return result
+
+# Test it
+inputs = [0.7, 0.8]
+weights = [-0.3, 0.9]
+print("Dot product:", dot_product(inputs, weights))`} />
+      </ExplanationBox>
+
+      <ExplanationBox title="A Reusable Building Block">
+        <p>
+          Congratulations! You&apos;ve implemented your first reusable neural network building block.
+          The <code>dot_product</code> function will appear again and again:
+        </p>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>Computing a single neuron&apos;s output (weather signal)</li>
+          <li>Computing an entire layer&apos;s output (matrix multiplication)</li>
+          <li>Computing gradients during backpropagation (training)</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          Notice the pattern? Whether it rains depends on the <em>combination</em> of temperature
-          AND humidity, not just adding them together. A linear model can only draw straight lines —
-          it can&apos;t learn &quot;rain when BOTH conditions are right.&quot;
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          Imagine plotting temperature on one axis and humidity on another. The &quot;will it rain?&quot;
-          boundary isn&apos;t a straight line — it&apos;s curved. Linear models can only draw straight
-          boundaries, so they&apos;ll always make mistakes on real weather data.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="The Solution: Activation Functions">
-        <p>
-          The fix is elegant: after each linear transformation, we apply a <strong>non-linear
-          function</strong> (called an activation function). This breaks the chain of linearity,
-          preventing layers from collapsing into one.
-        </p>
-        <p>
-          With activation functions, each layer can learn something that couldn&apos;t be represented
-          by previous layers combined. More layers = more expressive power = ability to learn
-          more complex weather patterns. <em>This is why deep learning works.</em>
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="The Key Insight">
-        <p>
-          This is arguably the most important insight in understanding neural networks:
-        </p>
-        <p style={{
-          background: '#f9fafb',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginTop: '1rem',
-          fontWeight: '600',
-          textAlign: 'center',
-          border: '1px solid #e5e7eb'
-        }}>
-          Depth without non-linearity is meaningless.
-          Non-linearity is what makes deep learning deep.
+          Next, we&apos;ll explore <strong>why non-linearity is essential</strong> — without it,
+          all our careful weight calculations would be pointless. This is a crucial insight
+          that explains why neural networks need activation functions at all.
         </p>
       </ExplanationBox>
     </div>

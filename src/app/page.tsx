@@ -22,10 +22,11 @@ import Step14 from '@/app/steps/Step14';
 import Step15 from '@/app/steps/Step15';
 import Step16 from '@/app/steps/Step16';
 import Step17 from '@/app/steps/Step17';
+import Step18 from '@/app/steps/Step18';
 
 const stepComponents = [
   Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9,
-  Step10, Step11, Step12, Step13, Step14, Step15, Step16, Step17
+  Step10, Step11, Step12, Step13, Step14, Step15, Step16, Step17, Step18
 ];
 
 function CourseContent() {
@@ -39,7 +40,7 @@ function CourseContent() {
   const [currentStep, setCurrentStep] = useState(() => {
     if (stepParam) {
       const parsed = parseInt(stepParam, 10);
-      if (parsed >= 1 && parsed <= 17) return parsed;
+      if (parsed >= 1 && parsed <= 18) return parsed;
     }
     return 1;
   });
@@ -48,7 +49,7 @@ function CourseContent() {
   useEffect(() => {
     if (stepParam) {
       const parsed = parseInt(stepParam, 10);
-      if (parsed >= 1 && parsed <= 17) {
+      if (parsed >= 1 && parsed <= 18) {
         setCurrentStep(parsed);
       }
     }
@@ -81,7 +82,7 @@ function CourseContent() {
   };
 
   const nextStep = () => {
-    if (currentStep < 17) {
+    if (currentStep < 18) {
       goToStep(currentStep + 1);
     }
   };
@@ -100,8 +101,6 @@ function CourseContent() {
     <div className="course-page">
       {/* Top navigation */}
       <header className={`course-header ${headerVisible ? 'visible' : 'hidden'}`}>
-        <a href="/landing" className="course-logo">Home</a>
-
         <nav className="course-nav">
           <button
             className="nav-arrow"
@@ -130,7 +129,7 @@ function CourseContent() {
           <button
             className="nav-arrow"
             onClick={nextStep}
-            disabled={currentStep === 17}
+            disabled={currentStep === 18}
             aria-label="Next step"
           >
             →
@@ -159,7 +158,7 @@ function CourseContent() {
               </button>
             )}
             <div className="footer-spacer" />
-            {currentStep < 17 && (
+            {currentStep < 18 && (
               <button className="footer-btn next" onClick={nextStep}>
                 Next →
               </button>
@@ -200,19 +199,6 @@ function CourseContent() {
         .course-header.hidden {
           transform: translateY(-100%);
           opacity: 0;
-        }
-
-        .course-logo {
-          position: absolute;
-          left: 20px;
-          font-size: 15px;
-          font-weight: 600;
-          color: #222;
-          text-decoration: none;
-        }
-
-        .course-logo:hover {
-          color: #2563eb;
         }
 
         .course-nav {

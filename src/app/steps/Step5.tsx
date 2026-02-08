@@ -15,161 +15,142 @@ export default function Step5({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="What Is a Dot Product?">
+      <ExplanationBox title="Why Do We Need Bias?">
         <p>
-          The dot product (also called inner product or scalar product) is one of the most
-          important operations in mathematics and machine learning. It takes two lists of
-          numbers and produces a single number by multiplying corresponding elements and
-          summing the results.
+          Imagine a neuron with no bias, just inputs multiplied by weights. If all the inputs
+          are zero, the output is always zero, no matter what the weights are. This is a problem
+          because sometimes we want the neuron to &quot;fire&quot; (produce a non-zero output) even when
+          the inputs are all zero or very small.
         </p>
         <p>
-          We&apos;ve actually been computing dot products all along! When we calculated
-          <code>inputs[0]*weights[0] + inputs[1]*weights[1]</code>, that <em>is</em> the dot
-          product of inputs and weights. Now we&apos;ll create a reusable function that works
-          for lists of any length — whether you have 2 weather measurements or 2 million.
+          For rain prediction: maybe your region has a baseline 30% chance of rain on any given day,
+          regardless of current temperature and humidity. The bias captures this baseline tendency.
+          Without it, a day with temp=0 and humidity=0 would always predict 0% rain chance.
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Dot Product for Weather">
-        weather_signal = (temp × temp_weight) + (humidity × humidity_weight)
+      <ExplanationBox title="Bias as a 'Super Weight'">
+        <p>
+          Think of bias as a weight that&apos;s always multiplied by 1. While regular weights scale
+          the inputs, bias adds a constant shift — and this shift is incredibly powerful. It lets
+          a neuron have a strong opinion even when inputs are weak or neutral.
+        </p>
+        <p>
+          In a network with many neurons, each neuron can have a different bias. A neuron with a
+          large positive bias becomes &quot;eager&quot; — it activates strongly and contributes more to
+          the network&apos;s decision. A neuron with a large negative bias becomes &quot;reluctant&quot; — it
+          needs strong input evidence to activate at all. This diversity is what lets different
+          neurons specialize: some become strong rain predictors, others become cautious detectors
+          that only fire under specific conditions.
+        </p>
+      </ExplanationBox>
+
+      <MathFormula label="Pre-activation (z)">
+        z = (temperature × w₁) + (humidity × w₂) + bias
       </MathFormula>
 
-      <ExplanationBox title="Why Use the Dot Product?">
+      <ExplanationBox title="Why 'z' and 'Pre-activation'?">
         <p>
-          The dot product is the perfect operation for what we&apos;re trying to do: combine multiple
-          pieces of information, each with its own importance, into a single number. Think about
-          what we want our neuron to compute for rain prediction:
+          The value we calculate (weighted sum plus bias) is commonly called <strong>z</strong>
+          in neural network literature. It&apos;s also called the <strong>pre-activation</strong> because
+          it&apos;s the value <em>before</em> we apply the activation function.
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          &quot;Take the temperature, scale it by how much temperature matters for rain. Take the
-          humidity, scale it by how much humidity matters for rain. Add these together to get
-          one overall rain signal.&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          That&apos;s exactly what the dot product does! It pairs each input with its corresponding
-          weight, multiplies them, and sums everything up. The result is a single number that
-          represents the combined &quot;vote&quot; of all inputs, weighted by their importance.
+        <p>
+          The sequence is: inputs → weights → weighted sum → add bias → z (pre-activation) →
+          activation function → output (rain probability). We&apos;re building toward the activation function,
+          but first we need to compute z correctly.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="The Dot Product as Pattern Matching">
-        <p>
-          Here&apos;s a powerful way to think about it: the weights represent a &quot;rainy weather pattern&quot;
-          that we&apos;re looking for. Our weights [-0.3, 0.9] say: &quot;Rainy weather tends to have
-          lower temperatures (negative weight) and high humidity (large positive weight).&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          When we compute the dot product of today&apos;s weather [0.7, 0.8] with this pattern [-0.3, 0.9],
-          we&apos;re asking: &quot;How well does today&apos;s weather match the rainy pattern?&quot; A large positive
-          result means good match (likely rain). A large negative result means opposite of the
-          pattern (likely dry). Near zero means the evidence is mixed.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Our result of 0.51 is moderately positive — today&apos;s weather somewhat matches the rainy
-          pattern, mainly because the high humidity (0.8 × 0.9 = 0.72) outweighs the warm
-          temperature&apos;s slight vote against rain (0.7 × -0.3 = -0.21).
-        </p>
-      </ExplanationBox>
+      <WorkedExample title="Computing z Step by Step">
+        <p>With inputs = [0.7, 0.8], weights = [-0.3, 0.9], and bias = 0.1:</p>
 
-      <WorkedExample title="Computing Dot Product By Hand">
-        <p>Let&apos;s compute dot_product([0.7, 0.8], [-0.3, 0.9]):</p>
-
-        <CalcStep number={1}>First pair: 0.7 × -0.3 = -0.21</CalcStep>
-        <CalcStep number={2}>Second pair: 0.8 × 0.9 = 0.72</CalcStep>
-        <CalcStep number={3}>Sum: -0.21 + 0.72 = 0.51</CalcStep>
+        <CalcStep number={1}>Temperature contribution: 0.7 × -0.3 = -0.21</CalcStep>
+        <CalcStep number={2}>Humidity contribution: 0.8 × 0.9 = 0.72</CalcStep>
+        <CalcStep number={3}>Weighted sum: -0.21 + 0.72 = 0.51</CalcStep>
+        <CalcStep number={4}>Add bias: z = 0.51 + 0.1 = 0.61</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          Result: <strong>0.51</strong>
-        </p>
-        <p>
-          With 3 elements [a, b, c] · [x, y, z]: a×x + b×y + c×z
-        </p>
-        <p>
-          With 100 weather measurements: same pattern, just more terms to add.
+          Our pre-activation value is <strong>z = 0.61</strong>. This positive number suggests
+          the neuron is leaning toward &quot;rain.&quot; After passing through sigmoid (Step 7),
+          this will become a probability around 65% rain chance.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Building the Function">
+      <ExplanationBox title="Bias Can Be Negative Too">
         <p>
-          We&apos;ll build a <code>dot_product</code> function step by step:
+          Like weights, bias can be positive or negative. A positive bias makes the neuron
+          more likely to predict rain (shifts output upward). A negative bias makes it less
+          likely to predict rain (shifts output downward, making the neuron more &quot;skeptical&quot;).
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Initialize a result variable to 0</strong> — we&apos;ll accumulate the sum here</li>
-          <li><strong>Loop through each index</strong> — using <code>range(len(a))</code> to get indices 0, 1, 2...</li>
-          <li><strong>Multiply corresponding elements</strong> — <code>a[i] * b[i]</code></li>
-          <li><strong>Add to the running total</strong> — <code>result = result + a[i] * b[i]</code></li>
-          <li><strong>Return the final sum</strong></li>
-        </ol>
+        <p>
+          During training, the network learns appropriate bias values along with weights.
+          Some neurons end up with positive biases (easily activated), others with negative
+          biases (hard to activate). This diversity helps the network represent complex patterns.
+        </p>
       </ExplanationBox>
 
-      <WorkedExample title="Tracing Through the Loop">
-        <p>Let&apos;s trace dot_product([0.7, 0.8], [-0.3, 0.9]):</p>
+      <WorkedExample title="Effect of Different Bias Values">
+        <p>Same weighted sum (0.51), different biases — watch how bias determines how &quot;confident&quot; this neuron becomes:</p>
 
-        <CalcStep number={1}>Initialize: result = 0</CalcStep>
-        <CalcStep number={2}>i=0: result = 0 + (0.7 × -0.3) = 0 + (-0.21) = -0.21</CalcStep>
-        <CalcStep number={3}>i=1: result = -0.21 + (0.8 × 0.9) = -0.21 + 0.72 = 0.51</CalcStep>
-        <CalcStep number={4}>Loop ends, return 0.51</CalcStep>
+        <CalcStep number={1}>bias = 0.5: z = 0.51 + 0.5 = 1.01 → this neuron strongly predicts rain</CalcStep>
+        <CalcStep number={2}>bias = 0.0: z = 0.51 + 0.0 = 0.51 → this neuron has a neutral baseline</CalcStep>
+        <CalcStep number={3}>bias = -0.5: z = 0.51 - 0.5 = 0.01 → this neuron is barely activated</CalcStep>
+        <CalcStep number={4}>bias = -1.0: z = 0.51 - 1.0 = -0.49 → this neuron predicts no rain</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          The loop accumulates each product into the running total. This pattern is called
-          an &quot;accumulator&quot; and it&apos;s fundamental to many algorithms.
+          See how bias controls each neuron&apos;s &quot;personality&quot;? With bias = 0.5, this neuron becomes
+          a confident rain predictor. With bias = -1.0, this neuron becomes skeptical — even moderate
+          humidity isn&apos;t enough to convince it. In a full network, having neurons with different biases
+          means some will fire strongly while others stay quiet, creating a rich mix of signals.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Why We're Building This Ourselves">
+      <ExplanationBox title="One Bias Per Neuron">
         <p>
-          In production code, you&apos;d use NumPy&apos;s <code>np.dot()</code> which is 100x faster
-          because it&apos;s implemented in optimized C and uses CPU vector instructions. But by
-          building it ourselves:
+          Each neuron has exactly one bias value, regardless of how many inputs it has.
+          If a neuron has 100 inputs (like 100 weather measurements), it has 100 weights
+          (one per input) but still just 1 bias.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>You understand exactly what&apos;s happening — no magic</li>
-          <li>You can see how simple the core operation really is</li>
-          <li>You could implement this in any language, on any platform</li>
-          <li>Debugging becomes easier when you understand the fundamentals</li>
-        </ul>
+        <p>
+          The bias is added after all the weighted inputs are summed. It&apos;s a single final
+          adjustment to the total, not separate adjustments per input.
+        </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Implementing the Dot Product">
+      <ExplanationBox title="Computing z (Pre-activation)">
         <p>
-          Here's how we implement the dot product function:
+          Here's how we compute the pre-activation value with bias:
         </p>
-        <pre><code>{`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-# Test it
-inputs = [0.7, 0.8]
+        <pre><code>{`inputs = [0.7, 0.8]
 weights = [-0.3, 0.9]
-print("Dot product:", dot_product(inputs, weights))`}</code></pre>
-        <CodeRunner code={`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
+bias = 0.1
 
-# Test it
-inputs = [0.7, 0.8]
+# Calculate z (pre-activation)
+z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
+
+print("Pre-activation z =", z)`}</code></pre>
+        <CodeRunner code={`inputs = [0.7, 0.8]
 weights = [-0.3, 0.9]
-print("Dot product:", dot_product(inputs, weights))`} />
+bias = 0.1
+
+# Calculate z (pre-activation)
+z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
+
+print("Pre-activation z =", z)`} />
       </ExplanationBox>
 
-      <ExplanationBox title="A Reusable Building Block">
+      <ExplanationBox title="Where We Are Now">
         <p>
-          Congratulations! You&apos;ve implemented your first reusable neural network building block.
-          The <code>dot_product</code> function will appear again and again:
+          You&apos;ve computed the <strong>pre-activation value z = 0.61</strong>. This represents
+          the raw &quot;signal strength&quot; for our rain prediction before any transformation.
+          But neural networks need something more — they need non-linearity.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Computing a single neuron&apos;s output (weather signal)</li>
-          <li>Computing an entire layer&apos;s output (matrix multiplication)</li>
-          <li>Computing gradients during backpropagation (training)</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          Next, we&apos;ll explore <strong>why non-linearity is essential</strong> — without it,
-          all our careful weight calculations would be pointless. This is a crucial insight
-          that explains why neural networks need activation functions at all.
+        <p>
+          In the next step, we&apos;ll learn about the <strong>dot product</strong> — a cleaner way
+          to compute what we just did. Then we&apos;ll explore <em>why</em> non-linearity is essential
+          (spoiler: without it, deep networks are useless), before finally implementing the
+          sigmoid activation function in Step 7.
         </p>
       </ExplanationBox>
     </div>

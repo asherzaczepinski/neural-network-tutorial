@@ -14,110 +14,90 @@ export default function Step16({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="Gradient Descent: The Learning Algorithm">
+      <ExplanationBox title="Backpropagation: The Complete Algorithm">
         <p>
-          We now know the gradient (direction of steepest increase in loss) for each weight.
-          <strong>Gradient descent</strong> is the algorithm that uses this information to
-          update weights: we step in the <em>opposite</em> direction of the gradient to reduce loss.
+          <strong>Backpropagation</strong> is the algorithm that makes neural network training
+          possible. It efficiently computes how each weight in the network affects the final
+          loss, allowing us to update all weights to improve performance.
         </p>
         <p>
-          Think of it like rolling a ball downhill. The gradient tells us which way is &quot;up&quot;
-          (increasing loss), so we go the opposite way (decreasing loss).
+          The key insight: we compute derivatives in reverse order, from output back to input.
+          Each layer&apos;s delta is computed using the delta from the layer ahead of it.
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Gradient Descent Update">
-        w_new = w_old - learning_rate × gradient
+      <MathFormula label="Backpropagation Flow">
+        Loss → Output Delta → Hidden Deltas → Weight Gradients
       </MathFormula>
 
-      <ExplanationBox title="Why Subtract?">
-        <p>
-          The gradient points in the direction that <em>increases</em> the loss. But we want
-          to <em>decrease</em> the loss, so we go the opposite direction - that&apos;s why we subtract.
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Positive gradient → weight too high → subtract to decrease</li>
-          <li>Negative gradient → weight too low → subtracting negative = add to increase</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          The math works out perfectly: subtracting the gradient always moves toward lower loss.
-        </p>
+      <ExplanationBox title="The Algorithm Step by Step">
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2.2' }}>
+          <li>
+            <strong>Forward pass</strong>: Compute all activations, storing z and a for each layer
+          </li>
+          <li>
+            <strong>Output delta</strong>: δ_output = (prediction - target) × sigmoid&apos;(z_output)
+          </li>
+          <li>
+            <strong>Output gradients</strong>: ∂L/∂w₂[j] = δ_output × hidden[j]
+          </li>
+          <li>
+            <strong>Hidden deltas</strong>: δ_hidden[i] = (δ_output × w₂[i]) × sigmoid&apos;(z_hidden[i])
+          </li>
+          <li>
+            <strong>Hidden gradients</strong>: ∂L/∂w₁[i][j] = δ_hidden[i] × input[j]
+          </li>
+        </ol>
       </ExplanationBox>
 
-      <ExplanationBox title="The Learning Rate">
-        <p>
-          The <strong>learning rate</strong> controls how big each step is:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Too small (0.001)</strong>: Very slow learning, might get stuck</li>
-          <li><strong>Too large (10.0)</strong>: Steps overshoot, loss oscillates wildly</li>
-          <li><strong>Just right (0.1-1.0)</strong>: Smooth, steady improvement</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          Finding a good learning rate is part art, part science. Common values range from
-          0.0001 to 1.0 depending on the problem.
-        </p>
-      </ExplanationBox>
+      <WorkedExample title="Full Backprop Example">
+        <p>Network: 2 inputs → 3 hidden → 1 output. Input [0.5, 0.8], target = 1.0</p>
 
-      <WorkedExample title="Single Weight Update">
-        <p>Weight = 0.8, gradient = -0.088, learning_rate = 0.5:</p>
+        <p style={{ marginTop: '1rem' }}><strong>Forward pass (stored values):</strong></p>
+        <CalcStep number={1}>z₁ = [0.78, -0.30, 0.79] (pre-activations)</CalcStep>
+        <CalcStep number={2}>a₁ = [0.686, 0.426, 0.688] (hidden outputs)</CalcStep>
+        <CalcStep number={3}>z₂ = 0.847, a₂ = 0.700 (output)</CalcStep>
 
-        <CalcStep number={1}>Current weight: w = 0.8</CalcStep>
-        <CalcStep number={2}>Gradient: ∂L/∂w = -0.088 (negative = weight too low)</CalcStep>
-        <CalcStep number={3}>Learning rate: lr = 0.5</CalcStep>
-        <CalcStep number={4}>Update: w = 0.8 - (0.5 × -0.088)</CalcStep>
-        <CalcStep number={5}>w = 0.8 - (-0.044) = 0.8 + 0.044 = 0.844</CalcStep>
+        <p style={{ marginTop: '1rem' }}><strong>Output layer backward:</strong></p>
+        <CalcStep number={4}>error = 0.700 - 1.0 = -0.30</CalcStep>
+        <CalcStep number={5}>δ₂ = -0.30 × sigmoid&apos;(0.847) = -0.30 × 0.21 = -0.063</CalcStep>
+        <CalcStep number={6}>∂L/∂w₂[0] = δ₂ × a₁[0] = -0.063 × 0.686 = -0.043</CalcStep>
 
-        <p style={{ marginTop: '1rem' }}>
-          The weight increased from 0.8 to 0.844. Since the gradient was negative (weight too low),
-          subtracting the negative value increased the weight. Perfect!
-        </p>
+        <p style={{ marginTop: '1rem' }}><strong>Hidden layer backward:</strong></p>
+        <CalcStep number={7}>δ₁[0] = δ₂ × w₂[0] × sigmoid&apos;(z₁[0])</CalcStep>
+        <CalcStep number={8}>δ₁[0] = -0.063 × 0.4 × 0.215 = -0.0054</CalcStep>
+        <CalcStep number={9}>∂L/∂w₁[0][0] = δ₁[0] × input[0] = -0.0054 × 0.5 = -0.0027</CalcStep>
       </WorkedExample>
 
-      <ExplanationBox title="The Training Loop">
+      <ExplanationBox title="Why Backward?">
         <p>
-          Training repeats this process many times:
+          We compute backwards because of efficiency. To find how a weight in layer 1 affects
+          the loss, we need to know how layer 2&apos;s output affects the loss first. The chain
+          rule naturally flows backward: each delta depends on the delta ahead of it.
         </p>
-        <pre style={{
-          background: 'var(--bg-code)',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginTop: '1rem'
-        }}>
-{`for epoch in range(num_epochs):
-    for (input, target) in training_data:
-        # Forward pass
-        output = forward(input)
-
-        # Backward pass
-        gradients = backward(...)
-
-        # Update weights
-        for each weight, gradient:
-            weight = weight - learning_rate * gradient
-
-    print(f"Epoch {epoch}, Loss: {total_loss}")`}
-        </pre>
         <p style={{ marginTop: '1rem' }}>
-          One pass through all training data is called an &quot;epoch.&quot; Training typically
-          runs for hundreds or thousands of epochs until the loss stops improving.
+          This backward flow is why it&apos;s called &quot;back&quot;-propagation! The error signal
+          propagates from the output back through each layer.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="You've Built All the Pieces!">
+      <ExplanationBox title="Storing Values During Forward Pass">
         <p>
-          You now have everything needed to train a neural network:
+          Notice that backprop needs values from the forward pass (z values and activations).
+          In practice, we store these during forward pass so they&apos;re available for backward.
+          This is why neural networks use significant memory during training.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>✓ Forward propagation (compute predictions)</li>
-          <li>✓ Loss function (measure error)</li>
-          <li>✓ Backpropagation (compute gradients)</li>
-          <li>✓ Gradient descent (update weights)</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          In the final step, we&apos;ll put everything together into a complete neural network
-          that learns XOR from scratch. You&apos;ll watch it train and see the loss decrease
-          as it figures out the pattern!
+      </ExplanationBox>
+
+      <ExplanationBox title="You've Implemented Backpropagation!">
+        <p>
+          Congratulations! You just implemented the core algorithm that trains all neural networks.
+          Every time you use ChatGPT, image recognition, or any ML model - this same algorithm
+          (with optimizations) computed all the weight updates during training.
+        </p>
+        <p>
+          The gradients tell us which direction to adjust each weight. Now we need to actually
+          <em> apply</em> these updates. That&apos;s gradient descent - the final piece!
         </p>
       </ExplanationBox>
     </div>

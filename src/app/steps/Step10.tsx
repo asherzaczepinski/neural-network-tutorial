@@ -14,129 +14,138 @@ export default function Step10({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="Connecting Layers">
+      <ExplanationBox title="What Is a Layer?">
         <p>
-          The magic of deep learning happens when we connect layers together. The output
-          of one layer becomes the input to the next. This creates a <strong>pipeline</strong>
-          where data is progressively transformed, with each layer extracting more abstract features.
+          A <strong>layer</strong> is a group of neurons that all receive the same inputs and
+          process them in parallel. Each neuron in the layer has its own weights and bias,
+          so each can learn to detect a different pattern in the data.
         </p>
         <p>
-          In a two-layer network:
+          Think of it like having multiple weather experts, each with a different specialty:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Raw inputs flow into the <strong>hidden layer</strong></li>
-          <li>Hidden layer produces intermediate outputs (new features)</li>
-          <li>Those outputs flow into the <strong>output layer</strong></li>
-          <li>Output layer produces the final prediction</li>
+          <li><strong>Expert 1:</strong> Focuses mainly on humidity → &quot;moisture detector&quot;</li>
+          <li><strong>Expert 2:</strong> Focuses mainly on temperature → &quot;heat detector&quot;</li>
+          <li><strong>Expert 3:</strong> Balances both → &quot;overall weather analyzer&quot;</li>
         </ul>
+        <p style={{ marginTop: '1rem' }}>
+          Each expert gives their opinion, and the network uses all opinions to make the final prediction.
+        </p>
       </ExplanationBox>
 
-      <div style={{
-        background: 'var(--bg-tertiary)',
-        padding: '1.5rem',
-        borderRadius: '12px',
-        margin: '1.5rem 0',
-        textAlign: 'center'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Input</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div className="neuron-viz">x₁</div>
-              <div className="neuron-viz">x₂</div>
-            </div>
-          </div>
-          <div style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>→</div>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Hidden</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div className="neuron-viz active">h₁</div>
-              <div className="neuron-viz active">h₂</div>
-              <div className="neuron-viz active">h₃</div>
-            </div>
-          </div>
-          <div style={{ fontSize: '1.5rem', color: 'var(--text-muted)' }}>→</div>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>Output</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div className="neuron-viz active">y</div>
-            </div>
-          </div>
-        </div>
-        <p style={{ marginTop: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          2 inputs → 3 hidden neurons → 1 output
-        </p>
-      </div>
-
-      <MathFormula label="Two-Layer Network">
-        hidden = layer(inputs, W₁, b₁) → output = layer(hidden, W₂, b₂)
+      <MathFormula label="Layer Output">
+        layer_output = [neuron₁(inputs), neuron₂(inputs), ..., neuronₙ(inputs)]
       </MathFormula>
 
-      <ExplanationBox title="Why 'Hidden' Layer?">
+      <ExplanationBox title="Why Multiple Neurons?">
         <p>
-          The middle layer is called &quot;hidden&quot; because we don&apos;t directly observe its values -
-          we only see the inputs and final outputs. The hidden layer&apos;s job is to create
-          useful intermediate representations.
+          A single neuron can only learn one pattern — like &quot;humidity causes rain.&quot; But real
+          weather is more nuanced. Rain depends on combinations of factors: temperature AND
+          humidity AND pressure AND season. To capture these complexities, we need multiple
+          neurons that can each specialize in different aspects.
         </p>
         <p>
-          Think of it like cooking: raw ingredients (inputs) → chopped/prepared ingredients
-          (hidden layer) → final dish (output). The preparation step transforms ingredients
-          into a form that&apos;s easier to combine into the final result.
+          The key insight: by having each neuron learn a <strong>different</strong> pattern,
+          the layer creates a richer representation of the input than any single neuron could.
+          Later layers can combine these patterns to make sophisticated predictions.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Dimension Changes">
+      <WorkedExample title="Three Neurons Analyzing Weather">
+        <p>Let&apos;s trace through a 3-neuron layer with inputs=[0.7, 0.8]:</p>
+
+        <p style={{ marginTop: '1rem' }}><strong>Neuron 1: Humidity Detector</strong></p>
+        <CalcStep number={1}>weights=[0.1, 0.9], bias=-0.3</CalcStep>
+        <CalcStep number={2}>z = (0.7×0.1 + 0.8×0.9) - 0.3 = 0.07 + 0.72 - 0.3 = 0.49</CalcStep>
+        <CalcStep number={3}>output₁ = sigmoid(0.49) = 0.62</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}><strong>Neuron 2: Temperature Detector</strong></p>
+        <CalcStep number={4}>weights=[0.9, 0.1], bias=-0.4</CalcStep>
+        <CalcStep number={5}>z = (0.7×0.9 + 0.8×0.1) - 0.4 = 0.63 + 0.08 - 0.4 = 0.31</CalcStep>
+        <CalcStep number={6}>output₂ = sigmoid(0.31) = 0.58</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}><strong>Neuron 3: Combined Detector</strong></p>
+        <CalcStep number={7}>weights=[0.5, 0.5], bias=0.1</CalcStep>
+        <CalcStep number={8}>z = (0.7×0.5 + 0.8×0.5) + 0.1 = 0.35 + 0.40 + 0.1 = 0.85</CalcStep>
+        <CalcStep number={9}>output₃ = sigmoid(0.85) = 0.70</CalcStep>
+
+        <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>
+          Layer output: [0.62, 0.58, 0.70]
+        </p>
         <p>
-          Notice how dimensions change through the network:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Input:</strong> 2 values [x₁, x₂]</li>
-          <li><strong>Hidden weights (W₁):</strong> 3×2 (3 neurons, each with 2 weights)</li>
-          <li><strong>Hidden output:</strong> 3 values [h₁, h₂, h₃]</li>
-          <li><strong>Output weights (W₂):</strong> 1×3 (1 neuron with 3 weights)</li>
-          <li><strong>Output:</strong> 1 value [y]</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          The hidden layer &quot;expands&quot; 2 inputs to 3 features. The output layer &quot;compresses&quot;
-          3 features to 1 output. This expansion then compression is a common pattern.
-        </p>
-      </ExplanationBox>
-
-      <WorkedExample title="Full Network Trace">
-        <p>Let&apos;s trace data through a complete 2-layer network:</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Input:</strong> [0.5, 0.8]</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Hidden Layer (3 neurons):</strong></p>
-        <CalcStep number={1}>h₀ = sigmoid(0.5×0.4 + 0.8×0.6 + 0.1) = sigmoid(0.78) = 0.686</CalcStep>
-        <CalcStep number={2}>h₁ = sigmoid(0.5×0.2 + 0.8×(-0.5) + (-0.2)) = sigmoid(-0.5) = 0.378</CalcStep>
-        <CalcStep number={3}>h₂ = sigmoid(0.5×(-0.3) + 0.8×0.8 + 0.3) = sigmoid(0.79) = 0.688</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Hidden Output:</strong> [0.686, 0.378, 0.688]</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Output Layer (1 neuron):</strong></p>
-        <CalcStep number={4}>z = 0.686×0.4 + 0.378×0.3 + 0.688×0.5 + 0.1 = 0.831</CalcStep>
-        <CalcStep number={5}>output = sigmoid(0.831) = 0.696</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Final Output:</strong> 0.696
+          Three different &quot;opinions&quot; about the weather: moderate humidity signal (0.62),
+          moderate temperature signal (0.58), and strong combined signal (0.70).
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="You Built a Deep Network!">
+      <ExplanationBox title="The Weight Matrix">
         <p>
-          Congratulations! You&apos;ve built your first multi-layer neural network. This is
-          fundamentally the same architecture used in:
+          For a layer with multiple neurons, we organize weights into a 2D structure
+          (a list of lists, or matrix):
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Multi-layer perceptrons (MLPs)</li>
-          <li>The dense/fully-connected layers in CNNs</li>
-          <li>The feed-forward parts of transformers</li>
-        </ul>
+        <pre style={{
+          background: 'var(--bg-tertiary)',
+          padding: '1rem',
+          borderRadius: '8px',
+          marginTop: '1rem'
+        }}>
+{`weights = [
+    [w₁_temp, w₁_humid],  # Neuron 1's weights
+    [w₂_temp, w₂_humid],  # Neuron 2's weights
+    [w₃_temp, w₃_humid],  # Neuron 3's weights
+]
+
+biases = [b₁, b₂, b₃]  # One bias per neuron`}
+        </pre>
         <p style={{ marginTop: '1rem' }}>
-          The network can now transform inputs through multiple non-linear steps, giving
-          it the power to learn complex patterns. In the next step, we&apos;ll wrap this in
-          a clean &quot;forward&quot; function and start thinking about how to train it.
+          Each row is one neuron&apos;s weights. The layer function loops through each row,
+          using those weights to compute that neuron&apos;s output.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="This Is Matrix Multiplication!">
+        <p>
+          Computing a layer&apos;s output is actually <strong>matrix multiplication</strong> plus bias,
+          followed by applying sigmoid to each element. In NumPy, you&apos;d write:
+        </p>
+        <pre style={{
+          background: 'var(--bg-tertiary)',
+          padding: '1rem',
+          borderRadius: '8px',
+          marginTop: '1rem',
+          fontFamily: 'monospace'
+        }}>
+          output = sigmoid(np.dot(weights, inputs) + biases)
+        </pre>
+        <p style={{ marginTop: '1rem' }}>
+          We&apos;re building this from scratch with loops, but understanding that it&apos;s matrix
+          multiplication explains why GPUs (which are optimized for matrix math) are so important
+          for neural networks.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Building Toward Deep Networks">
+        <p>
+          You&apos;ve now built a complete layer! The output of one layer can become the input
+          to the next layer. This is how we build deep networks:
+        </p>
+        <pre style={{
+          background: 'var(--bg-tertiary)',
+          padding: '1rem',
+          borderRadius: '8px',
+          marginTop: '1rem'
+        }}>
+{`Input Layer:    [temp, humidity]      (raw weather data)
+       ↓
+Hidden Layer 1: [h1, h2, h3]           (detected patterns)
+       ↓
+Hidden Layer 2: [h4, h5]               (combined patterns)
+       ↓
+Output Layer:   [rain_probability]     (final prediction)`}
+        </pre>
+        <p style={{ marginTop: '1rem' }}>
+          In the next step, we&apos;ll connect multiple layers to build a complete neural network
+          for rain prediction!
         </p>
       </ExplanationBox>
     </div>

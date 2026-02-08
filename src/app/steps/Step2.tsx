@@ -11,93 +11,133 @@ interface StepProps {
 }
 
 export default function Step2({ onComplete }: StepProps) {
+  // Auto-complete this step when component mounts
   setTimeout(() => onComplete(), 100);
 
   return (
     <div>
-      <ExplanationBox title="Everything is Numbers">
+      <ExplanationBox title="Our Mission: Predict Rain">
         <p>
-          Neural networks only understand numbers. They can&apos;t see images, read text, or sense weather —
-          they only process numerical data. This means before we can use a neural network, we must
-          convert our data into numbers. This conversion is called <strong>encoding</strong> or
-          <strong> representation</strong>.
+          Throughout this course, we&apos;re building a neural network that predicts whether it will
+          rain based on two weather measurements: <strong>temperature</strong> and <strong>humidity</strong>.
         </p>
         <p>
-          For our rain prediction task, the conversion is straightforward: temperature becomes a
-          decimal (0.7 = warm), humidity becomes a decimal (0.8 = 80% humidity). But the same principle
-          applies to everything neural networks process.
+          Think about it intuitively. When you step outside on a hot, sticky summer afternoon and
+          the air feels thick with moisture, you might think &quot;it&apos;s probably going to rain later.&quot;
+          That&apos;s exactly what our neural network will learn to do — but with math instead of intuition.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="How Real Weather Data Becomes Numbers">
-        <p><strong>Temperature:</strong> We normalize to 0-1 scale. If typical temperatures range from 0°C to 40°C,
-          then 28°C becomes 28/40 = 0.7. This &quot;normalization&quot; is crucial for neural networks.</p>
-
-        <p><strong>Humidity:</strong> Already a percentage! 80% humidity = 0.8. Easy conversion.</p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Why Normalization Matters">
+      <ExplanationBox title="What is a Neuron?">
         <p>
-          Notice we&apos;re using values between 0 and 1 (0.7 and 0.8), not large numbers like 28 or 50000.
-          This is called <strong>normalization</strong>, and it&apos;s crucial for neural network performance.
+          A neuron is the basic building block of a neural network. It&apos;s inspired by how brain cells work,
+          but don&apos;t worry — we&apos;re not doing biology here. An artificial neuron is just a simple
+          mathematical function that takes in numbers, does some math, and outputs a number.
         </p>
         <p>
-          Imagine if temperature ranged from 0-40 and humidity from 0-100. The larger humidity values would
-          completely dominate the calculations, making it nearly impossible to learn from temperature.
-          By scaling all inputs to similar ranges (typically 0-1 or -1 to 1), we give each feature
-          a fair chance to influence the output.
+          Imagine you&apos;re trying to decide if you should bring an umbrella. You consider the temperature
+          (is it warm enough for rain?), the humidity (is there moisture in the air?), and maybe how cloudy
+          it looks. You weigh these factors in your head and make a decision.
+        </p>
+        <p>
+          A neuron does the same thing: it takes inputs (like temperature and humidity), gives each input
+          an importance score (called a <strong>weight</strong>), adds them up, and produces an output
+          (like &quot;70% chance of rain&quot;).
         </p>
       </ExplanationBox>
 
-      <MathFormula label="Normalization Formula">
-        normalized = (value - min) / (max - min)
+      <ExplanationBox title="The Neuron Formula">
+        <p>
+          Every neuron follows the same simple pattern. Let&apos;s see it with our weather example:
+        </p>
+      </ExplanationBox>
+
+      <MathFormula label="How a Neuron Makes Predictions">
+        output = activation( (temperature × weight₁) + (humidity × weight₂) + bias )
       </MathFormula>
 
-      <WorkedExample title="Normalizing Temperature">
-        <p>Let&apos;s normalize 28°C when our expected range is 0°C to 40°C:</p>
-        <CalcStep number={1}>Original value: 28°C, min: 0°C, max: 40°C</CalcStep>
-        <CalcStep number={2}>normalized = (28 - 0) / (40 - 0)</CalcStep>
-        <CalcStep number={3}>normalized = 28 / 40 = 0.7</CalcStep>
+      <ExplanationBox title="Understanding Each Part">
+        <p>
+          <strong>Inputs (temperature, humidity)</strong> — These are the raw data flowing into the neuron.
+          We normalize them to values between 0 and 1, so temperature = 0.7 means &quot;70% of the maximum
+          temperature we&apos;d expect&quot; and humidity = 0.8 means &quot;80% humidity.&quot;
+        </p>
+        <p>
+          <strong>Weights (weight₁, weight₂)</strong> — These tell the neuron how important each input is.
+          A large weight on humidity might mean &quot;humidity matters a lot for predicting rain.&quot;
+          Weights can be negative too — a negative weight on temperature might mean &quot;higher temperatures
+          actually make rain less likely.&quot;
+        </p>
+        <p>
+          <strong>Bias</strong> — This is an adjustable offset. It lets the neuron say &quot;even with no
+          temperature or humidity info, there&apos;s still some baseline chance of rain.&quot;
+        </p>
+        <p>
+          <strong>Activation</strong> — This squishes the result into a useful range (like 0 to 1 for
+          a probability). We&apos;ll explore this in detail later.
+        </p>
+      </ExplanationBox>
+
+      <WorkedExample title="Let's Walk Through an Example">
+        <p>
+          Suppose our neuron has learned these values: weight₁ = -0.5, weight₂ = 0.9, and bias = 0.2.
+          Now let&apos;s predict rain for a warm, humid day where temperature = 0.7 and humidity = 0.8:
+        </p>
+        <CalcStep number={1}>
+          Start with our inputs: temperature = 0.7, humidity = 0.8
+        </CalcStep>
+        <CalcStep number={2}>
+          Multiply each input by its weight: (0.7 × -0.5) + (0.8 × 0.9)
+        </CalcStep>
+        <CalcStep number={3}>
+          Calculate: -0.35 + 0.72 = 0.37
+        </CalcStep>
+        <CalcStep number={4}>
+          Add the bias: 0.37 + 0.2 = 0.57
+        </CalcStep>
+        <CalcStep number={5}>
+          After activation: approximately 0.64 → &quot;64% chance of rain&quot;
+        </CalcStep>
         <p style={{ marginTop: '1rem' }}>
-          A temperature of 28°C becomes 0.7 — 70% of the way between minimum and maximum.
-          This makes intuitive sense and keeps our numbers in a nice range.
+          Notice that the negative weight on temperature means hotter days slightly <em>decrease</em> the
+          rain prediction, while high humidity strongly <em>increases</em> it. The network learned these
+          relationships from data!
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Storing Inputs in a List">
+      <ExplanationBox title="Creating Our First Inputs">
         <p>
-          Real neural networks store their inputs as lists (or arrays). Here&apos;s how we create a list
-          to hold our weather data:
+          Let&apos;s represent a warm, humid day that might lead to rain. In Python, we create variables
+          like this:
         </p>
-        <pre><code>{`# Create a list with temperature and humidity
-inputs = [0.7, 0.8]
-
-# Access elements by index (starting from 0)
-temperature = inputs[0]  # 0.7
-humidity = inputs[1]     # 0.8
+        <pre><code>{`# Our weather inputs
+temperature = 0.7    # A warm day (70% of max)
+humidity = 0.8       # 80% humidity
 
 print("Temperature:", temperature)
 print("Humidity:", humidity)`}</code></pre>
-        <CodeRunner code={`# Create a list with temperature and humidity
-inputs = [0.7, 0.8]
-
-# Access elements by index (starting from 0)
-temperature = inputs[0]  # 0.7
-humidity = inputs[1]     # 0.8
+        <CodeRunner code={`# Our weather inputs
+temperature = 0.7    # A warm day (70% of max)
+humidity = 0.8       # 80% humidity
 
 print("Temperature:", temperature)
 print("Humidity:", humidity)`} />
         <p>
-          This is exactly how neural networks receive information — as ordered lists of numbers.
-          Whether you have 2 inputs or 2 million, the structure is the same.
+          These two numbers are our first neural network inputs. They&apos;ll flow through weights,
+          get added up, and eventually produce a rain prediction.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Looking Ahead">
+      <ExplanationBox title="Why These Values Matter">
         <p>
-          You&apos;ve seen how to store weather data in a list. In the next step, we&apos;ll introduce
-          <strong> weights</strong> — the numbers that determine how important each input is for predicting rain.
-          Should humidity matter more than temperature? The weights decide!
+          You just saw the data that will flow through your neural network. In the real world,
+          this data might come from weather sensors, but the principle is the same: <strong>everything
+          in a neural network is a number</strong>.
+        </p>
+        <p>
+          In the next module, we&apos;ll learn how to organize multiple inputs together and introduce
+          <strong> weights</strong> — the values that tell our neuron how much each input matters for
+          predicting rain.
         </p>
       </ExplanationBox>
     </div>
