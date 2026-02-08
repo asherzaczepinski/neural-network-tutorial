@@ -4,8 +4,6 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
-import LayerCollapseDemo from '@/components/LayerCollapseDemo';
 
 interface StepProps {
   onComplete: () => void;
@@ -16,404 +14,116 @@ export default function Step8({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="The Problem: Our Numbers Are All Over the Place">
+      <ExplanationBox title="The Problem with Linear Networks">
         <p>
-          In Step 4, we computed our neuron&apos;s pre-activation value: <strong>z = 0.61</strong>.
-          But what does 0.61 actually mean? Is that a high chance of rain? Low? We have no idea!
+          Here&apos;s one of the most important insights in deep learning: <strong>without non-linearity,
+          depth is useless</strong>. You could stack 100 linear layers and get exactly the same
+          expressive power as 1 layer. Let&apos;s prove this mathematically.
         </p>
         <p>
-          The problem is that z can be <em>any</em> number. With different inputs and weights, you might get:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>z = 0.61 (like our weather example)</li>
-          <li>z = -5.2 (different weather, different weights)</li>
-          <li>z = 47.3 (extreme inputs)</li>
-          <li>z = -0.001 (nearly balanced inputs)</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          We need a function that takes <em>any</em> number and converts it to a probability
-          between 0 and 1. That&apos;s exactly what the <strong>sigmoid function</strong> does.
+          A &quot;linear&quot; neuron is one without an activation function — it just computes the
+          weighted sum plus bias and outputs that directly. Everything we&apos;ve built so far
+          (dot products, bias addition) is linear. If we chain linear operations, we get...
+          another linear operation.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="What Sigmoid Does: Squish Everything to 0-1">
-        <p>
-          Think of sigmoid as a &quot;squishing&quot; function. No matter what number you give it,
-          it outputs something between 0 and 1:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Large positive numbers</strong> (like 10) → get squished toward 1 (confident &quot;yes, rain&quot;)</li>
-          <li><strong>Large negative numbers</strong> (like -10) → get squished toward 0 (confident &quot;no rain&quot;)</li>
-          <li><strong>Zero</strong> → becomes exactly 0.5 (completely uncertain, 50/50)</li>
-          <li><strong>Small positive</strong> (like our 0.61) → becomes slightly above 0.5 (leaning toward rain)</li>
-        </ul>
-      </ExplanationBox>
-
-
-      <WorkedExample title="Let's Apply Sigmoid to Our Weather Calculation">
-        <p>Remember our pre-activation from Step 4? Let&apos;s convert it to a rain probability:</p>
-
-        <CalcStep number={1}>Our neuron computed z = 0.61</CalcStep>
-        <CalcStep number={2}>Apply sigmoid: sigmoid(0.61) = 0.648</CalcStep>
-        <CalcStep number={3}>Interpretation: 64.8% chance of rain!</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          Now our output actually means something! On this warm (0.7), humid (0.8) day,
-          the neuron predicts a <strong>64.8% chance of rain</strong>. That&apos;s a real,
-          interpretable probability.
-        </p>
-      </WorkedExample>
-
-      <WorkedExample title="How Sigmoid Handles Different Signals">
-        <p>Let&apos;s see what sigmoid does to various neuron outputs:</p>
-
-        <CalcStep number={1}>z = -10 → sigmoid(-10) = 0.00005 → &quot;Almost certainly NO rain&quot;</CalcStep>
-        <CalcStep number={2}>z = -2 → sigmoid(-2) = 0.12 → &quot;12% chance, probably dry&quot;</CalcStep>
-        <CalcStep number={3}>z = 0 → sigmoid(0) = 0.50 → &quot;50/50, completely uncertain&quot;</CalcStep>
-        <CalcStep number={4}>z = 0.61 → sigmoid(0.61) = 0.65 → &quot;65% chance, likely rain&quot;</CalcStep>
-        <CalcStep number={5}>z = 2 → sigmoid(2) = 0.88 → &quot;88% chance, probably rain&quot;</CalcStep>
-        <CalcStep number={6}>z = 10 → sigmoid(10) = 0.99995 → &quot;Almost certainly rain&quot;</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          See the pattern? The more positive z is, the closer to 1 (certain rain).
-          The more negative z is, the closer to 0 (certain no rain).
-          And z = 0 is the perfect tipping point at 50%.
-        </p>
-      </WorkedExample>
-
-      <MathFormula label="The Sigmoid Formula">
-        sigmoid(z) = 1 / (1 + e^(-z))
+      <MathFormula label="Linear Composition Collapses">
+        y = W₂ × (W₁ × x) = (W₂ × W₁) × x = W_combined × x
       </MathFormula>
 
-      <ExplanationBox title="Breaking Down the Math (Step by Step)">
+      <ExplanationBox title="The Mathematical Proof">
         <p>
-          The formula looks scary, but let&apos;s trace through it with z = 2:
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Step 1: Negate the input</strong><br />
-          -z = -2
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          <strong>Step 2: Raise e to that power</strong><br />
-          e is approximately 2.718 (a special math constant). So e^(-2) ≈ 0.135
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          <strong>Step 3: Add 1</strong><br />
-          1 + 0.135 = 1.135
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          <strong>Step 4: Divide 1 by that</strong><br />
-          1 / 1.135 = 0.88
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          So sigmoid(2) = 0.88, meaning an 88% probability. The negative z in the exponent
-          is what makes positive inputs give high probabilities and negative inputs give low ones.
-        </p>
-      </ExplanationBox>
-
-      <WorkedExample title="Computing sigmoid(0.61) for Our Weather Example">
-        <p>Let&apos;s trace through our actual weather calculation:</p>
-
-        <CalcStep number={1}>Start with z = 0.61</CalcStep>
-        <CalcStep number={2}>Negate: -0.61</CalcStep>
-        <CalcStep number={3}>e^(-0.61) = 2.718^(-0.61) ≈ 0.543</CalcStep>
-        <CalcStep number={4}>Add 1: 1 + 0.543 = 1.543</CalcStep>
-        <CalcStep number={5}>Divide: 1 / 1.543 = 0.648</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          Our warm, humid day has a <strong>64.8% predicted rain probability</strong>.
-          The positive z (0.61) pushed us above 50%, but not by a huge amount since
-          0.61 is a relatively small positive number.
-        </p>
-      </WorkedExample>
-
-      <ExplanationBox title="Why Sigmoid Also Enables Deep Learning">
-        <p>
-          Sigmoid doesn&apos;t just give us nice probabilities — it&apos;s also what makes
-          multi-layer networks actually work. Let&apos;s see this with our weather example.
-        </p>
-      </ExplanationBox>
-
-      <WorkedExample title="Without Sigmoid: Layers Collapse">
-        <p>Imagine a two-layer network for rain prediction, but WITHOUT sigmoid:</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 1:</strong></p>
-        <CalcStep number={1}>Input: [temp=0.7, humid=0.8], weights=[-0.3, 0.9]</CalcStep>
-        <CalcStep number={2}>Output: 0.7×(-0.3) + 0.8×0.9 = 0.51</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 2:</strong></p>
-        <CalcStep number={3}>Input: 0.51, weight=0.5</CalcStep>
-        <CalcStep number={4}>Output: 0.51 × 0.5 = 0.255</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>But here&apos;s the problem:</strong></p>
-        <p>
-          We can get the EXACT same result with just ONE layer using combined weights:
-        </p>
-        <CalcStep number={5}>Combined weights: [-0.3×0.5, 0.9×0.5] = [-0.15, 0.45]</CalcStep>
-        <CalcStep number={6}>Single layer: 0.7×(-0.15) + 0.8×0.45 = 0.255</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Same answer!</strong> The second layer did nothing useful. We wasted
-          computation on a layer that added zero capability.
-        </p>
-      </WorkedExample>
-
-      <WorkedExample title="With Sigmoid: Each Layer Adds Power">
-        <p>Now the SAME network, but with sigmoid after each layer:</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 1:</strong></p>
-        <CalcStep number={1}>Linear: 0.7×(-0.3) + 0.8×0.9 = 0.51</CalcStep>
-        <CalcStep number={2}>After sigmoid: sigmoid(0.51) = 0.625</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 2:</strong></p>
-        <CalcStep number={3}>Linear: 0.625 × 0.5 = 0.3125</CalcStep>
-        <CalcStep number={4}>After sigmoid: sigmoid(0.3125) = 0.578</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Can we replicate this with one layer?</strong></p>
-        <p>
-          Try to find ANY weights that give 0.578 from inputs [0.7, 0.8] in one step.
-          <strong> You can&apos;t!</strong> The sigmoid transformation creates a result
-          that no single linear combination can produce.
-        </p>
-
-        <p style={{ marginTop: '1rem' }}>
-          This is why sigmoid matters for deep learning: it makes each layer genuinely
-          add computational power. A 10-layer network with sigmoid can learn patterns
-          that a 1-layer network simply cannot represent.
-        </p>
-      </WorkedExample>
-
-      <ExplanationBox title="What This Means for Weather Prediction">
-        <p>
-          Think about what a single layer without sigmoid can do. It can only learn
-          <strong> one simple rule</strong>. Something like:
-        </p>
-        <p style={{ marginTop: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '8px' }}>
-          &quot;If humidity is above 0.6, predict rain. Otherwise, predict no rain.&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          That&apos;s it. One rule. One cutoff. The network looks at humidity, checks if it&apos;s
-          above or below 0.6, and makes its prediction. It completely ignores any
-          complex relationships between temperature AND humidity together.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="But Real Weather Doesn't Follow One Simple Rule">
-        <p>
-          Real rain depends on <strong>combinations</strong> of things:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li>High humidity AND moderate temperature → rain</li>
-          <li>High humidity BUT freezing cold → snow, not rain</li>
-          <li>High humidity BUT extremely hot → the moisture evaporates, no rain</li>
-          <li>Low humidity → no rain, regardless of temperature</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          See how the answer depends on checking multiple conditions together?
-          A single layer can&apos;t do this. It can only check one thing at a time.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Why Sigmoid Makes Each Layer 'Mean Something Different'">
-        <p>
-          Here&apos;s the key insight: sigmoid <strong>warps</strong> the numbers.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Without sigmoid, if layer 1 outputs 0.51, layer 2 just multiplies it.
-          The 0.51 passes through unchanged in meaning — it&apos;s still just &quot;0.51&quot;.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          With sigmoid, that 0.51 gets transformed to 0.625. But here&apos;s the magic:
-          sigmoid doesn&apos;t transform all numbers the same way. Small numbers get
-          pushed toward 0.5. Big positive numbers get pushed toward 1. Big negative
-          numbers get pushed toward 0.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          This &quot;warping&quot; means <strong>each layer&apos;s output now has a different meaning</strong>.
-          Layer 1&apos;s output of 0.625 isn&apos;t just a number anymore — it&apos;s been squeezed
-          into a range where it represents &quot;how confident am I about this first question?&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          When layer 2 receives 0.625, it&apos;s receiving a <em>confidence level</em>, not just
-          a raw number. It can then ask its own question and output its own confidence.
-          The layers stay separate because each one is working with transformed,
-          meaningful values — not just raw numbers that can be collapsed.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="The Two Big Things Sigmoid Does">
-        <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '1rem' }}>
-          Sigmoid isn&apos;t just a fancy mathematical trick — it fundamentally changes what neural networks can do:
-        </p>
-
-        <div style={{
-          background: '#f0f9ff',
-          border: '2px solid #0ea5e9',
-          borderRadius: '12px',
-          padding: '1.25rem',
-          marginBottom: '1rem'
-        }}>
-          <h4 style={{ margin: '0 0 0.75rem 0', color: '#0369a1' }}>
-            1. True Probabilities, Not Just Yes/No
-          </h4>
-          <p>
-            Without sigmoid, you just get a raw number. Is 0.61 high? Is -2.3 low? Who knows!
-            But sigmoid <strong>squishes everything into the 0-1 range</strong>, giving you actual probabilities.
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            Now instead of &quot;rain&quot; or &quot;no rain&quot;, you get <strong>&quot;64.8% chance of rain&quot;</strong>.
-            That&apos;s real information you can use! You could still take derivatives from the slope
-            to measure certainty, but sigmoid condenses everything into one intuitive probability value.
-          </p>
-        </div>
-
-        <div style={{
-          background: '#fdf4ff',
-          border: '2px solid #c026d3',
-          borderRadius: '12px',
-          padding: '1.25rem',
-          marginBottom: '1rem'
-        }}>
-          <h4 style={{ margin: '0 0 0.75rem 0', color: '#a21caf' }}>
-            2. Curved Boundaries That Can Learn Complex Patterns
-          </h4>
-          <p>
-            This is where it gets interesting. When we &quot;squish&quot; the function down, different
-            input values get squished by different amounts. This creates <strong>curvature</strong>.
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            Think about our 2D temperature/humidity graph. With a linear function, you can only
-            draw one straight line to divide &quot;rain&quot; from &quot;no rain&quot;. That&apos;s pretty limiting!
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            But with sigmoid&apos;s curvature, the boundary can <strong>bend and curve</strong> to
-            capture more complex relationships. The network can learn that rain happens when
-            it&apos;s humid AND warm, but NOT when it&apos;s too hot (even if humid).
-          </p>
-        </div>
-
-        <div style={{
-          background: '#fefce8',
-          border: '2px solid #ca8a04',
-          borderRadius: '12px',
-          padding: '1.25rem'
-        }}>
-          <h4 style={{ margin: '0 0 0.75rem 0', color: '#a16207' }}>
-            What About Higher Dimensions?
-          </h4>
-          <p>
-            Our weather example uses 2 inputs (temperature, humidity), so we can visualize it
-            on a 2D graph. But real neural networks might have 4, 100, or even millions of inputs!
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            With 3 inputs, you&apos;d need a 3D space. With 4 inputs, a 4D space (which we can&apos;t
-            visualize!). This is where <strong>Euclidean geometry</strong> comes in — it&apos;s the
-            math that lets us work with distances and boundaries in any number of dimensions.
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            The cool part: sigmoid&apos;s curvature works the same way in 4D, 100D, or any dimension.
-            Instead of a curved line, you get a curved &quot;hypersurface&quot; that can divide up the
-            space in complex ways. Each neuron carves out its own region, and stacking layers
-            lets you combine these regions into incredibly sophisticated decision boundaries.
-          </p>
-          <p style={{ marginTop: '0.75rem', fontStyle: 'italic', color: '#666' }}>
-            Example: To find how &quot;far&quot; a point is from a decision boundary in 4D, you use
-            the Euclidean distance formula: √(x₁² + x₂² + x₃² + x₄²). The math scales perfectly!
-          </p>
-        </div>
-      </ExplanationBox>
-
-      <ExplanationBox title="See It For Yourself">
-        <p>
-          Play with the sliders below. Watch how the linear version always collapses
-          to one layer, but the sigmoid version creates something unique. Notice how
-          the sigmoid graph shows a <strong>gradient of colors</strong> — that&apos;s the
-          probability changing smoothly, not just jumping between &quot;rain&quot; and &quot;no rain&quot;:
-        </p>
-        <LayerCollapseDemo />
-      </ExplanationBox>
-
-      <ExplanationBox title="How This Lets Us Check Multiple Conditions">
-        <p>
-          Because sigmoid keeps each layer&apos;s meaning separate, we can stack layers
-          where each one asks a different question:
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Layer 1 asks:</strong> &quot;Is it warm enough for rain?&quot;
-          <br />
-          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Layer 2 asks:</strong> &quot;Is it too hot for rain?&quot;
-          <br />
-          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Layer 3 asks:</strong> &quot;Is humidity high enough?&quot;
-          <br />
-          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Final layer combines them:</strong> &quot;Warm enough AND not too hot AND humid?&quot;
-          <br />
-          Only if ALL conditions are right, predict rain.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Without sigmoid, all these layers would mathematically collapse into one.
-          You&apos;d be stuck with one simple rule. Sigmoid is what keeps each layer&apos;s
-          question separate and meaningful.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="The Simple Summary">
-        <p>
-          <strong>Without sigmoid:</strong> Your network can only learn one simple rule,
-          no matter how many layers you add. &quot;If X is above some number, predict yes.&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>With sigmoid:</strong> Each layer can ask a new question. More layers
-          means you can check more conditions. &quot;Is A true? Is B true? Is C true?
-          Only if all of them, predict yes.&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          That&apos;s why sigmoid (and activation functions like it) are essential.
-          They let neural networks learn complex patterns instead of just simple rules.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Implementing Sigmoid">
-        <p>
-          Now implement the sigmoid function yourself. Remember: sigmoid(z) = 1 / (1 + e^(-z))
-        </p>
-        <CodeRunner code={`# Define E = 2.71828 (Euler's number)
-
-# Define a function sigmoid(z) that returns:
-# 1 / (1 + E**(-z))
-
-# Test with z = 0.61 (our weather example)
-# Print "z =" and the z value
-# Print "Rain probability =" and sigmoid(z)
-
-# Try other values:
-# Print sigmoid(-2), sigmoid(0), and sigmoid(2)
-`} />
-      </ExplanationBox>
-
-      <ExplanationBox title="The Complete Picture So Far">
-        <p>
-          You now have all the pieces for a complete neuron:
+          Consider two linear layers in sequence:
         </p>
         <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Inputs</strong> — temperature (0.7) and humidity (0.8)</li>
-          <li><strong>Weights</strong> — how much each input matters (-0.3 and 0.9)</li>
-          <li><strong>Bias</strong> — the baseline tendency (0.1)</li>
-          <li><strong>Weighted sum + bias</strong> — gives us z = 0.61</li>
-          <li><strong>Sigmoid</strong> — converts z to probability = 0.648 (64.8%)</li>
+          <li>Layer 1: h = W₁ · x (where x is input, W₁ is first weights, h is hidden output)</li>
+          <li>Layer 2: y = W₂ · h (where h is input to layer 2, W₂ is second weights)</li>
         </ol>
         <p style={{ marginTop: '1rem' }}>
-          In the next step, we&apos;ll combine all these pieces into a single, reusable
-          <code>neuron()</code> function. Then we&apos;ll build layers of neurons and
-          connect them into a full network!
+          Substituting: y = W₂ · (W₁ · x) = (W₂ · W₁) · x
+        </p>
+        <p>
+          The product W₂ · W₁ is just another set of weights! We could precompute it once and use
+          that single combined layer. Two layers collapse into one. This extends to any
+          number of layers — they all collapse into a single linear transformation.
+        </p>
+      </ExplanationBox>
+
+      <WorkedExample title="Proving It With Weather Data">
+        <p>Let&apos;s trace through a two-layer linear network for rain prediction:</p>
+
+        <p style={{ marginTop: '1rem' }}><strong>Setup:</strong></p>
+        <CalcStep number={1}>Input: [temperature=0.7, humidity=0.8]</CalcStep>
+        <CalcStep number={2}>Layer 1 weights: [-0.3, 0.9]</CalcStep>
+        <CalcStep number={3}>Layer 2 weight: 0.5</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}><strong>Two-layer computation:</strong></p>
+        <CalcStep number={4}>Hidden: h = 0.7×(-0.3) + 0.8×0.9 = -0.21 + 0.72 = 0.51</CalcStep>
+        <CalcStep number={5}>Output: y = 0.51 × 0.5 = 0.255</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}><strong>Collapsing to one layer:</strong></p>
+        <CalcStep number={6}>Effective w_temp = -0.3 × 0.5 = -0.15</CalcStep>
+        <CalcStep number={7}>Effective w_humid = 0.9 × 0.5 = 0.45</CalcStep>
+        <CalcStep number={8}>Direct: y = 0.7×(-0.15) + 0.8×0.45 = -0.105 + 0.36 = 0.255</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Same answer!</strong> The two-layer network computed the exact same thing as a
+          single-layer network with combined weights. The extra layer added no capability.
+        </p>
+      </WorkedExample>
+
+      <ExplanationBox title="Why This Matters for Weather Prediction">
+        <p>
+          Think about real weather patterns. When does it rain? It&apos;s not a simple formula like
+          &quot;more humidity = more rain.&quot; Real weather is complex:
+        </p>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>A <strong>warm, humid</strong> day might have thunderstorms</li>
+          <li>A <strong>warm, dry</strong> day stays clear</li>
+          <li>A <strong>cool, humid</strong> day might have light drizzle</li>
+          <li>A <strong>cool, dry</strong> day is probably clear</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          Notice the pattern? Whether it rains depends on the <em>combination</em> of temperature
+          AND humidity, not just adding them together. A linear model can only draw straight lines —
+          it can&apos;t learn &quot;rain when BOTH conditions are right.&quot;
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          Imagine plotting temperature on one axis and humidity on another. The &quot;will it rain?&quot;
+          boundary isn&apos;t a straight line — it&apos;s curved. Linear models can only draw straight
+          boundaries, so they&apos;ll always make mistakes on real weather data.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="The Solution: Activation Functions">
+        <p>
+          The fix is elegant: after each linear transformation, we apply a <strong>non-linear
+          function</strong> (called an activation function). This breaks the chain of linearity,
+          preventing layers from collapsing into one.
+        </p>
+        <p>
+          With activation functions, each layer can learn something that couldn&apos;t be represented
+          by previous layers combined. More layers = more expressive power = ability to learn
+          more complex weather patterns. <em>This is why deep learning works.</em>
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="The Key Insight">
+        <p>
+          This is arguably the most important insight in understanding neural networks:
+        </p>
+        <p style={{
+          background: '#f9fafb',
+          padding: '1rem',
+          borderRadius: '8px',
+          marginTop: '1rem',
+          fontWeight: '600',
+          textAlign: 'center',
+          border: '1px solid #e5e7eb'
+        }}>
+          Depth without non-linearity is meaningless.
+          Non-linearity is what makes deep learning deep.
         </p>
       </ExplanationBox>
     </div>

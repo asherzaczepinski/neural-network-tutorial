@@ -30,7 +30,7 @@ const stepComponents = [
 ];
 
 function CourseContent() {
-  const { completedSteps, completeStep } = useTutorialStore();
+  const { completeStep } = useTutorialStore();
   const searchParams = useSearchParams();
   const stepParam = searchParams.get('step');
   const [headerVisible, setHeaderVisible] = useState(true);
@@ -95,7 +95,6 @@ function CourseContent() {
 
   const StepComponent = stepComponents[currentStep - 1];
   const step = STEPS[currentStep - 1];
-  const isCompleted = completedSteps.includes(currentStep);
 
   return (
     <div className="course-page">
@@ -143,7 +142,6 @@ function CourseContent() {
           <div className="step-header-section">
             <span className="step-label">Module {currentStep}</span>
             <h1>{step.title}</h1>
-            {isCompleted && <span className="completed-tag">Completed</span>}
           </div>
 
           <div className="step-body">
@@ -297,17 +295,6 @@ function CourseContent() {
           line-height: 1.2;
           margin: 0;
           color: #222;
-        }
-
-        .completed-tag {
-          display: inline-block;
-          margin-top: 14px;
-          font-size: 13px;
-          font-weight: 500;
-          color: #22c55e;
-          background: #f0fdf4;
-          padding: 5px 12px;
-          border-radius: 4px;
         }
 
         .step-body {

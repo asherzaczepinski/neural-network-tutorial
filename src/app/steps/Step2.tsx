@@ -7,92 +7,111 @@ interface StepProps {
 }
 
 export default function Step2({ onComplete }: StepProps) {
-  // Auto-complete this step when component mounts
   setTimeout(() => onComplete(), 100);
 
   return (
     <div>
-      <ExplanationBox title="The Quick Overview">
+      <ExplanationBox title="What is a Neuron?">
         <p>
-          You&apos;ve probably heard bits and pieces of how neural networks work. Before we dive into
-          the actual math and code, here&apos;s a quick non-technical overview of what&apos;s actually
-          happening when a neural network learns.
+          A <strong>neuron</strong> is the basic building block of a neural network. It does one simple thing:
+          takes in some numbers, processes them, and outputs a single number that represents how
+          &quot;activated&quot; or &quot;excited&quot; it is.
+        </p>
+        <p>
+          Think of it like a sensor that measures how strongly it detects a pattern. The output
+          tells us the <strong>activation strength</strong> — how confident the neuron is that
+          it found what it&apos;s looking for.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Step 1: Data Goes In">
+      <div style={{
+        background: '#ffffff',
+        borderRadius: '12px',
+        padding: '32px 24px',
+        margin: '20px 0',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #e5e7eb'
+      }}>
+        <svg width="420" height="160" viewBox="0 0 420 160">
+          {/* Input arrows */}
+          <line x1="40" y1="50" x2="130" y2="80" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
+          <line x1="40" y1="110" x2="130" y2="80" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
+
+          {/* Input labels */}
+          <text x="20" y="55" textAnchor="middle" fill="#64748b" fontSize="12" fontWeight="500">temp</text>
+          <text x="20" y="115" textAnchor="middle" fill="#64748b" fontSize="12" fontWeight="500">humid</text>
+
+          {/* The neuron */}
+          <circle cx="170" cy="80" r="40" fill="#8b5cf6" stroke="#7c3aed" strokeWidth="3"/>
+          <text x="170" y="75" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="600">process</text>
+          <text x="170" y="90" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="600">&amp; combine</text>
+
+          {/* Output arrow */}
+          <line x1="210" y1="80" x2="300" y2="80" stroke="#22c55e" strokeWidth="3" markerEnd="url(#arrowhead-green)"/>
+
+          {/* Output label */}
+          <text x="340" y="75" textAnchor="middle" fill="#16a34a" fontSize="13" fontWeight="600">activation</text>
+          <text x="340" y="92" textAnchor="middle" fill="#16a34a" fontSize="13" fontWeight="600">strength</text>
+
+          {/* Arrow markers */}
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8"/>
+            </marker>
+            <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+
+      <ExplanationBox title="Inputs In, Activation Out">
         <p>
-          Everything starts with <strong>inputs</strong> — numbers that represent something real.
-          For our rain prediction project, that&apos;s temperature and humidity. For image recognition,
-          it might be pixel values. For language models, it&apos;s numbers representing words.
+          Every neuron follows the same pattern:
         </p>
-        <p>
-          The key insight: <strong>everything becomes numbers</strong>. Neural networks don&apos;t
-          &quot;see&quot; images or &quot;read&quot; text — they process lists of numbers.
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>Receive inputs</strong> — Numbers from sensors, data, or other neurons</li>
+          <li><strong>Process them</strong> — Combine and transform the inputs</li>
+          <li><strong>Output activation</strong> — A single number (usually 0 to 1)</li>
+        </ol>
+        <p style={{ marginTop: '1rem' }}>
+          The output is called the <strong>activation</strong> because it tells us how &quot;activated&quot;
+          or &quot;triggered&quot; the neuron is by its inputs. High activation (close to 1) means the neuron
+          strongly detected its pattern. Low activation (close to 0) means it didn&apos;t.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Step 2: Numbers Get Weighted">
+      <ExplanationBox title="A Weather Neuron Example">
         <p>
-          Each input gets multiplied by a <strong>weight</strong> — a number that says &quot;how
-          important is this input?&quot; High weight means the input matters a lot. Low weight
-          means it barely affects the output. Negative weight means it works against the prediction.
+          Imagine a neuron designed to detect &quot;rainy conditions&quot;:
         </p>
-        <p>
-          Think of it like voting: each input casts a vote, but some votes count more than others.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Step 3: Add It All Up">
-        <p>
-          All those weighted inputs get added together into a single number. This is called the
-          <strong> weighted sum</strong>. It&apos;s basically asking: &quot;considering all the evidence
-          and how much each piece matters, what&apos;s our total signal?&quot;
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li><strong>Inputs:</strong> temperature (0.7) and humidity (0.8)</li>
+          <li><strong>Processing:</strong> combines them based on learned importance</li>
+          <li><strong>Output:</strong> 0.85 (high activation = &quot;this looks rainy!&quot;)</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          A different day with low humidity might produce 0.15 — low activation, meaning
+          &quot;this doesn&apos;t look like rain to me.&quot;
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Step 4: Squish It">
+      <ExplanationBox title="What You'll Learn Next">
         <p>
-          That sum could be any number — positive, negative, huge, tiny. We pass it through an
-          <strong> activation function</strong> (like sigmoid) that squishes it into a useful range,
-          like 0 to 1. Now we have an actual probability: &quot;65% chance of rain.&quot;
+          Over the next several steps, you&apos;ll learn exactly how a neuron processes its inputs
+          to produce that activation. We&apos;ll build a complete, working neuron piece by piece:
         </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Step 5: Check How Wrong We Were">
-        <p>
-          We compare our prediction to reality. Did it actually rain? The <strong>loss function</strong>
-          measures how far off we were. Big difference = big loss. Perfect prediction = zero loss.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Step 6: Figure Out Who&apos;s Responsible">
-        <p>
-          Here&apos;s where the magic happens. We work backwards through the network asking:
-          &quot;which weights caused this error?&quot; This is called <strong>backpropagation</strong>.
-          It figures out exactly how much each weight contributed to the mistake.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Step 7: Adjust and Repeat">
-        <p>
-          We nudge each weight slightly in the direction that reduces the error. This is
-          <strong> gradient descent</strong> — literally descending toward lower error, step by step.
-        </p>
-        <p>
-          Then we do it again. And again. Thousands of times. Each cycle, the weights get a little
-          better. Eventually, the network &quot;learns&quot; the pattern.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="That&apos;s It. That&apos;s Neural Networks.">
-        <p>
-          Data in → multiply by weights → add up → squish → check error → adjust weights → repeat.
-        </p>
-        <p>
-          Everything else is details. Important details that we&apos;ll cover, but the core loop is
-          exactly this simple. In the next few steps, we&apos;ll turn each of these concepts into
-          actual code you can run.
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>How to represent data as numbers</li>
+          <li>How <strong>weights</strong> control input importance</li>
+          <li>How <strong>bias</strong> adds flexibility</li>
+          <li>How the <strong>activation function</strong> produces the final output</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          By the end, you&apos;ll have built a fully functioning neuron from scratch. Then we&apos;ll
+          connect multiple neurons together into a complete neural network.
         </p>
       </ExplanationBox>
     </div>

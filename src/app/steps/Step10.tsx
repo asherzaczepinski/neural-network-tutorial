@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -14,139 +15,140 @@ export default function Step10({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="What Is a Layer?">
+      <ExplanationBox title="Assembling the Complete Neuron">
         <p>
-          A <strong>layer</strong> is a group of neurons that all receive the same inputs and
-          process them in parallel. Each neuron in the layer has its own weights and bias,
-          so each can learn to detect a different pattern in the data.
+          We&apos;ve built all the individual pieces. Now it&apos;s time to assemble them into a complete,
+          reusable neuron function. This is a milestone — this single function captures everything
+          we&apos;ve learned about how a neuron processes information.
         </p>
         <p>
-          Think of it like having multiple weather experts, each with a different specialty:
+          A complete neuron does three things in sequence:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Expert 1:</strong> Focuses mainly on humidity → &quot;moisture detector&quot;</li>
-          <li><strong>Expert 2:</strong> Focuses mainly on temperature → &quot;heat detector&quot;</li>
-          <li><strong>Expert 3:</strong> Balances both → &quot;overall weather analyzer&quot;</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          Each expert gives their opinion, and the network uses all opinions to make the final prediction.
-        </p>
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>Computes the weighted sum</strong> — dot product of inputs and weights</li>
+          <li><strong>Adds the bias</strong> — shifts the decision threshold</li>
+          <li><strong>Applies the activation</strong> — sigmoid converts to probability</li>
+        </ol>
       </ExplanationBox>
 
-      <MathFormula label="Layer Output">
-        layer_output = [neuron₁(inputs), neuron₂(inputs), ..., neuronₙ(inputs)]
+      <MathFormula label="The Complete Neuron">
+        output = sigmoid(dot_product(inputs, weights) + bias)
       </MathFormula>
 
-      <ExplanationBox title="Why Multiple Neurons?">
+      <ExplanationBox title="Function Composition">
         <p>
-          A single neuron can only learn one pattern — like &quot;humidity causes rain.&quot; But real
-          weather is more nuanced. Rain depends on combinations of factors: temperature AND
-          humidity AND pressure AND season. To capture these complexities, we need multiple
-          neurons that can each specialize in different aspects.
+          Notice how we&apos;re composing (combining) smaller functions to build larger ones. This is
+          a fundamental programming pattern called <strong>function composition</strong>, and it&apos;s
+          exactly how neural networks are structured:
         </p>
-        <p>
-          The key insight: by having each neuron learn a <strong>different</strong> pattern,
-          the layer creates a richer representation of the input than any single neuron could.
-          Later layers can combine these patterns to make sophisticated predictions.
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li><code>dot_product</code> — a mathematical operation</li>
+          <li><code>+ bias</code> — a simple addition</li>
+          <li><code>sigmoid</code> — the activation function</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          By combining these, we get <code>neuron</code> — a higher-level abstraction. Later,
+          we&apos;ll combine neurons into <code>layers</code>, and layers into <code>networks</code>.
+          Each level builds on the previous one.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Three Neurons Analyzing Weather">
-        <p>Let&apos;s trace through a 3-neuron layer with inputs=[0.7, 0.8]:</p>
+      <WorkedExample title="Complete Neuron Calculation">
+        <p>Let&apos;s trace through neuron([0.7, 0.8], [-0.3, 0.9], 0.1):</p>
 
-        <p style={{ marginTop: '1rem' }}><strong>Neuron 1: Humidity Detector</strong></p>
-        <CalcStep number={1}>weights=[0.1, 0.9], bias=-0.3</CalcStep>
-        <CalcStep number={2}>z = (0.7×0.1 + 0.8×0.9) - 0.3 = 0.07 + 0.72 - 0.3 = 0.49</CalcStep>
-        <CalcStep number={3}>output₁ = sigmoid(0.49) = 0.62</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Neuron 2: Temperature Detector</strong></p>
-        <CalcStep number={4}>weights=[0.9, 0.1], bias=-0.4</CalcStep>
-        <CalcStep number={5}>z = (0.7×0.9 + 0.8×0.1) - 0.4 = 0.63 + 0.08 - 0.4 = 0.31</CalcStep>
-        <CalcStep number={6}>output₂ = sigmoid(0.31) = 0.58</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Neuron 3: Combined Detector</strong></p>
-        <CalcStep number={7}>weights=[0.5, 0.5], bias=0.1</CalcStep>
-        <CalcStep number={8}>z = (0.7×0.5 + 0.8×0.5) + 0.1 = 0.35 + 0.40 + 0.1 = 0.85</CalcStep>
-        <CalcStep number={9}>output₃ = sigmoid(0.85) = 0.70</CalcStep>
+        <CalcStep number={1}>
+          <strong>Inputs:</strong> [temperature=0.7, humidity=0.8]
+        </CalcStep>
+        <CalcStep number={2}>
+          <strong>Weights:</strong> [-0.3, 0.9]
+        </CalcStep>
+        <CalcStep number={3}>
+          <strong>Bias:</strong> 0.1
+        </CalcStep>
+        <CalcStep number={4}>
+          <strong>Dot product:</strong> (0.7 × -0.3) + (0.8 × 0.9) = -0.21 + 0.72 = 0.51
+        </CalcStep>
+        <CalcStep number={5}>
+          <strong>Add bias:</strong> z = 0.51 + 0.1 = 0.61
+        </CalcStep>
+        <CalcStep number={6}>
+          <strong>Sigmoid:</strong> sigmoid(0.61) = 1/(1 + e^(-0.61)) = 0.648
+        </CalcStep>
 
         <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>
-          Layer output: [0.62, 0.58, 0.70]
-        </p>
-        <p>
-          Three different &quot;opinions&quot; about the weather: moderate humidity signal (0.62),
-          moderate temperature signal (0.58), and strong combined signal (0.70).
+          Final output: 0.648 (64.8% chance of rain)
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="The Weight Matrix">
+      <ExplanationBox title="What Each Parameter Does">
         <p>
-          For a layer with multiple neurons, we organize weights into a 2D structure
-          (a list of lists, or matrix):
+          <strong>inputs</strong> — The weather data. For rain prediction: [temperature, humidity].
+          Could be any measurements the neuron should consider.
         </p>
-        <pre style={{
-          background: 'var(--bg-tertiary)',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginTop: '1rem'
-        }}>
-{`weights = [
-    [w₁_temp, w₁_humid],  # Neuron 1's weights
-    [w₂_temp, w₂_humid],  # Neuron 2's weights
-    [w₃_temp, w₃_humid],  # Neuron 3's weights
-]
-
-biases = [b₁, b₂, b₃]  # One bias per neuron`}
-        </pre>
-        <p style={{ marginTop: '1rem' }}>
-          Each row is one neuron&apos;s weights. The layer function loops through each row,
-          using those weights to compute that neuron&apos;s output.
+        <p>
+          <strong>weights</strong> — How important each input is. Learned during training.
+          [-0.3, 0.9] means humidity matters more than temperature.
+        </p>
+        <p>
+          <strong>bias</strong> — The baseline tendency. 0.1 means there&apos;s a slight tendency
+          toward predicting rain even with neutral inputs.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="This Is Matrix Multiplication!">
+      <ExplanationBox title="Trying Different Weights">
         <p>
-          Computing a layer&apos;s output is actually <strong>matrix multiplication</strong> plus bias,
-          followed by applying sigmoid to each element. In NumPy, you&apos;d write:
+          By changing weights, the same neuron can learn different patterns:
         </p>
-        <pre style={{
-          background: 'var(--bg-tertiary)',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginTop: '1rem',
-          fontFamily: 'monospace'
-        }}>
-          output = sigmoid(np.dot(weights, inputs) + biases)
-        </pre>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li><strong>weights = [0, 1]</strong> → Only humidity matters</li>
+          <li><strong>weights = [1, 0]</strong> → Only temperature matters</li>
+          <li><strong>weights = [-1, 0]</strong> → Cold temperatures predict rain</li>
+          <li><strong>weights = [0.5, 0.5]</strong> → Both matter equally</li>
+        </ul>
         <p style={{ marginTop: '1rem' }}>
-          We&apos;re building this from scratch with loops, but understanding that it&apos;s matrix
-          multiplication explains why GPUs (which are optimized for matrix math) are so important
-          for neural networks.
+          Training a neural network means finding the weights and biases that produce accurate
+          predictions. We&apos;ll learn how to do this in later steps!
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Building Toward Deep Networks">
+      <ExplanationBox title="Building a Complete Neuron">
         <p>
-          You&apos;ve now built a complete layer! The output of one layer can become the input
-          to the next layer. This is how we build deep networks:
+          Assemble all the pieces into a complete neuron function:
         </p>
-        <pre style={{
-          background: 'var(--bg-tertiary)',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginTop: '1rem'
-        }}>
-{`Input Layer:    [temp, humidity]      (raw weather data)
-       ↓
-Hidden Layer 1: [h1, h2, h3]           (detected patterns)
-       ↓
-Hidden Layer 2: [h4, h5]               (combined patterns)
-       ↓
-Output Layer:   [rain_probability]     (final prediction)`}
-        </pre>
-        <p style={{ marginTop: '1rem' }}>
-          In the next step, we&apos;ll connect multiple layers to build a complete neural network
-          for rain prediction!
+        <CodeRunner code={`# Set E = 2.71828
+
+# Define sigmoid(z) - returns 1 / (1 + E**(-z))
+
+# Define dot_product(a, b) - loop through, multiply pairs, sum results
+
+# Define neuron(inputs, weights, bias):
+#   1. Calculate z = dot_product(inputs, weights) + bias
+#   2. Return sigmoid(z)
+
+# Test with weather data:
+# inputs = [0.7, 0.8]
+# weights = [-0.3, 0.9]
+# bias = 0.1
+# Print "Rain probability:" and neuron(inputs, weights, bias)
+`} />
+      </ExplanationBox>
+
+      <ExplanationBox title="From Neuron to Network">
+        <p>
+          Congratulations! You&apos;ve built a complete artificial neuron from scratch — the fundamental
+          unit of all neural networks. A single neuron can learn simple patterns: &quot;humid = rain.&quot;
         </p>
+        <p>
+          But real weather prediction (and most interesting problems) requires more complexity.
+          In the next steps, we&apos;ll:
+        </p>
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li>Build <strong>layers</strong> — multiple neurons working in parallel</li>
+          <li>Connect layers to form <strong>networks</strong></li>
+          <li>Implement <strong>forward propagation</strong> — data flowing through the network</li>
+          <li>Add <strong>loss functions</strong> — measuring prediction accuracy</li>
+          <li>Learn <strong>backpropagation</strong> — teaching the network to improve</li>
+        </ol>
       </ExplanationBox>
     </div>
   );

@@ -4,7 +4,6 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -15,18 +14,14 @@ export default function Step4({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="What Are Weights, Really?">
+      <ExplanationBox title="What Are Weights?">
         <p>
-          Weights are the most important concept in neural networks. When someone says a neural
-          network has &quot;175 billion parameters,&quot; they&apos;re mostly talking about weights. When we
-          &quot;train&quot; a network, we&apos;re finding the right weight values. When we &quot;save&quot; a trained
-          model, we&apos;re saving its weights.
+          A weight is a number that controls how much an input affects the output. Higher weight
+          = more influence. Lower weight = less influence. Negative weight = works against the output.
         </p>
         <p>
-          A weight is simply a number that controls how much an input influences the output.
-          Think of it as a volume knob — turning it up makes that input louder in the final mix,
-          turning it down makes it quieter, and turning it negative makes it work in reverse
-          (opposing the output instead of supporting it).
+          Weights decide what variables matter in the final prediction. We&apos;ll keep coming back
+          to them throughout this course.
         </p>
       </ExplanationBox>
 
@@ -35,14 +30,16 @@ export default function Step4({ onComplete }: StepProps) {
           For predicting rain, we&apos;ll use these weights:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Temperature weight: -0.3</strong> — Higher temperature slightly reduces rain prediction
-            (hot air can hold more moisture before condensing)</li>
-          <li><strong>Humidity weight: 0.9</strong> — Higher humidity strongly increases rain prediction
-            (more moisture = more likely to rain)</li>
+          <li><strong>Temperature weight: -0.3</strong> — Higher temperature slightly <em>reduces</em> rain
+            prediction (hot air holds more moisture before condensing). Conversely, lower temperatures
+            increase the rain signal.</li>
+          <li><strong>Humidity weight: 0.9</strong> — Higher humidity strongly <em>increases</em> rain
+            prediction (more moisture = more likely to rain). Lower humidity decreases the rain signal.</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          These weights capture real meteorological relationships! Of course, in reality,
-          the network would <em>learn</em> these weights from data rather than us setting them.
+          <strong>Side note:</strong> We&apos;re manually setting these weights to values that make sense.
+          In practice, weights start as small random numbers (typically between -1 and 1), and the
+          network <em>learns</em> the right values through training. We&apos;ll see this later.
         </p>
       </ExplanationBox>
 
@@ -66,70 +63,6 @@ export default function Step4({ onComplete }: StepProps) {
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Weights Start Random">
-        <p>
-          Before training, weights are initialized to small random values (typically between -1 and 1).
-          Why random? In networks with multiple neurons per layer, if all weights started at the same
-          value, every neuron would compute the exact same thing and receive the exact same gradient
-          updates during training — they&apos;d be completely redundant. Random initialization breaks this
-          symmetry, allowing different neurons to specialize and learn different patterns.
-        </p>
-        <p>
-          For now, we&apos;re using hand-picked weights (-0.3, 0.9) that make meteorological sense so you
-          can see meaningful results. But in Steps 16-17, you&apos;ll see the network discover its own
-          weights through training — starting from random values and gradually adjusting them to
-          make accurate predictions!
-        </p>
-      </ExplanationBox>
-
-      <WorkedExample title="Our Specific Calculation">
-        <p>With inputs = [0.7, 0.8] (temp, humidity) and weights = [-0.3, 0.9]:</p>
-
-        <CalcStep number={1}>Temperature: input[0] × weight[0] = 0.7 × -0.3</CalcStep>
-        <CalcStep number={2}>Calculate: 0.7 × -0.3 = -0.21</CalcStep>
-        <CalcStep number={3}>Humidity: input[1] × weight[1] = 0.8 × 0.9</CalcStep>
-        <CalcStep number={4}>Calculate: 0.8 × 0.9 = 0.72</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          Humidity contributes much more (0.72 vs -0.21). The high humidity is pushing
-          toward &quot;rain,&quot; while the warm temperature is slightly pushing against it.
-          When we sum these (next step), we&apos;ll see the combined effect.
-        </p>
-      </WorkedExample>
-
-      <ExplanationBox title="Applying Weights to Inputs">
-        <p>
-          Now let&apos;s apply weights to our inputs to see each feature&apos;s contribution to the prediction.
-        </p>
-        <CodeRunner code={`# Create the inputs list: [0.7, 0.8] (temperature, humidity)
-
-# Create a weights list: [-0.3, 0.9]
-# (-0.3 for temperature, 0.9 for humidity)
-
-# Calculate temp_contribution by multiplying inputs[0] * weights[0]
-
-# Calculate humidity_contribution by multiplying inputs[1] * weights[1]
-
-# Print both contributions
-`} />
-        <p>
-          The weights encode the RELATIONSHIP between inputs and rain prediction!
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="What Comes Next">
-        <p>
-          You now have two weighted values: -0.21 (temperature&apos;s contribution) and 0.72
-          (humidity&apos;s contribution). But a neuron produces a single output, not two separate values.
-          In the next step, we&apos;ll add these weighted values together, plus a &quot;bias&quot; term,
-          to create one combined prediction signal.
-        </p>
-        <p>
-          This addition step is called the <strong>weighted sum</strong> or <strong>dot product</strong>,
-          and it&apos;s mathematically beautiful — we&apos;ll see why it&apos;s the perfect way to combine
-          multiple inputs into one number.
-        </p>
-      </ExplanationBox>
     </div>
   );
 }
