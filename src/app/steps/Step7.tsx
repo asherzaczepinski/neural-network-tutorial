@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -249,16 +250,26 @@ export default function Step7({ onComplete }: StepProps) {
         <p>
           Here's how we implement the sigmoid function:
         </p>
-        <pre><code>{`import math
+        <pre><code>{`E = 2.71828
 
 def sigmoid(z):
-    return 1 / (1 + math.exp(-z))
+    return 1 / (1 + E**(-z))
 
 # Test at various points
 print("sigmoid(-5) =", sigmoid(-5))
 print("sigmoid(0) =", sigmoid(0))
 print("sigmoid(2) =", sigmoid(2))
 print("sigmoid(5) =", sigmoid(5))`}</code></pre>
+        <CodeRunner code={`E = 2.71828
+
+def sigmoid(z):
+    return 1 / (1 + E**(-z))
+
+# Test at various points
+print("sigmoid(-5) =", sigmoid(-5))
+print("sigmoid(0) =", sigmoid(0))
+print("sigmoid(2) =", sigmoid(2))
+print("sigmoid(5) =", sigmoid(5))`} />
       </ExplanationBox>
 
       <ExplanationBox title="You've Built the Core Components!">

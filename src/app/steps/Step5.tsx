@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -142,8 +143,17 @@ export default function Step5({ onComplete }: StepProps) {
 # Test it
 inputs = [0.7, 0.8]
 weights = [-0.3, 0.9]
-print("Dot product:", dot_product(inputs, weights))
-# Should print: Dot product: 0.51`}</code></pre>
+print("Dot product:", dot_product(inputs, weights))`}</code></pre>
+        <CodeRunner code={`def dot_product(a, b):
+    result = 0
+    for i in range(len(a)):
+        result = result + a[i] * b[i]
+    return result
+
+# Test it
+inputs = [0.7, 0.8]
+weights = [-0.3, 0.9]
+print("Dot product:", dot_product(inputs, weights))`} />
       </ExplanationBox>
 
       <ExplanationBox title="A Reusable Building Block">

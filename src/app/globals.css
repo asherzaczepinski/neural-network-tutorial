@@ -187,27 +187,186 @@ li {
 }
 
 /* ============================
-   PRACTICE CODE BUTTON
+   RUN CODE BUTTON & MODAL
    ============================ */
 
-.practice-code-btn {
+.run-code-btn {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin: 28px 0;
-  padding: 14px 24px;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 10px 18px;
   background: #2563eb;
   color: #fff;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s;
 }
 
-.practice-code-btn:hover {
+.run-code-btn:hover {
   background: #1d4ed8;
+}
+
+.code-runner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.code-runner-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.code-runner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+}
+
+.code-runner-close {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.code-runner-close:hover {
+  background: #f3f4f6;
+  color: #111;
+}
+
+.code-runner-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+.code-runner-editor {
+  flex: 1;
+  display: flex;
+  border-right: 1px solid #e5e7eb;
+}
+
+.code-runner-editor textarea {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  outline: none;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  background: #fff;
+  color: #374151;
+}
+
+.code-runner-output {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+}
+
+.code-runner-output-label {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.code-runner-output pre {
+  flex: 1;
+  margin: 0;
+  padding: 14px;
+  font-family: 'SF Mono', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #374151;
+  background: transparent;
+  border: none;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.code-runner-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.code-runner-reset {
+  padding: 8px 16px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.code-runner-reset:hover {
+  background: #e5e7eb;
+}
+
+.code-runner-run {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.code-runner-run:hover {
+  background: #16a34a;
+}
+
+@media (max-width: 640px) {
+  .code-runner-body {
+    flex-direction: column;
+  }
+
+  .code-runner-editor {
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .code-runner-output {
+    width: 100%;
+    max-height: 150px;
+  }
 }
 
 .dot {

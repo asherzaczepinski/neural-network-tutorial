@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -77,6 +78,15 @@ humidity = inputs[1]     # 0.8
 
 print("Temperature:", temperature)
 print("Humidity:", humidity)`}</code></pre>
+        <CodeRunner code={`# Create a list with temperature and humidity
+inputs = [0.7, 0.8]
+
+# Access elements by index (starting from 0)
+temperature = inputs[0]  # 0.7
+humidity = inputs[1]     # 0.8
+
+print("Temperature:", temperature)
+print("Humidity:", humidity)`} />
         <p>
           This is exactly how neural networks receive information — as ordered lists of numbers.
           Whether you have 2 inputs or 2 million, the structure is the same.

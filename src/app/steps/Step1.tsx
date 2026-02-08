@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -111,7 +112,16 @@ export default function Step1({ onComplete }: StepProps) {
         </p>
         <pre><code>{`# Our weather inputs
 temperature = 0.7    # A warm day (70% of max)
-humidity = 0.8       # 80% humidity`}</code></pre>
+humidity = 0.8       # 80% humidity
+
+print("Temperature:", temperature)
+print("Humidity:", humidity)`}</code></pre>
+        <CodeRunner code={`# Our weather inputs
+temperature = 0.7    # A warm day (70% of max)
+humidity = 0.8       # 80% humidity
+
+print("Temperature:", temperature)
+print("Humidity:", humidity)`} />
         <p>
           These two numbers are our first neural network inputs. They&apos;ll flow through weights,
           get added up, and eventually produce a rain prediction.

@@ -73,20 +73,26 @@ export default function Step6({ onComplete }: StepProps) {
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="What Linear Networks Cannot Learn">
+      <ExplanationBox title="Why This Matters for Weather Prediction">
         <p>
-          Linear functions can only learn linear relationships — straight lines (in 2D),
-          flat planes (in 3D), or hyperplanes (in higher dimensions). They cannot learn:
+          Think about real weather patterns. When does it rain? It&apos;s not a simple formula like
+          &quot;more humidity = more rain.&quot; Real weather is complex:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Complex weather patterns</strong> — like &quot;rain when humid AND cool&quot;</li>
-          <li><strong>Curves</strong> — any relationship that isn&apos;t a straight line</li>
-          <li><strong>XOR-like patterns</strong> — where the combination of inputs matters</li>
-          <li><strong>Edges in images</strong> — detecting features requires non-linearity</li>
+          <li>A <strong>warm, humid</strong> day might have thunderstorms</li>
+          <li>A <strong>warm, dry</strong> day stays clear</li>
+          <li>A <strong>cool, humid</strong> day might have light drizzle</li>
+          <li>A <strong>cool, dry</strong> day is probably clear</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          Real weather is full of non-linear relationships. A hot, humid day might have
-          thunderstorms, but a hot, dry day stays clear. A linear model can&apos;t capture this!
+          Notice the pattern? Whether it rains depends on the <em>combination</em> of temperature
+          AND humidity, not just adding them together. A linear model can only draw straight lines —
+          it can&apos;t learn &quot;rain when BOTH conditions are right.&quot;
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          Imagine plotting temperature on one axis and humidity on another. The &quot;will it rain?&quot;
+          boundary isn&apos;t a straight line — it&apos;s curved. Linear models can only draw straight
+          boundaries, so they&apos;ll always make mistakes on real weather data.
         </p>
       </ExplanationBox>
 
@@ -101,41 +107,6 @@ export default function Step6({ onComplete }: StepProps) {
           by previous layers combined. More layers = more expressive power = ability to learn
           more complex weather patterns. <em>This is why deep learning works.</em>
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          In the next step, we&apos;ll implement the sigmoid activation function and see exactly
-          how it adds the non-linearity we need for accurate rain prediction.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Demonstrating Linear Layer Collapse">
-        <p>
-          Here's code that proves linear layers collapse:
-        </p>
-        <pre><code>{`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-def linear_neuron(inputs, weights, bias):
-    return dot_product(inputs, weights) + bias
-
-# Two-layer calculation
-inputs = [0.7, 0.8]
-w1 = [-0.3, 0.9]
-b1 = 0
-w2 = 0.5
-
-hidden = linear_neuron(inputs, w1, b1)  # = 0.51
-output = hidden * w2  # = 0.255
-
-# Collapsed to one layer
-effective_w = [w1[0]*w2, w1[1]*w2]  # [-0.15, 0.45]
-direct = dot_product(inputs, effective_w)  # = 0.255
-
-print("Two layers:", output)
-print("Collapsed:", direct)
-print("Same?", abs(output - direct) < 0.0001)`}</code></pre>
       </ExplanationBox>
 
       <ExplanationBox title="The Key Insight">
@@ -143,12 +114,13 @@ print("Same?", abs(output - direct) < 0.0001)`}</code></pre>
           This is arguably the most important insight in understanding neural networks:
         </p>
         <p style={{
-          background: 'var(--bg-tertiary)',
+          background: '#f9fafb',
           padding: '1rem',
           borderRadius: '8px',
           marginTop: '1rem',
           fontWeight: '600',
-          textAlign: 'center'
+          textAlign: 'center',
+          border: '1px solid #e5e7eb'
         }}>
           Depth without non-linearity is meaningless.
           Non-linearity is what makes deep learning deep.
@@ -156,7 +128,8 @@ print("Same?", abs(output - direct) < 0.0001)`}</code></pre>
         <p style={{ marginTop: '1rem' }}>
           In the next step, we&apos;ll implement the sigmoid function — the classic activation
           function that adds the non-linearity we need. You&apos;ll see exactly how it transforms
-          our weather signal into a rain probability between 0 and 1.
+          our weather signal into a rain probability between 0 and 1, and how its curved shape
+          lets our network learn complex patterns like &quot;rain when warm AND humid.&quot;
         </p>
       </ExplanationBox>
     </div>

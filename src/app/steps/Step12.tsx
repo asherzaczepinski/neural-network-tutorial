@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -121,10 +122,19 @@ average_loss = total_loss / 4`}
 
 # Test cases
 print("Loss tests:")
-print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))  # 0.09
-print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))  # 0.04
-print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))  # 0.0 (perfect!)
-print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))  # 0.0 (perfect!)`}</code></pre>
+print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))
+print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))
+print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))
+print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))`}</code></pre>
+        <CodeRunner code={`def mse_loss(prediction, target):
+    return (prediction - target) ** 2
+
+# Test cases
+print("Loss tests:")
+print("mse_loss(0.7, 1.0) =", mse_loss(0.7, 1.0))
+print("mse_loss(0.2, 0.0) =", mse_loss(0.2, 0.0))
+print("mse_loss(1.0, 1.0) =", mse_loss(1.0, 1.0))
+print("mse_loss(0.0, 0.0) =", mse_loss(0.0, 0.0))`} />
       </ExplanationBox>
 
       <ExplanationBox title="The Training Objective">

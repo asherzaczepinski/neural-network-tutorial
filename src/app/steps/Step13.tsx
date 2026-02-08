@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -138,14 +139,36 @@ def mse_derivative(prediction, target):
 
 # Test sigmoid derivative
 print("Sigmoid derivatives:")
-print("At z=0:", sigmoid_derivative(0))    # 0.25 (maximum)
-print("At z=2:", sigmoid_derivative(2))    # ~0.1
-print("At z=-2:", sigmoid_derivative(-2))  # ~0.1
+print("At z=0:", sigmoid_derivative(0))
+print("At z=2:", sigmoid_derivative(2))
+print("At z=-2:", sigmoid_derivative(-2))
 
 # Test MSE derivative
-print("\\nMSE derivatives:")
-print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))  # -0.6
-print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))  # 0.6`}</code></pre>
+print("MSE derivatives:")
+print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))
+print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))`}</code></pre>
+        <CodeRunner code={`E = 2.71828
+
+def sigmoid(z):
+    return 1 / (1 + E**(-z))
+
+def sigmoid_derivative(z):
+    s = sigmoid(z)
+    return s * (1 - s)
+
+def mse_derivative(prediction, target):
+    return 2 * (prediction - target)
+
+# Test sigmoid derivative
+print("Sigmoid derivatives:")
+print("At z=0:", sigmoid_derivative(0))
+print("At z=2:", sigmoid_derivative(2))
+print("At z=-2:", sigmoid_derivative(-2))
+
+# Test MSE derivative
+print("MSE derivatives:")
+print("pred=0.7, target=1.0:", mse_derivative(0.7, 1.0))
+print("pred=0.3, target=0.0:", mse_derivative(0.3, 0.0))`} />
       </ExplanationBox>
 
       <ExplanationBox title="The Power of Derivatives">

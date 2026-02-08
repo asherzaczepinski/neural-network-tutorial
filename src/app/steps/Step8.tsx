@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -136,6 +137,28 @@ bias = 0.1             # baseline
 
 rain_prob = neuron(inputs, weights, bias)
 print("Rain probability:", rain_prob)`}</code></pre>
+        <CodeRunner code={`E = 2.71828
+
+def sigmoid(z):
+    return 1 / (1 + E**(-z))
+
+def dot_product(a, b):
+    result = 0
+    for i in range(len(a)):
+        result = result + a[i] * b[i]
+    return result
+
+def neuron(inputs, weights, bias):
+    z = dot_product(inputs, weights) + bias
+    return sigmoid(z)
+
+# Test with weather data
+inputs = [0.7, 0.8]    # temperature, humidity
+weights = [-0.3, 0.9]  # learned importance
+bias = 0.1             # baseline
+
+rain_prob = neuron(inputs, weights, bias)
+print("Rain probability:", rain_prob)`} />
       </ExplanationBox>
 
       <ExplanationBox title="From Neuron to Network">

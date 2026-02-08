@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -128,8 +129,15 @@ bias = 0.1
 # Calculate z (pre-activation)
 z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
 
-print("Pre-activation z =", z)
-# Should output: Pre-activation z = 0.61`}</code></pre>
+print("Pre-activation z =", z)`}</code></pre>
+        <CodeRunner code={`inputs = [0.7, 0.8]
+weights = [-0.3, 0.9]
+bias = 0.1
+
+# Calculate z (pre-activation)
+z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
+
+print("Pre-activation z =", z)`} />
       </ExplanationBox>
 
       <ExplanationBox title="Where We Are Now">

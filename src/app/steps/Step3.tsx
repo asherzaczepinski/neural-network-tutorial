@@ -4,6 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 interface StepProps {
   onComplete: () => void;
@@ -111,11 +112,19 @@ temp_contribution = inputs[0] * weights[0]
 humidity_contribution = inputs[1] * weights[1]
 
 print("Temperature contribution:", temp_contribution)
-print("Humidity contribution:", humidity_contribution)
+print("Humidity contribution:", humidity_contribution)`}</code></pre>
+        <CodeRunner code={`# Keep your inputs from before
+inputs = [0.7, 0.8]
 
-# Output:
-# Temperature contribution: -0.21
-# Humidity contribution: 0.72`}</code></pre>
+# Create a weights list: -0.3 for temperature, 0.9 for humidity
+weights = [-0.3, 0.9]
+
+# Multiply each input by its weight
+temp_contribution = inputs[0] * weights[0]
+humidity_contribution = inputs[1] * weights[1]
+
+print("Temperature contribution:", temp_contribution)
+print("Humidity contribution:", humidity_contribution)`} />
         <p>
           The weights encode the RELATIONSHIP between inputs and rain prediction!
         </p>
