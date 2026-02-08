@@ -104,34 +104,38 @@ function CourseContent() {
 
         <nav className="course-nav">
           <button
-            className="nav-btn"
+            className="nav-arrow"
             onClick={prevStep}
             disabled={currentStep === 1}
+            aria-label="Previous step"
           >
-            ←
+            ‹
           </button>
 
-          <div className="step-indicator">
-            {STEPS.map((s) => (
-              <button
-                key={s.id}
-                className={`step-dot ${currentStep === s.id ? 'active' : ''} ${completedSteps.includes(s.id) ? 'completed' : ''}`}
-                onClick={() => goToStep(s.id)}
-                title={s.shortTitle}
-              />
-            ))}
+          <div className="step-pagination">
+            <input
+              type="number"
+              className="step-input"
+              value={currentStep}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                if (val >= 1 && val <= STEPS.length) goToStep(val);
+              }}
+              min={1}
+              max={STEPS.length}
+            />
+            <span className="step-total">of {STEPS.length}</span>
           </div>
 
           <button
-            className="nav-btn"
+            className="nav-arrow"
             onClick={nextStep}
             disabled={currentStep === 17}
+            aria-label="Next step"
           >
-            →
+            ›
           </button>
         </nav>
-
-        <span className="step-count">{currentStep}/{STEPS.length}</span>
       </header>
 
       {/* Main content */}
@@ -215,58 +219,66 @@ function CourseContent() {
           gap: 12px;
         }
 
-        .nav-btn {
+        .nav-arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
           background: none;
-          border: none;
-          font-size: 16px;
-          color: #666;
+          border: 1px solid #e5e5e5;
+          border-radius: 50%;
+          color: #888;
+          font-size: 22px;
+          font-weight: 300;
           cursor: pointer;
-          padding: 6px 10px;
-          border-radius: 4px;
+          transition: all 0.15s;
+          line-height: 1;
         }
 
-        .nav-btn:hover:not(:disabled) {
-          background: #f5f5f5;
-          color: #222;
+        .nav-arrow:hover:not(:disabled) {
+          border-color: #ccc;
+          color: #333;
         }
 
-        .nav-btn:disabled {
+        .nav-arrow:disabled {
           opacity: 0.3;
           cursor: not-allowed;
         }
 
-        .step-indicator {
+        .step-pagination {
           display: flex;
-          gap: 5px;
+          align-items: center;
+          gap: 8px;
         }
 
-        .step-dot {
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background: #ddd;
-          border: none;
-          cursor: pointer;
-          transition: all 0.15s;
+        .step-input {
+          width: 44px;
+          height: 36px;
+          border: 1px solid #e5e5e5;
+          border-radius: 6px;
+          text-align: center;
+          font-size: 15px;
+          font-weight: 500;
+          color: #333;
+          background: #fff;
+          -moz-appearance: textfield;
         }
 
-        .step-dot:hover {
-          background: #bbb;
+        .step-input::-webkit-outer-spin-button,
+        .step-input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
         }
 
-        .step-dot.active {
-          background: #2563eb;
+        .step-input:focus {
+          outline: none;
+          border-color: #2563eb;
         }
 
-        .step-dot.completed {
-          background: #22c55e;
-        }
-
-        .step-count {
-          font-size: 14px;
+        .step-total {
+          font-size: 15px;
           color: #888;
-          min-width: 40px;
-          text-align: right;
         }
 
         .course-main {
@@ -364,13 +376,19 @@ function CourseContent() {
             font-size: 26px;
           }
 
-          .step-indicator {
-            gap: 4px;
+          .nav-arrow {
+            width: 32px;
+            height: 32px;
           }
 
-          .step-dot {
-            width: 8px;
-            height: 8px;
+          .step-input {
+            width: 40px;
+            height: 32px;
+            font-size: 14px;
+          }
+
+          .step-total {
+            font-size: 14px;
           }
         }
       `}</style>
