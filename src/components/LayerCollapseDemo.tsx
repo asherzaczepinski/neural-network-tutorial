@@ -606,6 +606,135 @@ export default function LayerCollapseDemo() {
           The derivative of sigmoid turns out to be just <code style={{ background: '#d1fae5', padding: '2px 6px', borderRadius: '4px' }}>sigmoid(x) × (1 - sigmoid(x))</code> —
           beautifully simple because of e&apos;s special property.
         </p>
+
+        {/* DERIVATIVE COMPARISON GRAPHS */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '1rem',
+          margin: '1.5rem 0',
+          padding: '1rem',
+          background: '#fff',
+          borderRadius: '12px',
+          border: '1px solid #d1fae5'
+        }}>
+          {/* e^x graph */}
+          <div>
+            <h5 style={{ margin: '0 0 0.5rem 0', fontSize: '14px', color: '#047857', textAlign: 'center' }}>
+              e^x and its derivative
+            </h5>
+            <svg width="280" height="180" style={{ display: 'block', margin: '0 auto' }}>
+              {/* Grid */}
+              <line x1="40" y1="150" x2="260" y2="150" stroke="#e5e7eb" strokeWidth="1" />
+              <line x1="40" y1="90" x2="260" y2="90" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4" />
+              <line x1="150" y1="20" x2="150" y2="160" stroke="#e5e7eb" strokeWidth="1" />
+
+              {/* Axes */}
+              <line x1="40" y1="150" x2="260" y2="150" stroke="#374151" strokeWidth="2" />
+              <line x1="150" y1="20" x2="150" y2="160" stroke="#374151" strokeWidth="2" />
+
+              {/* e^x curve (green) */}
+              <path
+                d={`M 40 ${150 - Math.exp(-2.2) * 40}
+                    Q 80 ${150 - Math.exp(-1.1) * 40} 110 ${150 - Math.exp(-0.4) * 40}
+                    Q 150 ${150 - Math.exp(0) * 40} 180 ${150 - Math.exp(0.6) * 40}
+                    Q 210 ${150 - Math.exp(1.2) * 40} 240 ${150 - Math.min(Math.exp(1.8) * 40, 130)}`}
+                stroke="#10b981"
+                strokeWidth="3"
+                fill="none"
+              />
+
+              {/* Derivative curve (same as e^x - dashed) */}
+              <path
+                d={`M 40 ${150 - Math.exp(-2.2) * 40}
+                    Q 80 ${150 - Math.exp(-1.1) * 40} 110 ${150 - Math.exp(-0.4) * 40}
+                    Q 150 ${150 - Math.exp(0) * 40} 180 ${150 - Math.exp(0.6) * 40}
+                    Q 210 ${150 - Math.exp(1.2) * 40} 240 ${150 - Math.min(Math.exp(1.8) * 40, 130)}`}
+                stroke="#f59e0b"
+                strokeWidth="3"
+                strokeDasharray="8,4"
+                fill="none"
+              />
+
+              {/* Labels */}
+              <text x="265" y="155" fontSize="11" fill="#666">x</text>
+              <text x="155" y="18" fontSize="11" fill="#666">y</text>
+              <text x="245" y="45" fontSize="11" fill="#10b981" fontWeight="600">e^x</text>
+              <text x="200" y="70" fontSize="10" fill="#f59e0b" fontWeight="600">derivative</text>
+
+              {/* Point showing they match */}
+              <circle cx="180" cy={150 - Math.exp(0.6) * 40} r="6" fill="#10b981" stroke="#fff" strokeWidth="2" />
+              <circle cx="180" cy={150 - Math.exp(0.6) * 40} r="3" fill="#f59e0b" />
+            </svg>
+            <p style={{ fontSize: '12px', textAlign: 'center', color: '#047857', margin: '0.5rem 0 0 0', fontWeight: 600 }}>
+              They&apos;re the SAME curve! Derivative = original
+            </p>
+          </div>
+
+          {/* 2^x graph */}
+          <div>
+            <h5 style={{ margin: '0 0 0.5rem 0', fontSize: '14px', color: '#dc2626', textAlign: 'center' }}>
+              2^x and its derivative
+            </h5>
+            <svg width="280" height="180" style={{ display: 'block', margin: '0 auto' }}>
+              {/* Grid */}
+              <line x1="40" y1="150" x2="260" y2="150" stroke="#e5e7eb" strokeWidth="1" />
+              <line x1="40" y1="90" x2="260" y2="90" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4" />
+              <line x1="150" y1="20" x2="150" y2="160" stroke="#e5e7eb" strokeWidth="1" />
+
+              {/* Axes */}
+              <line x1="40" y1="150" x2="260" y2="150" stroke="#374151" strokeWidth="2" />
+              <line x1="150" y1="20" x2="150" y2="160" stroke="#374151" strokeWidth="2" />
+
+              {/* 2^x curve (red) */}
+              <path
+                d={`M 40 ${150 - Math.pow(2, -2.2) * 50}
+                    Q 80 ${150 - Math.pow(2, -1.1) * 50} 110 ${150 - Math.pow(2, -0.4) * 50}
+                    Q 150 ${150 - Math.pow(2, 0) * 50} 180 ${150 - Math.pow(2, 0.6) * 50}
+                    Q 210 ${150 - Math.pow(2, 1.2) * 50} 240 ${150 - Math.min(Math.pow(2, 1.8) * 50, 130)}`}
+                stroke="#dc2626"
+                strokeWidth="3"
+                fill="none"
+              />
+
+              {/* Derivative: 2^x × ln(2) ≈ 2^x × 0.693 (dashed, shorter) */}
+              <path
+                d={`M 40 ${150 - Math.pow(2, -2.2) * 50 * 0.693}
+                    Q 80 ${150 - Math.pow(2, -1.1) * 50 * 0.693} 110 ${150 - Math.pow(2, -0.4) * 50 * 0.693}
+                    Q 150 ${150 - Math.pow(2, 0) * 50 * 0.693} 180 ${150 - Math.pow(2, 0.6) * 50 * 0.693}
+                    Q 210 ${150 - Math.pow(2, 1.2) * 50 * 0.693} 240 ${150 - Math.min(Math.pow(2, 1.8) * 50 * 0.693, 130)}`}
+                stroke="#f59e0b"
+                strokeWidth="3"
+                strokeDasharray="8,4"
+                fill="none"
+              />
+
+              {/* Labels */}
+              <text x="265" y="155" fontSize="11" fill="#666">x</text>
+              <text x="155" y="18" fontSize="11" fill="#666">y</text>
+              <text x="245" y="35" fontSize="11" fill="#dc2626" fontWeight="600">2^x</text>
+              <text x="230" y="70" fontSize="10" fill="#f59e0b" fontWeight="600">derivative</text>
+
+              {/* Points showing they DON'T match */}
+              <circle cx="180" cy={150 - Math.pow(2, 0.6) * 50} r="5" fill="#dc2626" stroke="#fff" strokeWidth="2" />
+              <circle cx="180" cy={150 - Math.pow(2, 0.6) * 50 * 0.693} r="5" fill="#f59e0b" stroke="#fff" strokeWidth="2" />
+
+              {/* Arrow showing gap */}
+              <line x1="186" y1={150 - Math.pow(2, 0.6) * 50} x2="186" y2={150 - Math.pow(2, 0.6) * 50 * 0.693} stroke="#666" strokeWidth="1" markerEnd="url(#arrowhead)" />
+              <text x="192" y={(150 - Math.pow(2, 0.6) * 50 + 150 - Math.pow(2, 0.6) * 50 * 0.693) / 2 + 4} fontSize="9" fill="#666">×0.693</text>
+            </svg>
+            <p style={{ fontSize: '12px', textAlign: 'center', color: '#dc2626', margin: '0.5rem 0 0 0', fontWeight: 600 }}>
+              Different curves! Must multiply by 0.693 every time
+            </p>
+          </div>
+        </div>
+
+        <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8', background: '#fef3c7', padding: '1rem', borderRadius: '8px' }}>
+          <strong>What this means in practice:</strong> Every time you take a derivative with base 2, you get
+          an extra ×0.693. In a neural network with millions of weights being updated thousands of times,
+          that&apos;s millions × thousands of extra multiplications. With e, that factor is ×1 — it vanishes completely.
+        </p>
+
         <p style={{ margin: '0 0 1rem 0', lineHeight: '1.8' }}>
           <strong>What if we used 2 instead?</strong> The derivative of 2^x is 2^x × ln(2) ≈ 2^x × 0.693.
           That extra ln(2) factor would propagate through every gradient calculation, making training slower
