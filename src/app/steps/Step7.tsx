@@ -14,17 +14,27 @@ export default function Step7() {
           The dot product takes two lists and turns them into one number. Multiply each pair,
           add up the results. That&apos;s it.
         </p>
-        <div style={{ background: '#f5f5f5', padding: '16px', borderRadius: '8px', marginTop: '12px' }}>
-          <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px' }}>
-            inputs: [0.7 (temp), 0.8 (humidity)] &nbsp;·&nbsp; weights: [-0.3 (temp weight), 0.9 (humidity weight)]
-          </p>
-          <p style={{ fontFamily: 'monospace', fontSize: '15px', margin: 0 }}>
-            (0.7 × -0.3) + (0.8 × 0.9) = -0.21 + 0.72 = <strong>0.51</strong>
-          </p>
-        </div>
         <p style={{ marginTop: '12px' }}>
           We&apos;ve been doing this the whole time — it&apos;s just a name for &quot;multiply pairs, then sum.&quot;
+          Let&apos;s build it up step by step:
         </p>
+
+        <div style={{ background: '#f5f5f5', padding: '16px', borderRadius: '8px', marginTop: '12px', fontFamily: 'monospace', fontSize: '15px', lineHeight: '2.2' }}>
+          <span style={{ color: '#64748b', fontSize: '13px', fontFamily: 'inherit' }}>Set the actual values:</span><br />
+          inputs = [0.7, 0.8]<br />
+          weights = [-0.3, 0.9]<br /><br />
+          <span style={{ color: '#64748b', fontSize: '13px', fontFamily: 'inherit' }}>The equation with just variable names:</span><br />
+          temp × temp_weight + humidity × humidity_weight = <strong>dot product</strong><br /><br />
+          <span style={{ color: '#64748b', fontSize: '13px', fontFamily: 'inherit' }}>Using array notation:</span><br />
+          inputs[0] × weights[0] + inputs[1] × weights[1] = <strong>dot product</strong><br /><br />
+          <span style={{ color: '#64748b', fontSize: '13px', fontFamily: 'inherit' }}>What each index gives you:</span><br />
+          print(inputs[0]) → 0.7<br />
+          print(inputs[1]) → 0.8<br />
+          print(weights[0]) → -0.3<br />
+          print(weights[1]) → 0.9<br /><br />
+          <span style={{ color: '#64748b', fontSize: '13px', fontFamily: 'inherit' }}>Plug in the numbers:</span><br />
+          (0.7 × -0.3) + (0.8 × 0.9) = -0.21 + 0.72 = <strong>0.51</strong>
+        </div>
       </ExplanationBox>
 
       <ExplanationBox title="Why Use It?">
@@ -35,7 +45,7 @@ export default function Step7() {
         <p>
           Every neuron in every neural network uses the dot product. When you hear about
           &quot;matrix multiplication&quot; in deep learning, that&apos;s just doing many dot products at once.
-          Master this and you&apos;ve understood the core of how neural networks compute.
+          We will get into how matrix multiplication works exactly later.
         </p>
       </ExplanationBox>
 
