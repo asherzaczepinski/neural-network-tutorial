@@ -33,20 +33,10 @@ export default function Step2({ onComplete }: StepProps) {
         border: '1px solid #e2e8f0',
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
       }}>
-        <svg width="440" height="160" viewBox="0 0 440 160">
-          {/* Input boxes */}
-          <rect x="10" y="25" width="90" height="36" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
-          <text x="55" y="40" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="500">temperature</text>
-          <text x="55" y="54" textAnchor="middle" fill="#334155" fontSize="13" fontWeight="600">72°F</text>
-
-          <rect x="10" y="99" width="90" height="36" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
-          <text x="55" y="114" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="500">humidity</text>
-          <text x="55" y="128" textAnchor="middle" fill="#334155" fontSize="13" fontWeight="600">85%</text>
-
-          {/* Input arrows */}
-          <line x1="100" y1="43" x2="155" y2="75" stroke="#cbd5e1" strokeWidth="2"/>
-          <line x1="100" y1="117" x2="155" y2="85" stroke="#cbd5e1" strokeWidth="2"/>
-
+        <svg
+          viewBox="0 0 480 160"
+          style={{ width: '100%', maxWidth: '480px', height: 'auto' }}
+        >
           {/* The neuron - gradient circle */}
           <defs>
             <linearGradient id="neuronGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -57,19 +47,31 @@ export default function Step2({ onComplete }: StepProps) {
               <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#7c3aed" floodOpacity="0.3"/>
             </filter>
           </defs>
-          <circle cx="200" cy="80" r="40" fill="url(#neuronGradient)" filter="url(#neuronShadow)"/>
-          <text x="200" y="75" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="500">neuron</text>
-          <text x="200" y="92" textAnchor="middle" fill="#ede9fe" fontSize="18" fontWeight="700">?</text>
 
-          {/* Output arrow */}
-          <line x1="240" y1="80" x2="310" y2="80" stroke="#86efac" strokeWidth="3"/>
-          <polygon points="310,80 300,74 300,86" fill="#22c55e"/>
+          {/* Input boxes */}
+          <rect x="20" y="22" width="90" height="40" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
+          <text x="65" y="38" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="500">temperature</text>
+          <text x="65" y="54" textAnchor="middle" fill="#334155" fontSize="14" fontWeight="600">72°F</text>
+
+          <rect x="20" y="98" width="90" height="40" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
+          <text x="65" y="114" textAnchor="middle" fill="#64748b" fontSize="10" fontWeight="500">humidity</text>
+          <text x="65" y="130" textAnchor="middle" fill="#334155" fontSize="14" fontWeight="600">85%</text>
+
+          {/* Input connectors - with gap from boxes and neuron */}
+          <line x1="120" y1="42" x2="192" y2="72" stroke="#cbd5e1" strokeWidth="2"/>
+          <line x1="120" y1="118" x2="192" y2="88" stroke="#cbd5e1" strokeWidth="2"/>
+
+          {/* The neuron */}
+          <circle cx="240" cy="80" r="40" fill="url(#neuronGradient)" filter="url(#neuronShadow)"/>
+          <text x="240" y="75" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="500">neuron</text>
+          <text x="240" y="92" textAnchor="middle" fill="#ede9fe" fontSize="18" fontWeight="700">?</text>
+
+          {/* Output connector - with gap from neuron and output box */}
+          <line x1="290" y1="80" x2="340" y2="80" stroke="#86efac" strokeWidth="2"/>
 
           {/* Output box */}
-          <rect x="320" y="50" width="110" height="60" rx="10" fill="#f0fdf4" stroke="#bbf7d0" strokeWidth="1.5"/>
-          <text x="375" y="70" textAnchor="middle" fill="#16a34a" fontSize="10" fontWeight="500">activation</text>
-          <text x="375" y="88" textAnchor="middle" fill="#15803d" fontSize="18" fontWeight="700">0.82</text>
-          <text x="375" y="102" textAnchor="middle" fill="#16a34a" fontSize="9" fontWeight="500">chance of rain</text>
+          <rect x="350" y="55" width="100" height="50" rx="10" fill="#f0fdf4" stroke="#bbf7d0" strokeWidth="1.5"/>
+          <text x="400" y="86" textAnchor="middle" fill="#15803d" fontSize="18" fontWeight="700">82% rain</text>
         </svg>
       </div>
 
