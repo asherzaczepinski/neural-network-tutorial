@@ -58,17 +58,19 @@ export default function Step1({ onComplete }: StepProps) {
 
       <ExplanationBox title="What We'll Cover">
         <p>
-          We go deep on everything. Not surface-level overviews—actual understanding:
+          This course has two parts:
         </p>
-        <ul style={{ marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
-          <li><strong>Matrix multiplication</strong> — Why neural networks use it and how it works</li>
-          <li><strong>Forward propagation</strong> — How data flows through a network to make predictions</li>
-          <li><strong>Loss functions</strong> — How we measure &quot;how wrong&quot; a prediction is</li>
-          <li><strong>Derivatives &amp; gradients</strong> — The calculus that tells us which way to adjust</li>
-          <li><strong>The chain rule</strong> — How gradients flow backward through layers</li>
-          <li><strong>Backpropagation</strong> — The algorithm that makes deep learning possible</li>
-          <li><strong>Gradient descent</strong> — How networks actually learn from their mistakes</li>
-        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Part 1: The Neuron</strong> — We start with the smallest building block. You&apos;ll
+          understand exactly what a single neuron does—how it takes inputs, applies weights, adds a
+          bias, and squishes the result through an activation function. Once you truly get the neuron,
+          everything else builds on top.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Part 2: The Network</strong> — Then we zoom out. You&apos;ll see how neurons connect
+          into layers, how data flows forward through the whole network, how we measure mistakes, and
+          how the network learns to fix them through backpropagation and gradient descent.
+        </p>
         <p style={{ marginTop: '1rem' }}>
           Each concept gets <em>proven</em>. Not &quot;trust me, this works&quot;—we derive it,
           visualize it, and build intuition for <em>why</em> it has to be that way.
