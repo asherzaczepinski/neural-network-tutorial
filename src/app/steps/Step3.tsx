@@ -59,14 +59,15 @@ export default function Step3() {
         <p style={{ marginTop: '1rem' }}>
           Try creating a list with our weather data:
         </p>
-        <CodeRunner code={`# Create a list called 'inputs' containing [0.7, 0.8]
-# (temperature first, humidity second)
+        <CodeRunner code={`# Our weather data as a list
+inputs = [0.7, 0.8]
 
-# Access the first element (index 0) and store it in 'temperature'
+# Access each element by index
+temperature = inputs[0]
+humidity = inputs[1]
 
-# Access the second element (index 1) and store it in 'humidity'
-
-# Print both values
+print("Temperature:", temperature)
+print("Humidity:", humidity)
 `} />
         <p>
           This is exactly how neural networks receive information — as ordered lists of numbers.

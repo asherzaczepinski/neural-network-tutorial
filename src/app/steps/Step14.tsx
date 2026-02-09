@@ -111,14 +111,22 @@ average_loss = total_loss / 4`}
         <p>
           Implement the Mean Squared Error loss function:
         </p>
-        <CodeRunner code={`# Define mse_loss(prediction, target) that returns:
-# (prediction - target) ** 2
+        <CodeRunner code={`# MSE Loss: (prediction - target) ** 2
 
-# Test cases - print:
-# mse_loss(0.7, 1.0) - prediction too low
-# mse_loss(0.2, 0.0) - prediction too high
-# mse_loss(1.0, 1.0) - perfect prediction
-# mse_loss(0.0, 0.0) - perfect prediction
+# Prediction too low (predicted 0.7, actual 1.0)
+loss1 = (0.7 - 1.0) ** 2
+print("Loss (0.7 vs 1.0):", loss1)
+
+# Prediction too high (predicted 0.2, actual 0.0)
+loss2 = (0.2 - 0.0) ** 2
+print("Loss (0.2 vs 0.0):", loss2)
+
+# Perfect predictions
+loss3 = (1.0 - 1.0) ** 2
+print("Loss (1.0 vs 1.0):", loss3)
+
+loss4 = (0.0 - 0.0) ** 2
+print("Loss (0.0 vs 0.0):", loss4)
 `} />
       </ExplanationBox>
 

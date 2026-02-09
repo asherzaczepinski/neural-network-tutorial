@@ -28,9 +28,9 @@ export default function Step1() {
           actually follow.
         </p>
         <p>
-          By the end, you&apos;ll have written every line of code yourself and understood every
-          equation. You&apos;ll know what backpropagation <em>really</em> does, not just that
-          it &quot;propagates errors backward.&quot;
+          By the end, you&apos;ll understand every equation and see every line of code that makes
+          a neural network work. You&apos;ll know what backpropagation <em>really</em> does, not
+          just that it &quot;propagates errors backward.&quot;
         </p>
       </ExplanationBox>
 

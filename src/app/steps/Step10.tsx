@@ -109,21 +109,24 @@ export default function Step10() {
         <p>
           Assemble all the pieces into a complete neuron function:
         </p>
-        <CodeRunner code={`# Set E = 2.71828
+        <CodeRunner code={`E = 2.71828
 
-# Define sigmoid(z) - returns 1 / (1 + E**(-z))
+# Inputs and parameters
+inputs = [0.7, 0.8]
+weights = [-0.3, 0.9]
+bias = 0.1
 
-# Define dot_product(a, b) - loop through, multiply pairs, sum results
+# Step 1: Dot product (multiply pairs, sum results)
+dot = inputs[0] * weights[0] + inputs[1] * weights[1]
+print("Dot product:", dot)
 
-# Define neuron(inputs, weights, bias):
-#   1. Calculate z = dot_product(inputs, weights) + bias
-#   2. Return sigmoid(z)
+# Step 2: Add bias
+z = dot + bias
+print("z (pre-activation):", z)
 
-# Test with weather data:
-# inputs = [0.7, 0.8]
-# weights = [-0.3, 0.9]
-# bias = 0.1
-# Print "Rain probability:" and neuron(inputs, weights, bias)
+# Step 3: Apply sigmoid
+output = 1 / (1 + E ** (-z))
+print("Rain probability:", output)
 `} />
       </ExplanationBox>
 

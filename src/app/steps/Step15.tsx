@@ -119,22 +119,27 @@ export default function Step15() {
         <p>
           Implement the derivative functions we need for backpropagation:
         </p>
-        <CodeRunner code={`# Set E = 2.71828
+        <CodeRunner code={`E = 2.71828
 
-# Define sigmoid(z) - returns 1 / (1 + E**(-z))
+# Sigmoid derivative: sigmoid(z) * (1 - sigmoid(z))
+# Test at z = 0 (max sensitivity)
+s0 = 1 / (1 + E ** 0)
+print("sigmoid_deriv(0) =", s0 * (1 - s0))
 
-# Define sigmoid_derivative(z):
-#   1. Calculate s = sigmoid(z)
-#   2. Return s * (1 - s)
+# Test at z = 2 (less sensitive)
+s2 = 1 / (1 + E ** (-2))
+print("sigmoid_deriv(2) =", s2 * (1 - s2))
 
-# Define mse_derivative(prediction, target):
-#   Return 2 * (prediction - target)
+# Test at z = -2
+sn2 = 1 / (1 + E ** 2)
+print("sigmoid_deriv(-2) =", sn2 * (1 - sn2))
 
-# Test sigmoid derivative at z=0, z=2, z=-2
+# MSE derivative: 2 * (prediction - target)
+# Prediction too low (negative = increase prediction)
+print("mse_deriv(0.7, 1.0) =", 2 * (0.7 - 1.0))
 
-# Test MSE derivative:
-# pred=0.7, target=1.0 (should be negative - prediction too low)
-# pred=0.3, target=0.0 (should be positive - prediction too high)
+# Prediction too high (positive = decrease prediction)
+print("mse_deriv(0.3, 0.0) =", 2 * (0.3 - 0.0))
 `} />
       </ExplanationBox>
 

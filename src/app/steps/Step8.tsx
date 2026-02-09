@@ -124,17 +124,24 @@ export default function Step8() {
         <p>
           Now implement the sigmoid function yourself. Remember: sigmoid(z) = 1 / (1 + e^(-z))
         </p>
-        <CodeRunner code={`# Define E = 2.71828 (Euler's number)
+        <CodeRunner code={`# Euler's number
+E = 2.71828
 
-# Define a function sigmoid(z) that returns:
-# 1 / (1 + E**(-z))
+# Sigmoid: 1 / (1 + e^(-z))
+z = 0.61
+sigmoid_z = 1 / (1 + E ** (-z))
+print("z =", z)
+print("Rain probability =", sigmoid_z)
 
-# Test with z = 0.61 (our weather example)
-# Print "z =" and the z value
-# Print "Rain probability =" and sigmoid(z)
+# Try other values
+z2 = -2
+print("sigmoid(-2) =", 1 / (1 + E ** (-z2)))
 
-# Try other values:
-# Print sigmoid(-2), sigmoid(0), and sigmoid(2)
+z3 = 0
+print("sigmoid(0) =", 1 / (1 + E ** (-z3)))
+
+z4 = 2
+print("sigmoid(2) =", 1 / (1 + E ** (-z4)))
 `} />
       </ExplanationBox>
     </div>
