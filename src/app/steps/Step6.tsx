@@ -15,134 +15,81 @@ export default function Step6({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="What Is Bias?">
+      <ExplanationBox title="Putting It All Together">
         <p>
-          Bias is simply a number that gets added after the weighted sum. It shifts the result
-          up or down before we squish it into a probability.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Why Bias Adds Flexibility">
-        <p>
-          Without bias, neurons are limited in what they can learn. Bias gives each neuron
-          the flexibility to adjust its &quot;default&quot; behavior — making it more or less likely
-          to activate regardless of the inputs.
+          We now have all the pieces: inputs, weights, and bias. The <strong>pre-activation</strong> (also
+          called <strong>z</strong>) is simply the result of combining them all — multiply each input by
+          its weight, add them up, then add the bias.
         </p>
         <p>
-          In a network with many neurons, different biases create <strong>variety</strong>:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Positive bias → neuron activates more easily (lower threshold)</li>
-          <li>Negative bias → neuron is harder to activate (higher threshold)</li>
-          <li>Zero bias → neutral, purely driven by inputs</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          This variety is essential. Some neurons become &quot;eager&quot; detectors, others become
-          &quot;skeptical&quot; — and the network needs both to capture complex patterns.
+          This value z tells us the neuron&apos;s &quot;raw signal&quot; before we convert it to a probability.
         </p>
       </ExplanationBox>
 
       <MathFormula label="Pre-activation (z)">
-        z = (temperature × w₁) + (humidity × w₂) + bias
+        z = (input₁ × weight₁) + (input₂ × weight₂) + bias
       </MathFormula>
 
-      <ExplanationBox title="Why 'z' and 'Pre-activation'?">
-        <p>
-          The value we calculate (weighted sum plus bias) is commonly called <strong>z</strong>
-          in neural network literature. It&apos;s also called the <strong>pre-activation</strong> because
-          it&apos;s the value <em>before</em> we apply the activation function.
-        </p>
-        <p>
-          The sequence is: inputs → weights → weighted sum → add bias → z (pre-activation) →
-          activation function → output (rain probability). We&apos;re building toward the activation function,
-          but first we need to compute z correctly.
-        </p>
-      </ExplanationBox>
-
       <WorkedExample title="Computing z Step by Step">
-        <p>With inputs = [0.7, 0.8], weights = [-0.3, 0.9], and bias = 0.1:</p>
+        <p>Let&apos;s calculate z with our weather data:</p>
 
-        <CalcStep number={1}>Temperature contribution: 0.7 × -0.3 = -0.21</CalcStep>
-        <CalcStep number={2}>Humidity contribution: 0.8 × 0.9 = 0.72</CalcStep>
-        <CalcStep number={3}>Weighted sum: -0.21 + 0.72 = 0.51</CalcStep>
-        <CalcStep number={4}>Add bias: z = 0.51 + 0.1 = 0.61</CalcStep>
+        <CalcStep number={1}>Inputs: temperature = 0.7, humidity = 0.8</CalcStep>
+        <CalcStep number={2}>Weights: w_temp = -0.3, w_humid = 0.9</CalcStep>
+        <CalcStep number={3}>Bias: 0.1</CalcStep>
+        <CalcStep number={4}>Temperature contribution: 0.7 × -0.3 = -0.21</CalcStep>
+        <CalcStep number={5}>Humidity contribution: 0.8 × 0.9 = 0.72</CalcStep>
+        <CalcStep number={6}>Weighted sum: -0.21 + 0.72 = 0.51</CalcStep>
+        <CalcStep number={7}>Add bias: z = 0.51 + 0.1 = 0.61</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          Our pre-activation value is <strong>z = 0.61</strong>. This positive number suggests
-          the neuron is leaning toward &quot;rain.&quot; After passing through sigmoid (Step 7),
-          this will become a probability around 65% rain chance.
+          Our pre-activation is <strong>z = 0.61</strong>. This positive number means the neuron is
+          leaning toward predicting rain. But what does 0.61 actually mean? Is that a lot? A little?
+          That&apos;s why we need an activation function next.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Bias Can Be Negative Too">
+      <ExplanationBox title="Why Call It 'Pre-activation'?">
         <p>
-          Like weights, bias can be positive or negative. A positive bias makes the neuron
-          more likely to predict rain (shifts output upward). A negative bias makes it less
-          likely to predict rain (shifts output downward, making the neuron more &quot;skeptical&quot;).
+          The name &quot;pre-activation&quot; tells you exactly what it is — the value <em>before</em> we
+          apply the activation function. The sequence goes:
         </p>
-        <p>
-          During training, the network learns appropriate bias values along with weights.
-          Some neurons end up with positive biases (easily activated), others with negative
-          biases (hard to activate). This diversity helps the network represent complex patterns.
+        <p style={{ marginTop: '0.5rem', fontFamily: 'monospace', fontSize: '0.95em' }}>
+          inputs → multiply by weights → sum → add bias → <strong>z</strong> → activation function → output
         </p>
-      </ExplanationBox>
-
-      <WorkedExample title="Effect of Different Bias Values">
-        <p>Same weighted sum (0.51), different biases — watch how bias determines how &quot;confident&quot; this neuron becomes:</p>
-
-        <CalcStep number={1}>bias = 0.5: z = 0.51 + 0.5 = 1.01 → this neuron strongly predicts rain</CalcStep>
-        <CalcStep number={2}>bias = 0.0: z = 0.51 + 0.0 = 0.51 → this neuron has a neutral baseline</CalcStep>
-        <CalcStep number={3}>bias = -0.5: z = 0.51 - 0.5 = 0.01 → this neuron is barely activated</CalcStep>
-        <CalcStep number={4}>bias = -1.0: z = 0.51 - 1.0 = -0.49 → this neuron predicts no rain</CalcStep>
-
         <p style={{ marginTop: '1rem' }}>
-          See how bias controls each neuron&apos;s &quot;personality&quot;? With bias = 0.5, this neuron becomes
-          a confident rain predictor. With bias = -1.0, this neuron becomes skeptical — even moderate
-          humidity isn&apos;t enough to convince it. In a full network, having neurons with different biases
-          means some will fire strongly while others stay quiet, creating a rich mix of signals.
-        </p>
-      </WorkedExample>
-
-      <ExplanationBox title="One Bias Per Neuron">
-        <p>
-          Each neuron has exactly one bias value, regardless of how many inputs it has.
-          If a neuron has 100 inputs (like 100 weather measurements), it has 100 weights
-          (one per input) but still just 1 bias.
-        </p>
-        <p>
-          The bias is added after all the weighted inputs are summed. It&apos;s a single final
-          adjustment to the total, not separate adjustments per input.
+          Right now z can be any number: positive, negative, huge, tiny. The activation function
+          will squish it into a useful range like 0 to 1.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Computing z (Pre-activation)">
+      <ExplanationBox title="Try It Yourself">
         <p>
-          Now compute the pre-activation value by combining weights, inputs, and bias:
+          Compute the pre-activation value:
         </p>
-        <CodeRunner code={`# Set up inputs = [0.7, 0.8]
+        <CodeRunner code={`# Inputs
+temperature = 0.7
+humidity = 0.8
 
-# Set up weights = [-0.3, 0.9]
+# Weights
+w_temp = -0.3
+w_humid = 0.9
 
-# Set bias = 0.1
+# Bias
+bias = 0.1
 
-# Calculate z (pre-activation):
-# z = inputs[0]*weights[0] + inputs[1]*weights[1] + bias
+# Calculate z (pre-activation)
+z = (temperature * w_temp) + (humidity * w_humid) + bias
 
-# Print the result: "Pre-activation z =", z
+print("Pre-activation z =", z)
 `} />
       </ExplanationBox>
 
-      <ExplanationBox title="Where We Are Now">
+      <ExplanationBox title="What's Next">
         <p>
-          You&apos;ve computed the <strong>pre-activation value z = 0.61</strong>. This represents
-          the raw &quot;signal strength&quot; for our rain prediction before any transformation.
-          But neural networks need something more — they need non-linearity.
-        </p>
-        <p>
-          In the next step, we&apos;ll learn about the <strong>dot product</strong> — a cleaner way
-          to compute what we just did. Then we&apos;ll explore <em>why</em> non-linearity is essential
-          (spoiler: without it, deep networks are useless), before finally implementing the
-          sigmoid activation function in Step 7.
+          We&apos;ve computed z = 0.61, but this raw number isn&apos;t very useful yet. In the next
+          steps, we&apos;ll learn about the <strong>dot product</strong> (a cleaner way to write this
+          calculation) and then the <strong>activation function</strong> that turns z into an actual
+          probability between 0 and 1.
         </p>
       </ExplanationBox>
     </div>
