@@ -26,18 +26,20 @@ export default function Step5({ onComplete }: StepProps) {
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="The y = mx + b Analogy">
+      <ExplanationBox title="Weights + Bias = The Full Picture">
         <p>
-          Remember y = mx + b from algebra? Without the &quot;+ b&quot; part, the line <em>has</em> to
-          pass through the origin (0,0). The bias term lets you shift the whole line up or down.
+          Here&apos;s how weights and bias work together to make predictions:
         </p>
-        <p>
-          Neural networks work the same way. Without bias, the neuron&apos;s decision boundary is
-          stuck passing through zero. With bias, we can shift that boundary anywhere we need it.
-        </p>
-        <p>
-          During training, the network learns the best bias values automatically — just like it
-          learns the weights. Both get adjusted through backpropagation to make better predictions.
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li><strong>Weights</strong> decide which inputs matter and by how much. High weight on humidity?
+            Humidity has a big influence. Negative weight on temperature? Higher temps push the prediction down.</li>
+          <li><strong>Bias</strong> is our starting assumption about how important this neuron is. Before
+            looking at any inputs, should this neuron already be leaning toward firing or staying quiet?</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          Together, they answer: &quot;Which inputs matter, how much do they matter, and what&apos;s our
+          starting assumption?&quot; During training, the network adjusts both weights AND bias to find
+          the combination that makes the best predictions.
         </p>
       </ExplanationBox>
 
