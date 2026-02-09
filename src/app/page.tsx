@@ -7,7 +7,7 @@ import { STEPS } from '@/lib/store';
 
 // Preload adjacent steps for instant navigation
 const preloadStep = (stepNum: number) => {
-  if (stepNum >= 1 && stepNum <= 18) {
+  if (stepNum >= 1 && stepNum <= 17) {
     import(`@/app/steps/Step${stepNum}`);
   }
 };
@@ -32,7 +32,7 @@ const createStepComponent = (stepNum: number) =>
   });
 
 // Pre-create all step components (they're still lazy-loaded)
-const stepComponents = Array.from({ length: 18 }, (_, i) => createStepComponent(i + 1));
+const stepComponents = Array.from({ length: 17 }, (_, i) => createStepComponent(i + 1));
 
 // Memoized navigation button
 const NavButton = memo(function NavButton({
@@ -85,7 +85,7 @@ function CourseContent() {
   const getInitialStep = () => {
     if (stepParam) {
       const parsed = parseInt(stepParam, 10);
-      if (parsed >= 1 && parsed <= 18) return parsed;
+      if (parsed >= 1 && parsed <= 17) return parsed;
     }
     return 1;
   };
@@ -139,7 +139,7 @@ function CourseContent() {
   }, []);
 
   const nextStep = useCallback(() => {
-    if (currentStep < 18) goToStep(currentStep + 1);
+    if (currentStep < 17) goToStep(currentStep + 1);
   }, [currentStep, goToStep]);
 
   const prevStep = useCallback(() => {
@@ -148,7 +148,7 @@ function CourseContent() {
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value, 10);
-    if (val >= 1 && val <= 18) goToStep(val);
+    if (val >= 1 && val <= 17) goToStep(val);
   }, [goToStep]);
 
   const StepComponent = stepComponents[currentStep - 1];
@@ -168,12 +168,12 @@ function CourseContent() {
               value={currentStep}
               onChange={handleInputChange}
               min={1}
-              max={18}
+              max={17}
             />
-            <span className="step-total">of 18</span>
+            <span className="step-total">of 17</span>
           </div>
 
-          <NavButton direction="next" onClick={nextStep} disabled={currentStep === 18} />
+          <NavButton direction="next" onClick={nextStep} disabled={currentStep === 17} />
         </nav>
       </header>
 
@@ -193,7 +193,7 @@ function CourseContent() {
           <div className="step-footer">
             {currentStep > 1 && <FooterButton direction="prev" onClick={prevStep} />}
             <div className="footer-spacer" />
-            {currentStep < 18 && <FooterButton direction="next" onClick={nextStep} />}
+            {currentStep < 17 && <FooterButton direction="next" onClick={nextStep} />}
           </div>
         </div>
       </main>
@@ -217,7 +217,7 @@ export default function Home() {
             <div className="nav-arrow" style={{ opacity: 0.3 }}>←</div>
             <div className="step-pagination">
               <div className="step-input" style={{ background: '#f3f4f6' }} />
-              <span className="step-total">of 18</span>
+              <span className="step-total">of 17</span>
             </div>
             <div className="nav-arrow" style={{ opacity: 0.3 }}>→</div>
           </nav>

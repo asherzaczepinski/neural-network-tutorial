@@ -8,147 +8,89 @@ import CalcStep from '@/components/CalcStep';
 export default function Step12() {
   return (
     <div>
-      <ExplanationBox title="Connecting Layers">
+      <ExplanationBox title="Forward Propagation">
         <p>
-          The magic of deep learning happens when we connect layers together. The output
-          of one layer becomes the input to the next. This creates a <strong>pipeline</strong>
-          where data is progressively transformed, with each layer extracting more abstract features.
+          <strong>Forward propagation</strong> (or &quot;forward pass&quot;) is the process of running
+          inputs through the network to produce outputs. Data flows forward: input layer →
+          hidden layer 1 → hidden layer 2 → output layer. This is what we&apos;ve been building.
         </p>
         <p>
-          In our network with two hidden layers:
+          We&apos;ll wrap our computation in a single <code>forward()</code> function
+          that takes inputs and returns the prediction. This makes it easy to test our
+          network on different inputs.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Raw inputs flow into <strong>hidden layer 1</strong></li>
-          <li>Hidden layer 1 produces intermediate features</li>
-          <li>Those features flow into <strong>hidden layer 2</strong></li>
-          <li>Hidden layer 2 produces more abstract features</li>
-          <li>Those flow into the <strong>output layer</strong> for the final prediction</li>
-        </ul>
       </ExplanationBox>
 
-      <div style={{
-        background: 'var(--bg-tertiary)',
-        padding: '1.5rem',
-        borderRadius: '12px',
-        margin: '1.5rem 0',
-        textAlign: 'center'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Input</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <div className="neuron-viz">x₁</div>
-              <div className="neuron-viz">x₂</div>
-            </div>
-          </div>
-          <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>→</div>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Hidden 1</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <div className="neuron-viz active">h₁</div>
-              <div className="neuron-viz active">h₂</div>
-              <div className="neuron-viz active">h₃</div>
-            </div>
-          </div>
-          <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>→</div>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Hidden 2</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <div className="neuron-viz active">h₄</div>
-              <div className="neuron-viz active">h₅</div>
-              <div className="neuron-viz active">h₆</div>
-            </div>
-          </div>
-          <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>→</div>
-          <div>
-            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Output</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <div className="neuron-viz active">y</div>
-            </div>
-          </div>
-        </div>
-        <p style={{ marginTop: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          2 inputs → 3 hidden (layer 1) → 3 hidden (layer 2) → 1 output
-        </p>
-      </div>
-
-      <MathFormula label="Two-Hidden-Layer Network">
-        h1 = layer(inputs, W₁, b₁) → h2 = layer(h1, W₂, b₂) → output = layer(h2, W₃, b₃)
+      <MathFormula label="Forward Pass">
+        output = forward(x) = layer₃(layer₂(layer₁(x, W₁, b₁), W₂, b₂), W₃, b₃)
       </MathFormula>
 
-      <ExplanationBox title="Why 'Hidden' Layers?">
+      <ExplanationBox title="Testing on XOR">
         <p>
-          The middle layers are called &quot;hidden&quot; because we don&apos;t directly observe their values -
-          we only see the inputs and final outputs. Each hidden layer&apos;s job is to create
-          useful intermediate representations.
+          Remember our goal: learn the XOR function. Let&apos;s test our network on all four
+          XOR inputs and see what it outputs:
         </p>
-        <p>
-          Think of it like cooking: raw ingredients (inputs) → chopped ingredients
-          (hidden layer 1) → mixed/seasoned ingredients (hidden layer 2) → final dish (output).
-          Each step transforms the data into a form that&apos;s more useful for the next step.
-        </p>
+        <table style={{ marginTop: '1rem' }}>
+          <thead>
+            <tr>
+              <th>Input</th>
+              <th>Expected (XOR)</th>
+              <th>What we want</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>[0, 0]</td><td>0</td><td>Output close to 0</td></tr>
+            <tr><td>[0, 1]</td><td>1</td><td>Output close to 1</td></tr>
+            <tr><td>[1, 0]</td><td>1</td><td>Output close to 1</td></tr>
+            <tr><td>[1, 1]</td><td>0</td><td>Output close to 0</td></tr>
+          </tbody>
+        </table>
       </ExplanationBox>
 
-      <ExplanationBox title="Dimension Changes">
+      <ExplanationBox title="What Will Random Weights Produce?">
         <p>
-          Notice how dimensions change through the network:
+          With random weights (which we haven&apos;t trained yet), the network will output
+          essentially random values. All outputs will be somewhere around 0.5-0.7 because:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Input:</strong> 2 values [x₁, x₂]</li>
-          <li><strong>Hidden 1 weights (W₁):</strong> 3×2 (3 neurons, each with 2 weights)</li>
-          <li><strong>Hidden 1 output:</strong> 3 values [h₁, h₂, h₃]</li>
-          <li><strong>Hidden 2 weights (W₂):</strong> 3×3 (3 neurons, each with 3 weights)</li>
-          <li><strong>Hidden 2 output:</strong> 3 values [h₄, h₅, h₆]</li>
-          <li><strong>Output weights (W₃):</strong> 1×3 (1 neuron with 3 weights)</li>
-          <li><strong>Output:</strong> 1 value [y]</li>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>Random weights don&apos;t encode any useful pattern</li>
+          <li>Sigmoid pushes most random sums toward the middle range</li>
+          <li>The network has no idea what XOR is yet</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          Each layer transforms the data. The deeper we go, the more abstract the features become.
+          This is expected! The point of this step is to see that untrained networks
+          are useless - they need training to learn the correct weight values.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Full Network Trace">
-        <p>Let&apos;s trace data through our 2-hidden-layer network:</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Input:</strong> [0.5, 0.8]</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Hidden Layer 1 (3 neurons):</strong></p>
-        <CalcStep number={1}>h₁ = sigmoid(0.5×0.4 + 0.8×0.6 + 0.1) = sigmoid(0.78) = 0.686</CalcStep>
-        <CalcStep number={2}>h₂ = sigmoid(0.5×0.2 + 0.8×(-0.5) + (-0.2)) = sigmoid(-0.5) = 0.378</CalcStep>
-        <CalcStep number={3}>h₃ = sigmoid(0.5×(-0.3) + 0.8×0.8 + 0.3) = sigmoid(0.79) = 0.688</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Hidden 1 Output:</strong> [0.686, 0.378, 0.688]</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Hidden Layer 2 (3 neurons):</strong></p>
-        <CalcStep number={4}>h₄ = sigmoid(0.686×0.3 + 0.378×0.5 + 0.688×(-0.2) + 0.1) = sigmoid(0.36) = 0.589</CalcStep>
-        <CalcStep number={5}>h₅ = sigmoid(0.686×(-0.4) + 0.378×0.6 + 0.688×0.4 + (-0.1)) = sigmoid(0.18) = 0.545</CalcStep>
-        <CalcStep number={6}>h₆ = sigmoid(0.686×0.5 + 0.378×(-0.3) + 0.688×0.7 + 0.2) = sigmoid(0.91) = 0.713</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Hidden 2 Output:</strong> [0.589, 0.545, 0.713]</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Output Layer (1 neuron):</strong></p>
-        <CalcStep number={7}>z = 0.589×0.4 + 0.545×0.3 + 0.713×0.5 + 0.1 = 0.856</CalcStep>
-        <CalcStep number={8}>output = sigmoid(0.856) = 0.702</CalcStep>
-
+      <WorkedExample title="What Training Will Do">
+        <p>After training, we want:</p>
+        <CalcStep number={1}>forward([0, 0]) ≈ 0.05 (close to 0)</CalcStep>
+        <CalcStep number={2}>forward([0, 1]) ≈ 0.95 (close to 1)</CalcStep>
+        <CalcStep number={3}>forward([1, 0]) ≈ 0.95 (close to 1)</CalcStep>
+        <CalcStep number={4}>forward([1, 1]) ≈ 0.05 (close to 0)</CalcStep>
         <p style={{ marginTop: '1rem' }}>
-          <strong>Final Output:</strong> 0.702
+          Training adjusts the weights until these outputs match the XOR pattern.
+          The next steps will show you exactly how this works!
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="You Built a Deep Network!">
+      <ExplanationBox title="The Gap Between Prediction and Reality">
         <p>
-          Congratulations! You&apos;ve built your first multi-layer neural network. This is
-          fundamentally the same architecture used in:
+          You&apos;ve just seen the fundamental problem that training solves: untrained
+          networks produce wrong answers. The outputs are nowhere near the XOR pattern.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>Multi-layer perceptrons (MLPs)</li>
-          <li>The dense/fully-connected layers in CNNs</li>
-          <li>The feed-forward parts of transformers</li>
-        </ul>
+        <p>
+          In the next steps, we&apos;ll learn how to:
+        </p>
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>Measure error</strong> - How wrong is the network? (Loss function)</li>
+          <li><strong>Find the gradient</strong> - Which direction improves weights? (Derivatives)</li>
+          <li><strong>Apply the chain rule</strong> - How do earlier weights affect final error?</li>
+          <li><strong>Update weights</strong> - Adjust to reduce error (Gradient descent)</li>
+        </ol>
         <p style={{ marginTop: '1rem' }}>
-          The network can now transform inputs through multiple non-linear steps, giving
-          it the power to learn complex patterns. In the next step, we&apos;ll wrap this in
-          a clean &quot;forward&quot; function and start thinking about how to train it.
+          This is the backpropagation algorithm - the engine that powers all neural network training.
         </p>
       </ExplanationBox>
     </div>

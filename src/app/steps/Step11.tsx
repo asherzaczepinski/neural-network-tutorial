@@ -1,153 +1,154 @@
 'use client';
 
+import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import InteractiveNetwork from '@/components/InteractiveNetwork';
+import WorkedExample from '@/components/WorkedExample';
+import CalcStep from '@/components/CalcStep';
 
 export default function Step11() {
   return (
     <div>
-      <ExplanationBox title="From Single Neuron to Network">
+      <ExplanationBox title="Connecting Layers">
         <p>
-          You&apos;ve just built a complete neuron — it takes inputs, weights them, adds bias, and
-          applies sigmoid to produce an activation. But one neuron can only learn simple patterns.
+          The magic of deep learning happens when we connect layers together. The output
+          of one layer becomes the input to the next. This creates a <strong>pipeline</strong>
+          where data is progressively transformed, with each layer extracting more abstract features.
         </p>
         <p>
-          To learn complex patterns like &quot;it will rain,&quot; we need to connect many neurons
-          together into a <strong>network</strong>. Let&apos;s see how information flows through
-          a complete neural network.
+          In our network with two hidden layers:
         </p>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>Raw inputs flow into <strong>hidden layer 1</strong></li>
+          <li>Hidden layer 1 produces intermediate features</li>
+          <li>Those features flow into <strong>hidden layer 2</strong></li>
+          <li>Hidden layer 2 produces more abstract features</li>
+          <li>Those flow into the <strong>output layer</strong> for the final prediction</li>
+        </ul>
       </ExplanationBox>
 
-      <ExplanationBox title="Our 2-Hidden-Layer Network">
-        <p>
-          Here&apos;s the network we&apos;ll build: <strong>2 inputs</strong> (temperature, humidity),
-          <strong>2 hidden layers</strong> (3 neurons each), and <strong>1 output</strong> (rain probability).
-        </p>
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '12px',
-          padding: '32px 16px',
-          margin: '20px 0',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: '1px solid #e5e7eb'
-        }}>
-          <svg width="460" height="200" viewBox="0 0 460 200">
-            {/* Input layer */}
-            <circle cx="45" cy="70" r="20" fill="#3b82f6"/>
-            <circle cx="45" cy="140" r="20" fill="#3b82f6"/>
-            <text x="45" y="75" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">temp</text>
-            <text x="45" y="145" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">humid</text>
-
-            {/* Hidden layer 1 */}
-            <circle cx="150" cy="40" r="18" fill="#8b5cf6"/>
-            <circle cx="150" cy="100" r="18" fill="#8b5cf6"/>
-            <circle cx="150" cy="160" r="18" fill="#8b5cf6"/>
-            <text x="150" y="44" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₁</text>
-            <text x="150" y="104" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₂</text>
-            <text x="150" y="164" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₃</text>
-
-            {/* Hidden layer 2 */}
-            <circle cx="270" cy="40" r="18" fill="#a855f7"/>
-            <circle cx="270" cy="100" r="18" fill="#a855f7"/>
-            <circle cx="270" cy="160" r="18" fill="#a855f7"/>
-            <text x="270" y="44" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₄</text>
-            <text x="270" y="104" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₅</text>
-            <text x="270" y="164" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₆</text>
-
-            {/* Output layer */}
-            <circle cx="385" cy="100" r="22" fill="#22c55e"/>
-            <text x="385" y="105" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">rain?</text>
-
-            {/* Connections - input to hidden1 */}
-            <line x1="65" y1="70" x2="132" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="70" x2="132" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="70" x2="132" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="140" x2="132" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="140" x2="132" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="140" x2="132" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-
-            {/* Connections - hidden1 to hidden2 */}
-            <line x1="168" y1="40" x2="252" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="40" x2="252" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="40" x2="252" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="100" x2="252" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="100" x2="252" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="100" x2="252" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="160" x2="252" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="160" x2="252" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="160" x2="252" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-
-            {/* Connections - hidden2 to output */}
-            <line x1="288" y1="40" x2="363" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="288" y1="100" x2="363" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="288" y1="160" x2="363" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-
-            {/* Labels */}
-            <text x="45" y="185" textAnchor="middle" fill="#6b7280" fontSize="10">Input</text>
-            <text x="150" y="185" textAnchor="middle" fill="#6b7280" fontSize="10">Hidden 1</text>
-            <text x="270" y="185" textAnchor="middle" fill="#6b7280" fontSize="10">Hidden 2</text>
-            <text x="385" y="140" textAnchor="middle" fill="#6b7280" fontSize="10">Output</text>
-          </svg>
+      <div style={{
+        background: 'var(--bg-tertiary)',
+        padding: '1.5rem',
+        borderRadius: '12px',
+        margin: '1.5rem 0',
+        textAlign: 'center'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Input</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <div className="neuron-viz">x₁</div>
+              <div className="neuron-viz">x₂</div>
+            </div>
+          </div>
+          <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>→</div>
+          <div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Hidden 1</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <div className="neuron-viz active">h₁</div>
+              <div className="neuron-viz active">h₂</div>
+              <div className="neuron-viz active">h₃</div>
+            </div>
+          </div>
+          <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>→</div>
+          <div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Hidden 2</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <div className="neuron-viz active">h₄</div>
+              <div className="neuron-viz active">h₅</div>
+              <div className="neuron-viz active">h₆</div>
+            </div>
+          </div>
+          <div style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>→</div>
+          <div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Output</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+              <div className="neuron-viz active">y</div>
+            </div>
+          </div>
         </div>
+        <p style={{ marginTop: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          2 inputs → 3 hidden (layer 1) → 3 hidden (layer 2) → 1 output
+        </p>
+      </div>
+
+      <MathFormula label="Two-Hidden-Layer Network">
+        h1 = layer(inputs, W₁, b₁) → h2 = layer(h1, W₂, b₂) → output = layer(h2, W₃, b₃)
+      </MathFormula>
+
+      <ExplanationBox title="Why 'Hidden' Layers?">
+        <p>
+          The middle layers are called &quot;hidden&quot; because we don&apos;t directly observe their values -
+          we only see the inputs and final outputs. Each hidden layer&apos;s job is to create
+          useful intermediate representations.
+        </p>
+        <p>
+          Think of it like cooking: raw ingredients (inputs) → chopped ingredients
+          (hidden layer 1) → mixed/seasoned ingredients (hidden layer 2) → final dish (output).
+          Each step transforms the data into a form that&apos;s more useful for the next step.
+        </p>
       </ExplanationBox>
 
-      <ExplanationBox title="How Information Flows">
+      <ExplanationBox title="Dimension Changes">
         <p>
-          Data flows forward through the network, layer by layer:
+          Notice how dimensions change through the network:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Input layer:</strong> Raw data enters (temperature 0.7, humidity 0.8)</li>
-          <li><strong>Hidden layer 1:</strong> Each neuron detects basic patterns from the inputs</li>
-          <li><strong>Hidden layer 2:</strong> Each neuron combines patterns from layer 1</li>
-          <li><strong>Output layer:</strong> Combines all hidden layer 2 signals into final prediction</li>
-        </ol>
-        <p style={{ marginTop: '1rem' }}>
-          Each neuron works exactly like the one you just built — weighted sum, add bias, apply sigmoid.
-          The only difference is that neurons in hidden layer 2 receive their inputs from hidden layer 1
-          instead of from the raw data.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Why Multiple Hidden Layers?">
-        <p>
-          Each layer learns increasingly abstract patterns:
-        </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Hidden layer 1:</strong> Simple patterns — &quot;high humidity,&quot; &quot;low temperature&quot;</li>
-          <li><strong>Hidden layer 2:</strong> Combinations — &quot;humid AND cool,&quot; &quot;dry but warm&quot;</li>
-          <li><strong>Output:</strong> Final decision based on these combined patterns</li>
+        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>Input:</strong> 2 values [x₁, x₂]</li>
+          <li><strong>Hidden 1 weights (W₁):</strong> 3×2 (3 neurons, each with 2 weights)</li>
+          <li><strong>Hidden 1 output:</strong> 3 values [h₁, h₂, h₃]</li>
+          <li><strong>Hidden 2 weights (W₂):</strong> 3×3 (3 neurons, each with 3 weights)</li>
+          <li><strong>Hidden 2 output:</strong> 3 values [h₄, h₅, h₆]</li>
+          <li><strong>Output weights (W₃):</strong> 1×3 (1 neuron with 3 weights)</li>
+          <li><strong>Output:</strong> 1 value [y]</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          This is the power of <strong>deep learning</strong> — deeper networks can learn more
-          complex patterns by building layers of abstraction.
+          Each layer transforms the data. The deeper we go, the more abstract the features become.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Try It: Interactive Network">
-        <p>
-          Adjust the sliders below to change the input values and watch the signals flow through
-          the network. <strong>Hover over any node or connection</strong> to see the exact
-          calculations happening at each step.
+      <WorkedExample title="Full Network Trace">
+        <p>Let&apos;s trace data through our 2-hidden-layer network:</p>
+
+        <p style={{ marginTop: '1rem' }}><strong>Input:</strong> [0.5, 0.8]</p>
+
+        <p style={{ marginTop: '1rem' }}><strong>Hidden Layer 1 (3 neurons):</strong></p>
+        <CalcStep number={1}>h₁ = sigmoid(0.5×0.4 + 0.8×0.6 + 0.1) = sigmoid(0.78) = 0.686</CalcStep>
+        <CalcStep number={2}>h₂ = sigmoid(0.5×0.2 + 0.8×(-0.5) + (-0.2)) = sigmoid(-0.5) = 0.378</CalcStep>
+        <CalcStep number={3}>h₃ = sigmoid(0.5×(-0.3) + 0.8×0.8 + 0.3) = sigmoid(0.79) = 0.688</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}><strong>Hidden 1 Output:</strong> [0.686, 0.378, 0.688]</p>
+
+        <p style={{ marginTop: '1rem' }}><strong>Hidden Layer 2 (3 neurons):</strong></p>
+        <CalcStep number={4}>h₄ = sigmoid(0.686×0.3 + 0.378×0.5 + 0.688×(-0.2) + 0.1) = sigmoid(0.36) = 0.589</CalcStep>
+        <CalcStep number={5}>h₅ = sigmoid(0.686×(-0.4) + 0.378×0.6 + 0.688×0.4 + (-0.1)) = sigmoid(0.18) = 0.545</CalcStep>
+        <CalcStep number={6}>h₆ = sigmoid(0.686×0.5 + 0.378×(-0.3) + 0.688×0.7 + 0.2) = sigmoid(0.91) = 0.713</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}><strong>Hidden 2 Output:</strong> [0.589, 0.545, 0.713]</p>
+
+        <p style={{ marginTop: '1rem' }}><strong>Output Layer (1 neuron):</strong></p>
+        <CalcStep number={7}>z = 0.589×0.4 + 0.545×0.3 + 0.713×0.5 + 0.1 = 0.856</CalcStep>
+        <CalcStep number={8}>output = sigmoid(0.856) = 0.702</CalcStep>
+
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Final Output:</strong> 0.702
         </p>
-      </ExplanationBox>
+      </WorkedExample>
 
-      <InteractiveNetwork />
-
-      <ExplanationBox title="What You Just Saw">
+      <ExplanationBox title="You Built a Deep Network!">
         <p>
-          Notice how changing the inputs creates different activation patterns throughout the network:
+          Congratulations! You&apos;ve built your first multi-layer neural network. This is
+          fundamentally the same architecture used in:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Colors:</strong> Brighter = stronger activation</li>
-          <li><strong>Line thickness:</strong> Thicker = more signal flowing through</li>
-          <li><strong>Green lines:</strong> Positive weights (amplify signal)</li>
-          <li><strong>Red lines:</strong> Negative weights (suppress signal)</li>
+          <li>Multi-layer perceptrons (MLPs)</li>
+          <li>The dense/fully-connected layers in CNNs</li>
+          <li>The feed-forward parts of transformers</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          In the next steps, we&apos;ll learn how to build layers of neurons and connect them
-          together to create networks like this one.
+          The network can now transform inputs through multiple non-linear steps, giving
+          it the power to learn complex patterns. In the next step, we&apos;ll wrap this in
+          a clean &quot;forward&quot; function and start thinking about how to train it.
         </p>
       </ExplanationBox>
     </div>
