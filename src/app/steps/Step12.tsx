@@ -5,13 +5,7 @@ import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step12({ onComplete }: StepProps) {
-  setTimeout(() => onComplete(), 100);
-
+export default function Step12() {
   return (
     <div>
       <ExplanationBox title="Connecting Layers">

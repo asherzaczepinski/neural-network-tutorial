@@ -9,7 +9,7 @@ import os
 import time
 
 # Path to the project
-PROJECT_DIR = "/Users/asherzaczepinski/Desktop/Thinkeeze Neural Network/neural-network-tutorial"
+PROJECT_DIR = "/Users/asherzaczepinski/Desktop/Code With Asher"
 
 def kill_port(port):
     """Kill any process running on the specified port."""

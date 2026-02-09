@@ -1,36 +1,3 @@
-'use client';
-
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-interface TutorialState {
-  currentStep: number;
-  completedSteps: number[];
-  setCurrentStep: (step: number) => void;
-  completeStep: (step: number) => void;
-  resetProgress: () => void;
-}
-
-export const useTutorialStore = create<TutorialState>()(
-  persist(
-    (set) => ({
-      currentStep: 1,
-      completedSteps: [],
-      setCurrentStep: (step) => set({ currentStep: step }),
-      completeStep: (step) =>
-        set((state) => ({
-          completedSteps: state.completedSteps.includes(step)
-            ? state.completedSteps
-            : [...state.completedSteps, step],
-        })),
-      resetProgress: () => set({ currentStep: 1, completedSteps: [] }),
-    }),
-    {
-      name: 'neural-network-tutorial-progress',
-    }
-  )
-);
-
 export const TOTAL_STEPS = 18;
 
 export const STEPS = [

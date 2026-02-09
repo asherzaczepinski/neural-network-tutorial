@@ -2,13 +2,7 @@
 
 import ExplanationBox from '@/components/ExplanationBox';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step2({ onComplete }: StepProps) {
-  setTimeout(() => onComplete(), 100);
-
+export default function Step2() {
   return (
     <div>
       <ExplanationBox title="The Simple Version">

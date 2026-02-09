@@ -3,13 +3,7 @@
 import ExplanationBox from '@/components/ExplanationBox';
 import InteractiveNetwork from '@/components/InteractiveNetwork';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step11({ onComplete }: StepProps) {
-  setTimeout(() => onComplete(), 100);
-
+export default function Step11() {
   return (
     <div>
       <ExplanationBox title="From Single Neuron to Network">

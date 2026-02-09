@@ -2,7 +2,6 @@ export interface Step {
   id: number;
   title: string;
   shortTitle: string;
-  completed: boolean;
 }
 
 export interface ValidationResult {
@@ -16,13 +15,4 @@ export interface CodeEditorProps {
   onRun: (code: string) => ValidationResult;
   placeholder?: string;
   minHeight?: number;
-}
-
-export interface StepProps {
-  stepNumber: number;
-  totalSteps: number;
-  onComplete: () => void;
-  onNext: () => void;
-  onPrevious: () => void;
-  isCompleted: boolean;
 }

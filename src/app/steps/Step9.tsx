@@ -7,13 +7,7 @@ import CalcStep from '@/components/CalcStep';
 import CodeRunner from '@/components/CodeRunner';
 import LayerCollapseDemo from '@/components/LayerCollapseDemo';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step9({ onComplete }: StepProps) {
-  setTimeout(() => onComplete(), 100);
-
+export default function Step9() {
   return (
     <div>
       <ExplanationBox title="The Problem: Our Numbers Are All Over the Place">

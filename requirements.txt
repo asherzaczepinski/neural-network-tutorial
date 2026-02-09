@@ -1,0 +1,121 @@
+# NEURAL NETWORK TUTORIAL REQUIREMENTS
+# What I Want for the Interactive Tutorial
+
+## OVERALL GOAL
+Build an interactive web tutorial where users create a neural network that learns XOR
+from ABSOLUTE scratch - no numpy, no libraries, we even build our own array operations.
+
+## CURRENT PROBLEMS
+1. Color scheme is ugly/confusing (dark blues blend together)
+2. Explanations are too short - just says "squishing" or "relu" without real math
+3. Not deep enough - users don't truly understand what's happening
+4. Steps feel disconnected and rushed
+
+## WHAT I WANT INSTEAD
+
+### 1. LONG, THOROUGH EXPLANATIONS
+- Each step needs PARAGRAPHS of explanation, not just 1-2 sentences
+- Explain the WHY behind everything, not just the what
+- Break down every formula piece by piece
+- Use analogies and real-world examples
+- Don't assume any prior knowledge
+
+### 2. REAL MATH EXPLANATIONS
+For every mathematical concept, explain:
+- What the formula actually means in plain English
+- Why we use this specific formula (not another one)
+- Walk through a concrete numerical example step by step
+- Show the intermediate calculations
+
+Examples of what I mean:
+- Don't just say "sigmoid squishes values" - explain WHY 1/(1+e^-x) creates an S-curve
+- Don't just say "we multiply by weights" - explain what multiplication means here
+- Don't just say "backpropagation" - derive the chain rule step by step
+- Show actual numbers: "0.5 × 0.4 = 0.2, then 0.2 + 0.48 = 0.68"
+
+### 3. BUILD EVERYTHING FROM SCRATCH
+- NO numpy or any math libraries beyond basic arithmetic
+- Users should implement their own:
+  - Array/list operations (dot product, matrix multiply)
+  - The sigmoid function using just e (which we can define as 2.71828...)
+  - Loss functions
+  - Gradient calculations
+  - Weight updates
+- Make users TYPE the math themselves, not just run pre-written code
+
+### 4. BETTER COLOR SCHEME
+- Current dark blue on dark blue is hard to read
+- Want something cleaner and more modern
+- High contrast between text and background
+- Maybe a light theme option?
+- Clear visual distinction between:
+  - Explanations (educational text)
+  - Math formulas
+  - Code editors
+  - Output/results
+  - Success/error states
+
+### 5. STEP-BY-STEP STRUCTURE
+Each step should have:
+1. A long conceptual explanation (2-3 paragraphs minimum)
+2. The mathematical formula with full breakdown
+3. A worked numerical example showing every calculation
+4. The task for the user to implement
+5. A code editor where they write the actual code
+6. Hints that progressively reveal more
+7. Validation that checks their understanding, not just syntax
+
+### 6. TOPICS TO COVER IN DEPTH
+1. What is a neuron? (biological inspiration, mathematical model)
+2. Inputs and how data is represented as numbers
+3. Weights - what they mean, why we multiply
+4. Bias - why we need it, what it does geometrically
+5. The weighted sum (dot product) - derive it manually
+6. Activation functions - WHY non-linearity matters (prove linear networks collapse)
+7. Sigmoid specifically - derive it, graph it, understand its properties
+8. Building a layer of multiple neurons
+9. Connecting layers (matrix multiplication by hand)
+10. Forward propagation through the whole network
+11. Loss/error functions - why squared error? why not absolute?
+12. Derivatives and what they mean (rate of change intuition)
+13. The chain rule - step by step derivation
+14. Backpropagation - work through the math completely
+15. Gradient descent - why subtract? why learning rate?
+16. Training loop - putting it all together
+17. Testing on XOR - watch it learn!
+
+### 7. INTERACTIVITY
+- Users must actually type code, not just click "next"
+- Validate that they understand (not just copy-paste)
+- Show visualizations that update as they type
+- Maybe have them predict outputs before running
+- Quiz questions between sections
+
+### 8. THE XOR PROBLEM
+Explain thoroughly:
+- What XOR is (truth table)
+- Why a single neuron CANNOT solve it (linear separability)
+- Draw the 2D plot showing why you can't draw one line
+- Why adding a hidden layer fixes this
+- This is the whole point - proving depth matters
+
+### 9. NO HAND-WAVING
+Never say:
+- "This is too complex to explain here"
+- "Just trust that this works"
+- "The math is complicated but..."
+- "We use this because it's standard"
+
+Always explain everything fully, even if it takes longer.
+
+### 10. TARGET AUDIENCE
+- Complete beginners who want to TRULY understand
+- People frustrated by tutorials that skip the "why"
+- Visual learners who need to see the numbers
+- Anyone who wants to build intuition, not just copy code
+
+## SUMMARY
+Make it a REAL tutorial that builds deep understanding.
+Long explanations. Real math. No shortcuts. Better design.
+Users should finish this feeling like they could explain
+neural networks to someone else from first principles.

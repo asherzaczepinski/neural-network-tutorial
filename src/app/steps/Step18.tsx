@@ -5,13 +5,7 @@ import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step18({ onComplete }: StepProps) {
-  setTimeout(() => onComplete(), 100);
-
+export default function Step18() {
   return (
     <div>
       <ExplanationBox title="Gradient Descent: The Learning Algorithm">

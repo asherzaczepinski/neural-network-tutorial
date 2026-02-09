@@ -6,13 +6,7 @@ import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
 import CodeRunner from '@/components/CodeRunner';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step3({ onComplete }: StepProps) {
-  setTimeout(() => onComplete(), 100);
-
+export default function Step3() {
   return (
     <div>
       <ExplanationBox title="Converting Data to Numbers">

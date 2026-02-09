@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { useTutorialStore, STEPS } from '@/lib/store';
+import { STEPS } from '@/lib/store';
 
 // Preload adjacent steps for instant navigation
 const preloadStep = (stepNum: number) => {
@@ -75,7 +75,6 @@ const FooterButton = memo(function FooterButton({
 });
 
 function CourseContent() {
-  const completeStep = useTutorialStore((state) => state.completeStep);
   const searchParams = useSearchParams();
   const stepParam = searchParams.get('step');
   const [headerVisible, setHeaderVisible] = useState(true);
@@ -147,10 +146,6 @@ function CourseContent() {
     if (currentStep > 1) goToStep(currentStep - 1);
   }, [currentStep, goToStep]);
 
-  const handleStepComplete = useCallback(() => {
-    completeStep(currentStep);
-  }, [completeStep, currentStep]);
-
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseInt(e.target.value, 10);
     if (val >= 1 && val <= 18) goToStep(val);
@@ -191,7 +186,7 @@ function CourseContent() {
           </div>
 
           <div className="step-body">
-            <StepComponent onComplete={handleStepComplete} />
+            <StepComponent />
           </div>
 
           {/* Bottom navigation */}

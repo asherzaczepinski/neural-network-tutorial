@@ -2,14 +2,7 @@
 
 import ExplanationBox from '@/components/ExplanationBox';
 
-interface StepProps {
-  onComplete: () => void;
-}
-
-export default function Step1({ onComplete }: StepProps) {
-  // Auto-complete this step when component mounts
-  setTimeout(() => onComplete(), 100);
-
+export default function Step1() {
   return (
     <div>
       <ExplanationBox title="Hey, I'm Asher Zaczepinski">
