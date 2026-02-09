@@ -25,17 +25,16 @@ export default function Step2({ onComplete }: StepProps) {
       <div style={{
         background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
         borderRadius: '16px',
-        padding: '40px 24px',
+        padding: '40px 16px',
         margin: '20px 0',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
         border: '1px solid #e2e8f0',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        overflow: 'hidden'
       }}>
         <svg
           viewBox="0 0 480 160"
-          style={{ width: '100%', maxWidth: '480px', height: 'auto' }}
+          preserveAspectRatio="xMidYMid meet"
+          style={{ width: '100%', height: 'auto', display: 'block' }}
         >
           {/* The neuron - gradient circle */}
           <defs>
