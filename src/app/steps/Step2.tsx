@@ -62,15 +62,14 @@ export default function Step2({ onComplete }: StepProps) {
 
           {/* The neuron */}
           <circle cx="240" cy="80" r="40" fill="url(#neuronGradient)" filter="url(#neuronShadow)"/>
-          <text x="240" y="75" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="500">neuron</text>
-          <text x="240" y="92" textAnchor="middle" fill="#ede9fe" fontSize="18" fontWeight="700">?</text>
+          <text x="240" y="88" textAnchor="middle" fill="#fff" fontSize="24" fontWeight="700">?</text>
 
           {/* Output connector - with gap from neuron and output box */}
           <line x1="290" y1="80" x2="340" y2="80" stroke="#86efac" strokeWidth="2"/>
 
           {/* Output box */}
-          <rect x="350" y="55" width="100" height="50" rx="10" fill="#f0fdf4" stroke="#bbf7d0" strokeWidth="1.5"/>
-          <text x="400" y="86" textAnchor="middle" fill="#15803d" fontSize="18" fontWeight="700">82% rain</text>
+          <rect x="350" y="62" width="100" height="36" rx="8" fill="#f0fdf4" stroke="#bbf7d0" strokeWidth="1.5"/>
+          <text x="400" y="85" textAnchor="middle" fill="#15803d" fontSize="14" fontWeight="600">82% rain</text>
         </svg>
       </div>
 
