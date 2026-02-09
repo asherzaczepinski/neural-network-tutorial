@@ -2,31 +2,55 @@
 
 import { useState, useEffect, Suspense, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { useTutorialStore, STEPS } from '@/lib/store';
 
-// Import all step content
-import Step1 from '@/app/steps/Step1';
-import Step2 from '@/app/steps/Step2';
-import Step3 from '@/app/steps/Step3';
-import Step4 from '@/app/steps/Step4';
-import Step5 from '@/app/steps/Step5';
-import Step6 from '@/app/steps/Step6';
-import Step7 from '@/app/steps/Step7';
-import Step8 from '@/app/steps/Step8';
-import Step9 from '@/app/steps/Step9';
-import Step10 from '@/app/steps/Step10';
-import Step11 from '@/app/steps/Step11';
-import Step12 from '@/app/steps/Step12';
-import Step13 from '@/app/steps/Step13';
-import Step14 from '@/app/steps/Step14';
-import Step15 from '@/app/steps/Step15';
-import Step16 from '@/app/steps/Step16';
-import Step17 from '@/app/steps/Step17';
-import Step18 from '@/app/steps/Step18';
+// Loading spinner component
+function StepLoader() {
+  return (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '80px 0',
+    }}>
+      <div style={{
+        width: '32px',
+        height: '32px',
+        border: '3px solid #e5e7eb',
+        borderTopColor: '#2563eb',
+        borderRadius: '50%',
+        animation: 'spin 0.8s linear infinite',
+      }} />
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
+// Lazy load step components - only loads the current step, not all 18
 const stepComponents = [
-  Step1, Step2, Step3, Step4, Step5, Step6, Step7, Step8, Step9,
-  Step10, Step11, Step12, Step13, Step14, Step15, Step16, Step17, Step18
+  dynamic(() => import('@/app/steps/Step1'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step2'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step3'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step4'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step5'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step6'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step7'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step8'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step9'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step10'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step11'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step12'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step13'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step14'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step15'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step16'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step17'), { loading: () => <StepLoader /> }),
+  dynamic(() => import('@/app/steps/Step18'), { loading: () => <StepLoader /> }),
 ];
 
 function CourseContent() {
@@ -165,206 +189,6 @@ function CourseContent() {
         </div>
       </main>
 
-      <style jsx>{`
-        .course-page {
-          min-height: 100vh;
-          background: #fff;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          color: #222;
-        }
-
-        .course-header {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 52px;
-          background: #fff;
-          border-bottom: 1px solid #eee;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0 20px;
-          z-index: 100;
-          transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .course-header.visible {
-          transform: translateY(0);
-          opacity: 1;
-        }
-
-        .course-header.hidden {
-          transform: translateY(-100%);
-          opacity: 0;
-        }
-
-        .course-nav {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .nav-arrow {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 36px;
-          height: 36px;
-          background: none;
-          border: 1px solid #e5e5e5;
-          border-radius: 50%;
-          color: #888;
-          font-size: 18px;
-          cursor: pointer;
-          transition: all 0.15s;
-        }
-
-        .nav-arrow:hover:not(:disabled) {
-          border-color: #ccc;
-          color: #333;
-        }
-
-        .nav-arrow:disabled {
-          opacity: 0.3;
-          cursor: not-allowed;
-        }
-
-        .step-pagination {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .step-input {
-          width: 44px;
-          height: 36px;
-          border: 1px solid #e5e5e5;
-          border-radius: 6px;
-          text-align: center;
-          font-size: 15px;
-          font-weight: 500;
-          color: #333;
-          background: #fff;
-          -moz-appearance: textfield;
-        }
-
-        .step-input::-webkit-outer-spin-button,
-        .step-input::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
-        }
-
-        .step-input:focus {
-          outline: none;
-          border-color: #2563eb;
-        }
-
-        .step-total {
-          font-size: 15px;
-          color: #888;
-        }
-
-        .course-main {
-          padding-top: 52px;
-        }
-
-        .course-content {
-          max-width: 720px;
-          margin: 0 auto;
-          padding: 48px 24px;
-        }
-
-        .step-header-section {
-          margin-bottom: 36px;
-        }
-
-        .step-label {
-          display: inline-block;
-          font-size: 14px;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          color: #2563eb;
-          margin-bottom: 10px;
-        }
-
-        .step-header-section h1 {
-          font-size: 32px;
-          font-weight: 600;
-          line-height: 1.2;
-          margin: 0;
-          color: #222;
-        }
-
-        .step-body {
-          line-height: 1.7;
-        }
-
-        .step-footer {
-          display: flex;
-          align-items: center;
-          margin-top: 56px;
-          padding-top: 28px;
-          border-top: 1px solid #eee;
-        }
-
-        .footer-spacer {
-          flex: 1;
-        }
-
-        .footer-btn {
-          background: none;
-          border: 1px solid #ddd;
-          padding: 12px 24px;
-          font-size: 15px;
-          font-weight: 500;
-          color: #444;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: all 0.15s;
-        }
-
-        .footer-btn:hover {
-          border-color: #2563eb;
-          color: #2563eb;
-        }
-
-        .footer-btn.next {
-          background: #2563eb;
-          border-color: #2563eb;
-          color: #fff;
-        }
-
-        .footer-btn.next:hover {
-          background: #1d4ed8;
-        }
-
-        @media (max-width: 640px) {
-          .course-content {
-            padding: 32px 16px;
-          }
-
-          .step-header-section h1 {
-            font-size: 26px;
-          }
-
-          .nav-arrow {
-            width: 32px;
-            height: 32px;
-          }
-
-          .step-input {
-            width: 40px;
-            height: 32px;
-            font-size: 14px;
-          }
-
-          .step-total {
-            font-size: 14px;
-          }
-        }
-      `}</style>
     </div>
   );
 }
