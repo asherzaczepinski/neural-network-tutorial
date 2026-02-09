@@ -1,121 +1,160 @@
 'use client';
 
-import { useState, useEffect, Suspense, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useTutorialStore, STEPS } from '@/lib/store';
 
-// Loading spinner component
-function StepLoader() {
+// Preload adjacent steps for instant navigation
+const preloadStep = (stepNum: number) => {
+  if (stepNum >= 1 && stepNum <= 18) {
+    import(`@/app/steps/Step${stepNum}`);
+  }
+};
+
+// Loading skeleton - matches content layout to prevent layout shift
+const StepLoader = memo(function StepLoader() {
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '80px 0',
-    }}>
-      <div style={{
-        width: '32px',
-        height: '32px',
-        border: '3px solid #e5e7eb',
-        borderTopColor: '#2563eb',
-        borderRadius: '50%',
-        animation: 'spin 0.8s linear infinite',
-      }} />
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
+    <div className="step-loader">
+      <div className="skeleton skeleton-title" />
+      <div className="skeleton skeleton-text" />
+      <div className="skeleton skeleton-text short" />
+      <div className="skeleton skeleton-text" />
     </div>
   );
-}
+});
 
-// Lazy load step components - only loads the current step, not all 18
-const stepComponents = [
-  dynamic(() => import('@/app/steps/Step1'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step2'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step3'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step4'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step5'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step6'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step7'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step8'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step9'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step10'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step11'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step12'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step13'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step14'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step15'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step16'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step17'), { loading: () => <StepLoader /> }),
-  dynamic(() => import('@/app/steps/Step18'), { loading: () => <StepLoader /> }),
-];
+// Create dynamic imports with loading state
+const createStepComponent = (stepNum: number) =>
+  dynamic(() => import(`@/app/steps/Step${stepNum}`), {
+    loading: () => <StepLoader />,
+    ssr: false, // Disable SSR for faster client-side loading
+  });
+
+// Pre-create all step components (they're still lazy-loaded)
+const stepComponents = Array.from({ length: 18 }, (_, i) => createStepComponent(i + 1));
+
+// Memoized navigation button
+const NavButton = memo(function NavButton({
+  direction,
+  onClick,
+  disabled
+}: {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+  disabled: boolean;
+}) {
+  return (
+    <button
+      className="nav-arrow"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={direction === 'prev' ? 'Previous step' : 'Next step'}
+    >
+      {direction === 'prev' ? '←' : '→'}
+    </button>
+  );
+});
+
+// Memoized footer button
+const FooterButton = memo(function FooterButton({
+  direction,
+  onClick
+}: {
+  direction: 'prev' | 'next';
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`footer-btn ${direction}`}
+      onClick={onClick}
+    >
+      {direction === 'prev' ? '← Previous' : 'Next →'}
+    </button>
+  );
+});
 
 function CourseContent() {
-  const { completeStep } = useTutorialStore();
+  const completeStep = useTutorialStore((state) => state.completeStep);
   const searchParams = useSearchParams();
   const stepParam = searchParams.get('step');
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const scrollTicking = useRef(false);
 
-  // Start at step 1 by default, or use URL param
-  const [currentStep, setCurrentStep] = useState(() => {
+  // Parse step from URL
+  const getInitialStep = () => {
     if (stepParam) {
       const parsed = parseInt(stepParam, 10);
       if (parsed >= 1 && parsed <= 18) return parsed;
     }
     return 1;
-  });
+  };
+
+  const [currentStep, setCurrentStep] = useState(getInitialStep);
 
   // Update when URL changes
   useEffect(() => {
-    if (stepParam) {
-      const parsed = parseInt(stepParam, 10);
-      if (parsed >= 1 && parsed <= 18) {
-        setCurrentStep(parsed);
-      }
+    const newStep = getInitialStep();
+    if (newStep !== currentStep) {
+      setCurrentStep(newStep);
     }
   }, [stepParam]);
 
-  // Handle header visibility on scroll
+  // Preload adjacent steps when current step changes
+  useEffect(() => {
+    preloadStep(currentStep + 1);
+    preloadStep(currentStep - 1);
+  }, [currentStep]);
+
+  // Optimized scroll handler with requestAnimationFrame
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const scrollingUp = currentScrollY < lastScrollY.current;
+      if (!scrollTicking.current) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const scrollingUp = currentScrollY < lastScrollY.current;
 
-      if (scrollingUp || currentScrollY < 100) {
-        setHeaderVisible(true);
-      } else if (currentScrollY > 100) {
-        setHeaderVisible(false);
+          if (scrollingUp || currentScrollY < 100) {
+            setHeaderVisible(true);
+          } else if (currentScrollY > 100) {
+            setHeaderVisible(false);
+          }
+
+          lastScrollY.current = currentScrollY;
+          scrollTicking.current = false;
+        });
+        scrollTicking.current = true;
       }
-
-      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const goToStep = (stepId: number) => {
+  const goToStep = useCallback((stepId: number) => {
     setCurrentStep(stepId);
     setHeaderVisible(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' }); // instant is faster than smooth
     window.history.pushState({}, '', `/?step=${stepId}`);
-  };
+  }, []);
 
-  const nextStep = () => {
-    if (currentStep < 18) {
-      goToStep(currentStep + 1);
-    }
-  };
+  const nextStep = useCallback(() => {
+    if (currentStep < 18) goToStep(currentStep + 1);
+  }, [currentStep, goToStep]);
 
-  const prevStep = () => {
-    if (currentStep > 1) {
-      goToStep(currentStep - 1);
-    }
-  };
+  const prevStep = useCallback(() => {
+    if (currentStep > 1) goToStep(currentStep - 1);
+  }, [currentStep, goToStep]);
+
+  const handleStepComplete = useCallback(() => {
+    completeStep(currentStep);
+  }, [completeStep, currentStep]);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    if (val >= 1 && val <= 18) goToStep(val);
+  }, [goToStep]);
 
   const StepComponent = stepComponents[currentStep - 1];
   const step = STEPS[currentStep - 1];
@@ -125,38 +164,21 @@ function CourseContent() {
       {/* Top navigation */}
       <header className={`course-header ${headerVisible ? 'visible' : 'hidden'}`}>
         <nav className="course-nav">
-          <button
-            className="nav-arrow"
-            onClick={prevStep}
-            disabled={currentStep === 1}
-            aria-label="Previous step"
-          >
-            ←
-          </button>
+          <NavButton direction="prev" onClick={prevStep} disabled={currentStep === 1} />
 
           <div className="step-pagination">
             <input
               type="number"
               className="step-input"
               value={currentStep}
-              onChange={(e) => {
-                const val = parseInt(e.target.value, 10);
-                if (val >= 1 && val <= STEPS.length) goToStep(val);
-              }}
+              onChange={handleInputChange}
               min={1}
-              max={STEPS.length}
+              max={18}
             />
-            <span className="step-total">of {STEPS.length}</span>
+            <span className="step-total">of 18</span>
           </div>
 
-          <button
-            className="nav-arrow"
-            onClick={nextStep}
-            disabled={currentStep === 18}
-            aria-label="Next step"
-          >
-            →
-          </button>
+          <NavButton direction="next" onClick={nextStep} disabled={currentStep === 18} />
         </nav>
       </header>
 
@@ -169,34 +191,54 @@ function CourseContent() {
           </div>
 
           <div className="step-body">
-            <StepComponent onComplete={() => completeStep(currentStep)} />
+            <StepComponent onComplete={handleStepComplete} />
           </div>
 
           {/* Bottom navigation */}
           <div className="step-footer">
-            {currentStep > 1 && (
-              <button className="footer-btn prev" onClick={prevStep}>
-                ← Previous
-              </button>
-            )}
+            {currentStep > 1 && <FooterButton direction="prev" onClick={prevStep} />}
             <div className="footer-spacer" />
-            {currentStep < 18 && (
-              <button className="footer-btn next" onClick={nextStep}>
-                Next →
-              </button>
-            )}
+            {currentStep < 18 && <FooterButton direction="next" onClick={nextStep} />}
           </div>
         </div>
       </main>
-
     </div>
   );
 }
 
 export default function Home() {
-  return (
-    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#fff' }} />}>
-      <CourseContent />
-    </Suspense>
-  );
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Show skeleton on initial load to prevent flash
+  if (!mounted) {
+    return (
+      <div className="course-page">
+        <header className="course-header visible">
+          <nav className="course-nav">
+            <div className="nav-arrow" style={{ opacity: 0.3 }}>←</div>
+            <div className="step-pagination">
+              <div className="step-input" style={{ background: '#f3f4f6' }} />
+              <span className="step-total">of 18</span>
+            </div>
+            <div className="nav-arrow" style={{ opacity: 0.3 }}>→</div>
+          </nav>
+        </header>
+        <main className="course-main">
+          <div className="course-content">
+            <div className="step-header-section">
+              <div className="skeleton" style={{ width: '80px', height: '14px', marginBottom: '10px' }} />
+              <div className="skeleton" style={{ width: '60%', height: '32px' }} />
+            </div>
+            <StepLoader />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  return <CourseContent />;
 }
