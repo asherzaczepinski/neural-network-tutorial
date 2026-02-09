@@ -1,154 +1,148 @@
 'use client';
 
+import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
-import InteractiveNetwork from '@/components/InteractiveNetwork';
+import WorkedExample from '@/components/WorkedExample';
+import CalcStep from '@/components/CalcStep';
+import CodeRunner from '@/components/CodeRunner';
 
 export default function Step10() {
   return (
     <div>
-      <ExplanationBox title="From Single Neuron to Network">
+      <ExplanationBox title="Assembling the Complete Neuron">
         <p>
-          You&apos;ve just built a complete neuron — it takes inputs, weights them, adds bias, and
-          applies sigmoid to produce an activation. But one neuron can only learn simple patterns.
+          We&apos;ve built all the individual pieces. Now it&apos;s time to assemble them into a complete,
+          reusable neuron function. This is a milestone — this single function captures everything
+          we&apos;ve learned about how a neuron processes information.
         </p>
         <p>
-          To learn complex patterns like &quot;it will rain,&quot; we need to connect many neurons
-          together into a <strong>network</strong>. Let&apos;s see how information flows through
-          a complete neural network.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Our 2-Hidden-Layer Network">
-        <p>
-          Here&apos;s the network we&apos;ll build: <strong>2 inputs</strong> (temperature, humidity),
-          <strong>2 hidden layers</strong> (3 neurons each), and <strong>1 output</strong> (rain probability).
-        </p>
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '12px',
-          padding: '32px 16px',
-          margin: '20px 0',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          border: '1px solid #e5e7eb'
-        }}>
-          <svg width="460" height="200" viewBox="0 0 460 200">
-            {/* Input layer */}
-            <circle cx="45" cy="70" r="20" fill="#3b82f6"/>
-            <circle cx="45" cy="140" r="20" fill="#3b82f6"/>
-            <text x="45" y="75" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">temp</text>
-            <text x="45" y="145" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">humid</text>
-
-            {/* Hidden layer 1 */}
-            <circle cx="150" cy="40" r="18" fill="#8b5cf6"/>
-            <circle cx="150" cy="100" r="18" fill="#8b5cf6"/>
-            <circle cx="150" cy="160" r="18" fill="#8b5cf6"/>
-            <text x="150" y="44" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₁</text>
-            <text x="150" y="104" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₂</text>
-            <text x="150" y="164" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₃</text>
-
-            {/* Hidden layer 2 */}
-            <circle cx="270" cy="40" r="18" fill="#a855f7"/>
-            <circle cx="270" cy="100" r="18" fill="#a855f7"/>
-            <circle cx="270" cy="160" r="18" fill="#a855f7"/>
-            <text x="270" y="44" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₄</text>
-            <text x="270" y="104" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₅</text>
-            <text x="270" y="164" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">h₆</text>
-
-            {/* Output layer */}
-            <circle cx="385" cy="100" r="22" fill="#22c55e"/>
-            <text x="385" y="105" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="600">rain?</text>
-
-            {/* Connections - input to hidden1 */}
-            <line x1="65" y1="70" x2="132" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="70" x2="132" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="70" x2="132" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="140" x2="132" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="140" x2="132" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="65" y1="140" x2="132" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-
-            {/* Connections - hidden1 to hidden2 */}
-            <line x1="168" y1="40" x2="252" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="40" x2="252" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="40" x2="252" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="100" x2="252" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="100" x2="252" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="100" x2="252" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="160" x2="252" y2="40" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="160" x2="252" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="168" y1="160" x2="252" y2="160" stroke="#d1d5db" strokeWidth="1.2"/>
-
-            {/* Connections - hidden2 to output */}
-            <line x1="288" y1="40" x2="363" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="288" y1="100" x2="363" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-            <line x1="288" y1="160" x2="363" y2="100" stroke="#d1d5db" strokeWidth="1.2"/>
-
-            {/* Labels */}
-            <text x="45" y="185" textAnchor="middle" fill="#6b7280" fontSize="10">Input</text>
-            <text x="150" y="185" textAnchor="middle" fill="#6b7280" fontSize="10">Hidden 1</text>
-            <text x="270" y="185" textAnchor="middle" fill="#6b7280" fontSize="10">Hidden 2</text>
-            <text x="385" y="140" textAnchor="middle" fill="#6b7280" fontSize="10">Output</text>
-          </svg>
-        </div>
-      </ExplanationBox>
-
-      <ExplanationBox title="How Information Flows">
-        <p>
-          Data flows forward through the network, layer by layer:
+          A complete neuron does three things in sequence:
         </p>
         <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Input layer:</strong> Raw data enters (temperature 0.7, humidity 0.8)</li>
-          <li><strong>Hidden layer 1:</strong> Each neuron detects basic patterns from the inputs</li>
-          <li><strong>Hidden layer 2:</strong> Each neuron combines patterns from layer 1</li>
-          <li><strong>Output layer:</strong> Combines all hidden layer 2 signals into final prediction</li>
+          <li><strong>Computes the weighted sum</strong> — dot product of inputs and weights</li>
+          <li><strong>Adds the bias</strong> — shifts the decision threshold</li>
+          <li><strong>Applies the activation</strong> — sigmoid converts to probability</li>
         </ol>
-        <p style={{ marginTop: '1rem' }}>
-          Each neuron works exactly like the one you just built — weighted sum, add bias, apply sigmoid.
-          The only difference is that neurons in hidden layer 2 receive their inputs from hidden layer 1
-          instead of from the raw data.
-        </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Why Multiple Hidden Layers?">
+      <MathFormula label="The Complete Neuron">
+        output = sigmoid(dot_product(inputs, weights) + bias)
+      </MathFormula>
+
+      <ExplanationBox title="Function Composition">
         <p>
-          Each layer learns increasingly abstract patterns:
+          Notice how we&apos;re composing (combining) smaller functions to build larger ones. This is
+          a fundamental programming pattern called <strong>function composition</strong>, and it&apos;s
+          exactly how neural networks are structured:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Hidden layer 1:</strong> Simple patterns — &quot;high humidity,&quot; &quot;low temperature&quot;</li>
-          <li><strong>Hidden layer 2:</strong> Combinations — &quot;humid AND cool,&quot; &quot;dry but warm&quot;</li>
-          <li><strong>Output:</strong> Final decision based on these combined patterns</li>
+          <li><code>dot_product</code> — a mathematical operation</li>
+          <li><code>+ bias</code> — a simple addition</li>
+          <li><code>sigmoid</code> — the activation function</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          This is the power of <strong>deep learning</strong> — deeper networks can learn more
-          complex patterns by building layers of abstraction.
+          By combining these, we get <code>neuron</code> — a higher-level abstraction. Later,
+          we&apos;ll combine neurons into <code>layers</code>, and layers into <code>networks</code>.
+          Each level builds on the previous one.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Try It: Interactive Network">
+      <WorkedExample title="Complete Neuron Calculation">
+        <p>Let&apos;s trace through neuron([0.7, 0.8], [-0.3, 0.9], 0.1):</p>
+
+        <CalcStep number={1}>
+          <strong>Inputs:</strong> [temperature=0.7, humidity=0.8]
+        </CalcStep>
+        <CalcStep number={2}>
+          <strong>Weights:</strong> [-0.3, 0.9]
+        </CalcStep>
+        <CalcStep number={3}>
+          <strong>Bias:</strong> 0.1
+        </CalcStep>
+        <CalcStep number={4}>
+          <strong>Dot product:</strong> (0.7 × -0.3) + (0.8 × 0.9) = -0.21 + 0.72 = 0.51
+        </CalcStep>
+        <CalcStep number={5}>
+          <strong>Add bias:</strong> z = 0.51 + 0.1 = 0.61
+        </CalcStep>
+        <CalcStep number={6}>
+          <strong>Sigmoid:</strong> sigmoid(0.61) = 1/(1 + e^(-0.61)) = 0.648
+        </CalcStep>
+
+        <p style={{ marginTop: '1rem', fontWeight: 'bold' }}>
+          Final output: 0.648 (64.8% chance of rain)
+        </p>
+      </WorkedExample>
+
+      <ExplanationBox title="What Each Parameter Does">
         <p>
-          Adjust the sliders below to change the input values and watch the signals flow through
-          the network. <strong>Hover over any node or connection</strong> to see the exact
-          calculations happening at each step.
+          <strong>inputs</strong> — The weather data. For rain prediction: [temperature, humidity].
+          Could be any measurements the neuron should consider.
+        </p>
+        <p>
+          <strong>weights</strong> — How important each input is. Learned during training.
+          [-0.3, 0.9] means humidity matters more than temperature.
+        </p>
+        <p>
+          <strong>bias</strong> — The baseline tendency. 0.1 means there&apos;s a slight tendency
+          toward predicting rain even with neutral inputs.
         </p>
       </ExplanationBox>
 
-      <InteractiveNetwork />
-
-      <ExplanationBox title="What You Just Saw">
+      <ExplanationBox title="Trying Different Weights">
         <p>
-          Notice how changing the inputs creates different activation patterns throughout the network:
+          By changing weights, the same neuron can learn different patterns:
         </p>
         <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Colors:</strong> Brighter = stronger activation</li>
-          <li><strong>Line thickness:</strong> Thicker = more signal flowing through</li>
-          <li><strong>Green lines:</strong> Positive weights (amplify signal)</li>
-          <li><strong>Red lines:</strong> Negative weights (suppress signal)</li>
+          <li><strong>weights = [0, 1]</strong> → Only humidity matters</li>
+          <li><strong>weights = [1, 0]</strong> → Only temperature matters</li>
+          <li><strong>weights = [-1, 0]</strong> → Cold temperatures predict rain</li>
+          <li><strong>weights = [0.5, 0.5]</strong> → Both matter equally</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
-          In the next steps, we&apos;ll learn how to build layers of neurons and connect them
-          together to create networks like this one.
+          Training a neural network means finding the weights and biases that produce accurate
+          predictions. We&apos;ll learn how to do this in later steps!
         </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Building a Complete Neuron">
+        <p>
+          Assemble all the pieces into a complete neuron function:
+        </p>
+        <CodeRunner code={`# Set E = 2.71828
+
+# Define sigmoid(z) - returns 1 / (1 + E**(-z))
+
+# Define dot_product(a, b) - loop through, multiply pairs, sum results
+
+# Define neuron(inputs, weights, bias):
+#   1. Calculate z = dot_product(inputs, weights) + bias
+#   2. Return sigmoid(z)
+
+# Test with weather data:
+# inputs = [0.7, 0.8]
+# weights = [-0.3, 0.9]
+# bias = 0.1
+# Print "Rain probability:" and neuron(inputs, weights, bias)
+`} />
+      </ExplanationBox>
+
+      <ExplanationBox title="From Neuron to Network">
+        <p>
+          Congratulations! You&apos;ve built a complete artificial neuron from scratch — the fundamental
+          unit of all neural networks. A single neuron can learn simple patterns: &quot;humid = rain.&quot;
+        </p>
+        <p>
+          But real weather prediction (and most interesting problems) requires more complexity.
+          In the next steps, we&apos;ll:
+        </p>
+        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+          <li>Build <strong>layers</strong> — multiple neurons working in parallel</li>
+          <li>Connect layers to form <strong>networks</strong></li>
+          <li>Implement <strong>forward propagation</strong> — data flowing through the network</li>
+          <li>Add <strong>loss functions</strong> — measuring prediction accuracy</li>
+          <li>Learn <strong>backpropagation</strong> — teaching the network to improve</li>
+        </ol>
       </ExplanationBox>
     </div>
   );
