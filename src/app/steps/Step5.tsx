@@ -16,25 +16,28 @@ export default function Step5({ onComplete }: StepProps) {
     <div>
       <ExplanationBox title="What is Bias?">
         <p>
-          We&apos;ve seen how weights control the importance of each input. But there&apos;s a problem:
-          what if all our inputs are zero? The neuron would output zero no matter what the weights are.
+          Weights control how much each input matters. But what if we want the neuron to have a
+          starting assumption <em>before</em> it even looks at the inputs?
         </p>
         <p>
-          <strong>Bias</strong> is a number that gets added after all the weighted inputs are combined.
-          Think of it as the neuron&apos;s &quot;baseline&quot; or &quot;starting point&quot; — it lets the
-          neuron fire even when inputs are low, or stay quiet even when inputs are high.
+          <strong>Bias</strong> is a number that shifts the neuron&apos;s decision threshold. It&apos;s
+          added after the weighted sum, and it lets the neuron say &quot;I&apos;m already leaning toward
+          yes&quot; or &quot;I&apos;m already leaning toward no&quot; before considering any evidence.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Why Do We Need Bias?">
+      <ExplanationBox title="The y = mx + b Analogy">
         <p>
-          Imagine predicting rain. Without bias, if temperature and humidity are both 0, the prediction
-          would always be 0. But maybe in your location, there&apos;s a 30% base chance of rain regardless
-          of conditions. Bias captures that baseline.
+          Remember y = mx + b from algebra? Without the &quot;+ b&quot; part, the line <em>has</em> to
+          pass through the origin (0,0). The bias term lets you shift the whole line up or down.
         </p>
         <p>
-          Bias gives the neuron flexibility to shift its output up or down independent of the inputs.
-          It&apos;s like the &quot;b&quot; in y = mx + b — the y-intercept that shifts the whole line.
+          Neural networks work the same way. Without bias, the neuron&apos;s decision boundary is
+          stuck passing through zero. With bias, we can shift that boundary anywhere we need it.
+        </p>
+        <p>
+          During training, the network learns the best bias values automatically — just like it
+          learns the weights. Both get adjusted through backpropagation to make better predictions.
         </p>
       </ExplanationBox>
 
