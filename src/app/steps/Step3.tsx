@@ -15,25 +15,18 @@ export default function Step3({ onComplete }: StepProps) {
 
   return (
     <div>
-      <ExplanationBox title="Everything is Numbers">
+      <ExplanationBox title="Converting Data to Numbers">
         <p>
-          Neural networks only understand numbers. They can&apos;t see images, read text, or sense weather —
-          they only process numerical data. This means before we can use a neural network, we must
-          convert our data into numbers. This conversion is called <strong>encoding</strong> or
-          <strong> representation</strong>.
+          Neural networks only understand numbers. Before we can predict rain, we need to convert
+          our weather data into decimals between 0 and 1.
         </p>
         <p>
-          For our rain prediction task, the conversion is straightforward: temperature becomes a
-          decimal (0.7 = warm), humidity becomes a decimal (0.8 = 80% humidity). But the same principle
-          applies to everything neural networks process.
+          <strong>Temperature:</strong> We normalize to a 0-1 scale. If temperatures range from 0°C to 40°C,
+          then 28°C becomes 28/40 = 0.7.
         </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="How Real Weather Data Becomes Numbers">
-        <p><strong>Temperature:</strong> We normalize to 0-1 scale. If typical temperatures range from 0°C to 40°C,
-          then 28°C becomes 28/40 = 0.7. This &quot;normalization&quot; is crucial for neural networks.</p>
-
-        <p><strong>Humidity:</strong> Already a percentage! 80% humidity = 0.8. Easy conversion.</p>
+        <p>
+          <strong>Humidity:</strong> Already a percentage! 80% humidity = 0.8.
+        </p>
       </ExplanationBox>
 
       <ExplanationBox title="Why Normalization Matters">

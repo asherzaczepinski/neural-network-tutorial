@@ -16,12 +16,17 @@ export default function Step4({ onComplete }: StepProps) {
     <div>
       <ExplanationBox title="What Are Weights?">
         <p>
+          Remember the neuron from Step 2? It takes inputs and produces an output. But how does it
+          decide how much each input matters? That&apos;s where <strong>weights</strong> come in.
+        </p>
+        <p>
           A weight is a number that controls how much an input affects the output. Higher weight
           = more influence. Lower weight = less influence. Negative weight = works against the output.
         </p>
         <p>
-          Weights decide what variables matter in the final prediction. We&apos;ll keep coming back
-          to them throughout this course.
+          Every connection going into a neuron has a weight attached to it. When the neuron processes
+          its inputs, it multiplies each input by its weight before combining them. This is how the
+          neuron &quot;learns&quot; what to pay attention to.
         </p>
       </ExplanationBox>
 
