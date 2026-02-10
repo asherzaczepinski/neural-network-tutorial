@@ -59,7 +59,7 @@ export default function Step7() {
 # Test it
 inputs = [0.7, 0.8]
 weights = [-0.3, 0.9]
-print("Dot product:", dot_product(inputs, weights))
+print("Dot product:", round(dot_product(inputs, weights), 2))
 `} />
       </ExplanationBox>
 
