@@ -74,7 +74,7 @@ bias = 0.1
 # Calculate z (pre-activation)
 z = (temperature * w_temp) + (humidity * w_humid) + bias
 
-print("Pre-activation z =", z)
+print("Pre-activation z =", round(z, 2))
 `} />
       </ExplanationBox>
 

@@ -118,15 +118,15 @@ bias = 0.1
 
 # Step 1: Dot product (multiply pairs, sum results)
 dot = inputs[0] * weights[0] + inputs[1] * weights[1]
-print("Dot product:", dot)
+print("Dot product:", round(dot, 2))
 
 # Step 2: Add bias
 z = dot + bias
-print("z (pre-activation):", z)
+print("z (pre-activation):", round(z, 2))
 
 # Step 3: Apply sigmoid
 output = 1 / (1 + E ** (-z))
-print("Rain probability:", output)
+print("Rain probability:", round(output, 2))
 `} />
       </ExplanationBox>
 

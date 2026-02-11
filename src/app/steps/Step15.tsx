@@ -124,22 +124,22 @@ export default function Step15() {
 # Sigmoid derivative: sigmoid(z) * (1 - sigmoid(z))
 # Test at z = 0 (max sensitivity)
 s0 = 1 / (1 + E ** 0)
-print("sigmoid_deriv(0) =", s0 * (1 - s0))
+print("sigmoid_deriv(0) =", round(s0 * (1 - s0), 2))
 
 # Test at z = 2 (less sensitive)
 s2 = 1 / (1 + E ** (-2))
-print("sigmoid_deriv(2) =", s2 * (1 - s2))
+print("sigmoid_deriv(2) =", round(s2 * (1 - s2), 2))
 
 # Test at z = -2
 sn2 = 1 / (1 + E ** 2)
-print("sigmoid_deriv(-2) =", sn2 * (1 - sn2))
+print("sigmoid_deriv(-2) =", round(sn2 * (1 - sn2), 2))
 
 # MSE derivative: 2 * (prediction - target)
 # Prediction too low (negative = increase prediction)
-print("mse_deriv(0.7, 1.0) =", 2 * (0.7 - 1.0))
+print("mse_deriv(0.7, 1.0) =", round(2 * (0.7 - 1.0), 2))
 
 # Prediction too high (positive = decrease prediction)
-print("mse_deriv(0.3, 0.0) =", 2 * (0.3 - 0.0))
+print("mse_deriv(0.3, 0.0) =", round(2 * (0.3 - 0.0), 2))
 `} />
       </ExplanationBox>
 

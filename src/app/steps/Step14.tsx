@@ -115,18 +115,18 @@ average_loss = total_loss / 4`}
 
 # Prediction too low (predicted 0.7, actual 1.0)
 loss1 = (0.7 - 1.0) ** 2
-print("Loss (0.7 vs 1.0):", loss1)
+print("Loss (0.7 vs 1.0):", round(loss1, 2))
 
 # Prediction too high (predicted 0.2, actual 0.0)
 loss2 = (0.2 - 0.0) ** 2
-print("Loss (0.2 vs 0.0):", loss2)
+print("Loss (0.2 vs 0.0):", round(loss2, 2))
 
 # Perfect predictions
 loss3 = (1.0 - 1.0) ** 2
-print("Loss (1.0 vs 1.0):", loss3)
+print("Loss (1.0 vs 1.0):", round(loss3, 2))
 
 loss4 = (0.0 - 0.0) ** 2
-print("Loss (0.0 vs 0.0):", loss4)
+print("Loss (0.0 vs 0.0):", round(loss4, 2))
 `} />
       </ExplanationBox>
 

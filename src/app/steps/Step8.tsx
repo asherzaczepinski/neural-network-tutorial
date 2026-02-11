@@ -131,17 +131,17 @@ E = 2.71828
 z = 0.61
 sigmoid_z = 1 / (1 + E ** (-z))
 print("z =", z)
-print("Rain probability =", sigmoid_z)
+print("Rain probability =", round(sigmoid_z, 2))
 
 # Try other values
 z2 = -2
-print("sigmoid(-2) =", 1 / (1 + E ** (-z2)))
+print("sigmoid(-2) =", round(1 / (1 + E ** (-z2)), 2))
 
 z3 = 0
-print("sigmoid(0) =", 1 / (1 + E ** (-z3)))
+print("sigmoid(0) =", round(1 / (1 + E ** (-z3)), 2))
 
 z4 = 2
-print("sigmoid(2) =", 1 / (1 + E ** (-z4)))
+print("sigmoid(2) =", round(1 / (1 + E ** (-z4)), 2))
 `} />
       </ExplanationBox>
     </div>
