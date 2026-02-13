@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-Kill any process on port 3000 and start the Next.js dev server.
-Run this script from anywhere - it will cd to the correct directory.
+Kill any process on ports 3000/3001 and start both Next.js dev servers.
+Run this script from anywhere - it will cd to the correct directories.
 """
 
 import subprocess
 import os
 import time
 
-# Path to the project
-PROJECT_DIR = "/Users/asherzaczepinski/Desktop/Code With Asher"
+# Paths to the projects
+MAIN_DIR = "/Users/asherzaczepinski/Desktop/Code With Asher"
+STDDEV_DIR = os.path.join(MAIN_DIR, "codewithasher-stddev")
 
 def kill_port(port):
     """Kill any process running on the specified port."""
     try:
-        # Find process on port
         result = subprocess.run(
             ["lsof", "-ti", f":{port}"],
             capture_output=True,
@@ -29,28 +29,37 @@ def kill_port(port):
 
         if pids and pids[0]:
             print(f"Killed processes on port {port}")
-            time.sleep(1)  # Wait for port to be released
+            time.sleep(1)
         else:
             print(f"No process found on port {port}")
 
     except Exception as e:
         print(f"Error killing port {port}: {e}")
 
-def start_server():
-    """Start the Next.js dev server."""
-    print(f"\nStarting server in: {PROJECT_DIR}")
-    print("Server will be available at: http://localhost:3000\n")
+def start_servers():
+    """Start both Next.js dev servers."""
+    print(f"\nStarting main server in: {MAIN_DIR}")
+    print("Main server: http://localhost:3000")
+    print(f"\nStarting stddev server in: {STDDEV_DIR}")
+    print("Stddev server: http://localhost:3001\n")
 
-    os.chdir(PROJECT_DIR)
+    # Start stddev server in background (port 3001)
+    stddev_proc = subprocess.Popen(
+        ["npm", "run", "dev"],
+        cwd=STDDEV_DIR
+    )
 
-    # Start the dev server (this will keep running)
-    subprocess.run(["npm", "run", "dev"])
+    # Start main server in foreground (port 3000)
+    try:
+        os.chdir(MAIN_DIR)
+        subprocess.run(["npm", "run", "dev"])
+    finally:
+        stddev_proc.terminate()
 
 if __name__ == "__main__":
     print("=== Neural Network Tutorial Server Starter ===\n")
 
-    # Kill anything on port 3000
     kill_port(3000)
+    kill_port(3001)
 
-    # Start the server
-    start_server()
+    start_servers()
