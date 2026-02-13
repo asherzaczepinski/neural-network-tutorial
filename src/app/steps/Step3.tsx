@@ -4,7 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
+
 
 export default function Step3() {
   return (
@@ -50,30 +50,6 @@ export default function Step3() {
           This makes intuitive sense and keeps our numbers in a nice range.
         </p>
       </WorkedExample>
-
-      <ExplanationBox title="Storing Inputs in a List">
-        <p>
-          Real neural networks store their inputs as lists (or arrays). Lists let us group related
-          data together and access elements by their position (index).
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Try creating a list with our weather data:
-        </p>
-        <CodeRunner code={`# Our weather data as a list
-inputs = [0.7, 0.8]
-
-# Access each element by index
-temperature = inputs[0]
-humidity = inputs[1]
-
-print("Temperature:", temperature)
-print("Humidity:", humidity)
-`} />
-        <p>
-          This is exactly how neural networks receive information — as ordered lists of numbers.
-          Whether you have 2 inputs or 2 million, the structure is the same.
-        </p>
-      </ExplanationBox>
 
       <ExplanationBox title="Looking Ahead">
         <p>

@@ -4,7 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
+
 
 export default function Step10() {
   return (
@@ -18,7 +18,7 @@ export default function Step10() {
         <p>
           A complete neuron does three things in sequence:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ol style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>Computes the weighted sum</strong> — dot product of inputs and weights</li>
           <li><strong>Adds the bias</strong> — shifts the decision threshold</li>
           <li><strong>Applies the activation</strong> — sigmoid converts to probability</li>
@@ -35,7 +35,7 @@ export default function Step10() {
           a fundamental programming pattern called <strong>function composition</strong>, and it&apos;s
           exactly how neural networks are structured:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><code>dot_product</code> — a mathematical operation</li>
           <li><code>+ bias</code> — a simple addition</li>
           <li><code>sigmoid</code> — the activation function</li>
@@ -93,7 +93,7 @@ export default function Step10() {
         <p>
           By changing weights, the same neuron can learn different patterns:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>weights = [0, 1]</strong> → Only humidity matters</li>
           <li><strong>weights = [1, 0]</strong> → Only temperature matters</li>
           <li><strong>weights = [-1, 0]</strong> → Cold temperatures predict rain</li>
@@ -105,31 +105,6 @@ export default function Step10() {
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Building a Complete Neuron">
-        <p>
-          Assemble all the pieces into a complete neuron function:
-        </p>
-        <CodeRunner code={`E = 2.71828
-
-# Inputs and parameters
-inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-bias = 0.1
-
-# Step 1: Dot product (multiply pairs, sum results)
-dot = inputs[0] * weights[0] + inputs[1] * weights[1]
-print("Dot product:", round(dot, 2))
-
-# Step 2: Add bias
-z = dot + bias
-print("z (pre-activation):", round(z, 2))
-
-# Step 3: Apply sigmoid
-output = 1 / (1 + E ** (-z))
-print("Rain probability:", round(output, 2))
-`} />
-      </ExplanationBox>
-
       <ExplanationBox title="From Neuron to Network">
         <p>
           Congratulations! You&apos;ve built a complete artificial neuron from scratch — the fundamental
@@ -139,7 +114,7 @@ print("Rain probability:", round(output, 2))
           But real weather prediction (and most interesting problems) requires more complexity.
           In the next steps, we&apos;ll:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ol style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li>Build <strong>layers</strong> — multiple neurons working in parallel</li>
           <li>Connect layers to form <strong>networks</strong></li>
           <li>Implement <strong>forward propagation</strong> — data flowing through the network</li>

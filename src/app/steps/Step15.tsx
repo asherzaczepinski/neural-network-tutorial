@@ -4,7 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
+
 
 export default function Step15() {
   return (
@@ -114,34 +114,6 @@ export default function Step15() {
           to increase by about 0.215 times that amount.
         </p>
       </WorkedExample>
-
-      <ExplanationBox title="Implementing Derivative Functions">
-        <p>
-          Implement the derivative functions we need for backpropagation:
-        </p>
-        <CodeRunner code={`E = 2.71828
-
-# Sigmoid derivative: sigmoid(z) * (1 - sigmoid(z))
-# Test at z = 0 (max sensitivity)
-s0 = 1 / (1 + E ** 0)
-print("sigmoid_deriv(0) =", round(s0 * (1 - s0), 2))
-
-# Test at z = 2 (less sensitive)
-s2 = 1 / (1 + E ** (-2))
-print("sigmoid_deriv(2) =", round(s2 * (1 - s2), 2))
-
-# Test at z = -2
-sn2 = 1 / (1 + E ** 2)
-print("sigmoid_deriv(-2) =", round(sn2 * (1 - sn2), 2))
-
-# MSE derivative: 2 * (prediction - target)
-# Prediction too low (negative = increase prediction)
-print("mse_deriv(0.7, 1.0) =", round(2 * (0.7 - 1.0), 2))
-
-# Prediction too high (positive = decrease prediction)
-print("mse_deriv(0.3, 0.0) =", round(2 * (0.3 - 0.0), 2))
-`} />
-      </ExplanationBox>
 
       <ExplanationBox title="The Power of Derivatives">
         <p>

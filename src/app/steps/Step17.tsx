@@ -26,7 +26,7 @@ export default function Step17() {
 
       <ExplanationBox title="The Algorithm Step by Step">
         <p>For our 2-hidden-layer network (input → hidden1 → hidden2 → output):</p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2.2' }}>
+        <ol style={{ marginTop: '0.5rem', lineHeight: '2.2' }}>
           <li>
             <strong>Forward pass</strong>: Compute all activations, storing z and a for each layer
           </li>

@@ -319,11 +319,13 @@ pre code {
 /* Lists */
 ul, ol {
   margin: 16px 0;
-  padding-left: 28px;
+  padding-left: 0;
+  list-style: none;
 }
 
 li {
   margin: 8px 0;
+  padding-left: 0;
   color: #444;
   font-size: 18px;
 }

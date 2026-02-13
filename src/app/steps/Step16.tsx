@@ -36,7 +36,7 @@ export default function Step16() {
           The notation <code>dL/dz</code> means &quot;derivative of L with respect to z&quot; or
           &quot;how much does L change when z changes.&quot;
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>L</strong> = Loss (what we want to minimize)</li>
           <li><strong>a</strong> = activation output (after sigmoid)</li>
           <li><strong>z</strong> = pre-activation (weighted sum + bias)</li>

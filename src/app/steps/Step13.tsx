@@ -52,7 +52,7 @@ export default function Step13() {
           With random weights (which we haven&apos;t trained yet), the network will output
           essentially random values. All outputs will be somewhere around 0.5-0.7 because:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>Random weights don&apos;t encode any useful pattern</li>
           <li>Sigmoid pushes most random sums toward the middle range</li>
           <li>The network has no idea what XOR is yet</li>
@@ -83,7 +83,7 @@ export default function Step13() {
         <p>
           In the next steps, we&apos;ll learn how to:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ol style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>Measure error</strong> - How wrong is the network? (Loss function)</li>
           <li><strong>Find the gradient</strong> - Which direction improves weights? (Derivatives)</li>
           <li><strong>Apply the chain rule</strong> - How do earlier weights affect final error?</li>

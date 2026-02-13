@@ -17,7 +17,7 @@ export default function Step12() {
         <p>
           In our network with two hidden layers:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>Raw inputs flow into <strong>hidden layer 1</strong></li>
           <li>Hidden layer 1 produces intermediate features</li>
           <li>Those features flow into <strong>hidden layer 2</strong></li>
@@ -93,7 +93,7 @@ export default function Step12() {
         <p>
           Notice how dimensions change through the network:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>Input:</strong> 2 values [x₁, x₂]</li>
           <li><strong>Hidden 1 weights (W₁):</strong> 3×2 (3 neurons, each with 2 weights)</li>
           <li><strong>Hidden 1 output:</strong> 3 values [h₁, h₂, h₃]</li>
@@ -140,7 +140,7 @@ export default function Step12() {
           Congratulations! You&apos;ve built your first multi-layer neural network. This is
           fundamentally the same architecture used in:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>Multi-layer perceptrons (MLPs)</li>
           <li>The dense/fully-connected layers in CNNs</li>
           <li>The feed-forward parts of transformers</li>

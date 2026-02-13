@@ -4,7 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
+
 
 export default function Step14() {
   return (
@@ -19,7 +19,7 @@ export default function Step14() {
         <p>
           A good loss function has these properties:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>Returns 0 when prediction equals target (perfect)</li>
           <li>Returns larger values for worse predictions</li>
           <li>Is differentiable (we need to compute gradients)</li>
@@ -107,41 +107,18 @@ average_loss = total_loss / 4`}
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="Implementing the Loss Function">
-        <p>
-          Implement the Mean Squared Error loss function:
-        </p>
-        <CodeRunner code={`# MSE Loss: (prediction - target) ** 2
-
-# Prediction too low (predicted 0.7, actual 1.0)
-loss1 = (0.7 - 1.0) ** 2
-print("Loss (0.7 vs 1.0):", round(loss1, 2))
-
-# Prediction too high (predicted 0.2, actual 0.0)
-loss2 = (0.2 - 0.0) ** 2
-print("Loss (0.2 vs 0.0):", round(loss2, 2))
-
-# Perfect predictions
-loss3 = (1.0 - 1.0) ** 2
-print("Loss (1.0 vs 1.0):", round(loss3, 2))
-
-loss4 = (0.0 - 0.0) ** 2
-print("Loss (0.0 vs 0.0):", round(loss4, 2))
-`} />
-      </ExplanationBox>
-
       <ExplanationBox title="The Training Objective">
         <p>
           We now have:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>✓ Forward pass - compute predictions from inputs</li>
           <li>✓ Loss function - measure how wrong predictions are</li>
         </ul>
         <p style={{ marginTop: '1rem' }}>
           What we need next:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>A way to know which direction to change weights (derivatives)</li>
           <li>A way to propagate error backward through layers (chain rule)</li>
           <li>A method to actually update the weights (gradient descent)</li>

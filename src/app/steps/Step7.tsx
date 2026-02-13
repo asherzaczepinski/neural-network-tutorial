@@ -4,7 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
+
 
 export default function Step7() {
   return (
@@ -47,20 +47,6 @@ export default function Step7() {
           &quot;matrix multiplication&quot; in deep learning, that&apos;s just doing many dot products at once.
           We will get into how matrix multiplication works exactly later.
         </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Build the Function">
-        <CodeRunner code={`def dot_product(a, b):
-    result = 0
-    for i in range(len(a)):
-        result = result + a[i] * b[i]
-    return result
-
-# Test it
-inputs = [0.7, 0.8]
-weights = [-0.3, 0.9]
-print("Dot product:", round(dot_product(inputs, weights), 2))
-`} />
       </ExplanationBox>
 
       <ExplanationBox title="In Practice">

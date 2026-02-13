@@ -29,7 +29,7 @@ export default function Step18() {
           The gradient points in the direction that <em>increases</em> the loss. But we want
           to <em>decrease</em> the loss, so we go the opposite direction - that&apos;s why we subtract.
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>Positive gradient → weight too high → subtract to decrease</li>
           <li>Negative gradient → weight too low → subtracting negative = add to increase</li>
         </ul>
@@ -42,7 +42,7 @@ export default function Step18() {
         <p>
           The <strong>learning rate</strong> controls how big each step is:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>Too small (0.001)</strong>: Very slow learning, might get stuck</li>
           <li><strong>Too large (10.0)</strong>: Steps overshoot, loss oscillates wildly</li>
           <li><strong>Just right (0.1-1.0)</strong>: Smooth, steady improvement</li>
@@ -102,7 +102,7 @@ export default function Step18() {
         <p>
           You now have everything needed to train a neural network:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>✓ Forward propagation (compute predictions)</li>
           <li>✓ Loss function (measure error)</li>
           <li>✓ Backpropagation (compute gradients)</li>
@@ -114,7 +114,7 @@ export default function Step18() {
         <p>
           You&apos;ve completed this neural network tutorial! You now understand:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li>How neural networks represent and process data</li>
           <li>What weights and biases do</li>
           <li>Why we need activation functions like sigmoid</li>

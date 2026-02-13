@@ -28,7 +28,7 @@ export default function Step4() {
         <p>
           For predicting rain, we&apos;ll use these weights:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>Temperature weight: -0.3</strong> — Higher temperature slightly <em>reduces</em> rain
             prediction (hot air holds more moisture before condensing). Conversely, lower temperatures
             increase the rain signal.</li>

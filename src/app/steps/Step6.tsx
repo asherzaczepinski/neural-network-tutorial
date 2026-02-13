@@ -4,7 +4,7 @@ import MathFormula from '@/components/MathFormula';
 import ExplanationBox from '@/components/ExplanationBox';
 import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
-import CodeRunner from '@/components/CodeRunner';
+
 
 export default function Step6() {
   return (
@@ -41,42 +41,6 @@ export default function Step6() {
           That&apos;s why we need an activation function next.
         </p>
       </WorkedExample>
-
-      <ExplanationBox title="Why Call It 'Pre-activation'?">
-        <p>
-          The name &quot;pre-activation&quot; tells you exactly what it is — the value <em>before</em> we
-          apply the activation function. The sequence goes:
-        </p>
-        <p style={{ marginTop: '0.5rem', fontFamily: 'monospace', fontSize: '0.95em' }}>
-          inputs → multiply by weights → sum → add bias → <strong>z</strong> → activation function → output
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Right now z can be any number: positive, negative, huge, tiny. The activation function
-          will squish it into a useful range like 0 to 1.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Try It Yourself">
-        <p>
-          Compute the pre-activation value:
-        </p>
-        <CodeRunner code={`# Inputs
-temperature = 0.7
-humidity = 0.8
-
-# Weights
-w_temp = -0.3
-w_humid = 0.9
-
-# Bias
-bias = 0.1
-
-# Calculate z (pre-activation)
-z = (temperature * w_temp) + (humidity * w_humid) + bias
-
-print("Pre-activation z =", round(z, 2))
-`} />
-      </ExplanationBox>
 
       <ExplanationBox title="What's Next">
         <p>

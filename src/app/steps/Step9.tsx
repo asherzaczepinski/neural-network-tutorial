@@ -83,7 +83,7 @@ export default function Step9() {
         <p>
           Real rain depends on <strong>combinations</strong> of things:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li>High humidity AND moderate temperature → rain</li>
           <li>High humidity BUT freezing cold → snow, not rain</li>
           <li>High humidity BUT extremely hot → the moisture evaporates, no rain</li>
@@ -266,7 +266,7 @@ export default function Step9() {
         <p>
           You now have all the pieces for a complete neuron:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ol style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>Inputs</strong> — temperature (0.7) and humidity (0.8)</li>
           <li><strong>Weights</strong> — how much each input matters (-0.3 and 0.9)</li>
           <li><strong>Bias</strong> — the baseline tendency (0.1)</li>

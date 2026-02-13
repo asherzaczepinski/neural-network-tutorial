@@ -97,7 +97,7 @@ export default function Step11() {
         <p>
           Data flows forward through the network, layer by layer:
         </p>
-        <ol style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '2' }}>
+        <ol style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>Input layer:</strong> Raw data enters (temperature 0.7, humidity 0.8)</li>
           <li><strong>Hidden layer 1:</strong> Each neuron detects basic patterns from the inputs</li>
           <li><strong>Hidden layer 2:</strong> Each neuron combines patterns from layer 1</li>
@@ -114,7 +114,7 @@ export default function Step11() {
         <p>
           Each layer learns increasingly abstract patterns:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>Hidden layer 1:</strong> Simple patterns — &quot;high humidity,&quot; &quot;low temperature&quot;</li>
           <li><strong>Hidden layer 2:</strong> Combinations — &quot;humid AND cool,&quot; &quot;dry but warm&quot;</li>
           <li><strong>Output:</strong> Final decision based on these combined patterns</li>
@@ -139,7 +139,7 @@ export default function Step11() {
         <p>
           Notice how changing the inputs creates different activation patterns throughout the network:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>Colors:</strong> Brighter = stronger activation</li>
           <li><strong>Line thickness:</strong> Thicker = more signal flowing through</li>
           <li><strong>Green lines:</strong> Positive weights (amplify signal)</li>

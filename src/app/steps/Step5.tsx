@@ -24,7 +24,7 @@ export default function Step5() {
         <p>
           Here&apos;s how weights and bias work together to make predictions:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>Weights</strong> decide which inputs matter and by how much. High weight on humidity?
             Humidity has a big influence. Negative weight on temperature? Higher temps push the prediction down.</li>
           <li><strong>Bias</strong> is our starting assumption about how important this neuron is. Before
@@ -82,7 +82,7 @@ export default function Step5() {
         <p>
           So now our neuron has three types of learnable parameters:
         </p>
-        <ul style={{ marginLeft: '1.5rem', marginTop: '0.5rem', lineHeight: '1.8' }}>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
           <li><strong>Inputs</strong> — The data we feed in (temperature, humidity)</li>
           <li><strong>Weights</strong> — How much each input matters</li>
           <li><strong>Bias</strong> — The baseline adjustment</li>
