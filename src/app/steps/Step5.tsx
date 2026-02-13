@@ -56,6 +56,28 @@ export default function Step5() {
         </p>
       </WorkedExample>
 
+      <ExplanationBox title="How Neural Networks Initialize Bias">
+        <p>
+          When a neural network first starts, it doesn&apos;t know anything yet—so how should bias
+          be set? The most common approach is to initialize all biases to <strong>zero</strong>.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          Why zero? Starting at zero means the neuron begins with no preference—it&apos;s completely
+          neutral. This works well because:
+        </p>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>The weights (which start as small random values) can still create diverse initial
+            behaviors across different neurons</li>
+          <li>Zero bias lets the network learn the right threshold during training without any assumptions</li>
+          <li>It prevents neurons from being too active or too quiet at the start</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          Some specialized architectures use different initialization strategies (like initializing
+          bias to a small positive value for certain activation functions), but zero is the standard
+          default that works well in most cases.
+        </p>
+      </ExplanationBox>
+
       <ExplanationBox title="Bias in the Big Picture">
         <p>
           So now our neuron has three types of learnable parameters:
