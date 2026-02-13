@@ -8,7 +8,7 @@ export default function Step1() {
       <ExplanationBox title="Hey, I'm Asher Zaczepinski">
         <p>
           I&apos;m a 10th grader who got frustrated. I wanted to understand how neural networks
-          <em> actually</em> work—not just import TensorFlow and hope for the best.
+          <em> actually</em> work—not just use them and hope for the best.
         </p>
         <p>
           I tried everything. YouTube tutorials. The fancy 3Blue1Brown series (which is beautiful,
@@ -23,29 +23,24 @@ export default function Step1() {
 
       <ExplanationBox title="What This Course Actually Is">
         <p>
-          This is the tutorial I wish existed. We build a neural network from scratch—no PyTorch,
-          no TensorFlow, no libraries doing magic behind the scenes. Just Python and math you can
+          This is the tutorial I wish existed. We break down neural networks from the ground up—no
+          hand-waving, no &quot;just trust me.&quot; Every concept is explained with real math you can
           actually follow.
         </p>
         <p>
-          By the end, you&apos;ll understand every equation and see every line of code that makes
-          a neural network work. You&apos;ll know what backpropagation <em>really</em> does, not
-          just that it &quot;propagates errors backward.&quot;
+          By the end, you&apos;ll understand every equation that makes a neural network work.
+          You&apos;ll know what backpropagation <em>really</em> does, not just that it
+          &quot;propagates errors backward.&quot;
         </p>
       </ExplanationBox>
 
       <ExplanationBox title="What You Need to Know">
         <p>
-          <strong>Basic Python</strong> — Variables, functions, loops. If you&apos;ve written a
-          few scripts, you&apos;re good.
-        </p>
-        <p>
           <strong>Algebra</strong> — Seriously, that&apos;s it. We&apos;ll explain derivatives
           from scratch when we need them. No calculus prerequisite.
         </p>
         <p>
-          That&apos;s the whole list. If you can write a for loop and you remember what
-          y = mx + b means, you&apos;re ready.
+          If you remember what y = mx + b means, you&apos;re ready.
         </p>
       </ExplanationBox>
 
@@ -72,20 +67,20 @@ export default function Step1() {
 
       <ExplanationBox title="The Project: Predicting Rain">
         <p>
-          Throughout this course, we build one thing: a neural network that predicts whether
+          Throughout this course, we use one example: a neural network that predicts whether
           it will rain based on temperature and humidity.
         </p>
         <p>
           It&apos;s simple enough to understand completely, but complex enough to teach you
-          everything that matters. By module 18, you&apos;ll have a working network that learns
-          from data—and you&apos;ll understand exactly how every piece works.
+          everything that matters. By module 18, you&apos;ll understand how a network learns
+          from data—and exactly how every piece works.
         </p>
       </ExplanationBox>
 
       <ExplanationBox title="Let's Go">
         <p>
-          No account required. No email signup. No upsells. Just click Next and let&apos;s
-          build something real.
+          No account required. No email signup. No upsells. Just scroll down and let&apos;s
+          learn something real.
         </p>
       </ExplanationBox>
     </div>
