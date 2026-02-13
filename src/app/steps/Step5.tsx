@@ -41,20 +41,6 @@ export default function Step5() {
         output = (input₁ × weight₁) + (input₂ × weight₂) + bias
       </MathFormula>
 
-      <WorkedExample title="Adding Bias to Our Weather Neuron">
-        <p>Let&apos;s use our weather data with a bias of 0.1:</p>
-
-        <CalcStep number={1}>Inputs: temperature = 0.7, humidity = 0.8</CalcStep>
-        <CalcStep number={2}>Weights: w_temp = -0.3, w_humid = 0.9</CalcStep>
-        <CalcStep number={3}>Bias: 0.1</CalcStep>
-        <CalcStep number={4}>Weighted sum: (0.7 × -0.3) + (0.8 × 0.9) = -0.21 + 0.72 = 0.51</CalcStep>
-        <CalcStep number={5}>Add bias: 0.51 + 0.1 = 0.61</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          The bias of 0.1 shifted our output from 0.51 to 0.61. This small adjustment can make a big
-          difference in the final prediction — it&apos;s one more knob the network can tune during learning.
-        </p>
-      </WorkedExample>
 
       <ExplanationBox title="How Neural Networks Initialize Bias">
         <p>
@@ -75,22 +61,6 @@ export default function Step5() {
           Some specialized architectures use different initialization strategies (like initializing
           bias to a small positive value for certain activation functions), but zero is the standard
           default that works well in most cases.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Bias in the Big Picture">
-        <p>
-          So now our neuron has three types of learnable parameters:
-        </p>
-        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li><strong>Inputs</strong> — The data we feed in (temperature, humidity)</li>
-          <li><strong>Weights</strong> — How much each input matters</li>
-          <li><strong>Bias</strong> — The baseline adjustment</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          During training, the network will automatically adjust the weights AND the bias to make
-          better predictions. But we&apos;re not done yet — the output 0.61 could be any number.
-          We need a way to squish it into a probability between 0 and 1.
         </p>
       </ExplanationBox>
     </div>

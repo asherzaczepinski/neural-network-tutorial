@@ -41,15 +41,6 @@ export default function Step6() {
           That&apos;s why we need an activation function next.
         </p>
       </WorkedExample>
-
-      <ExplanationBox title="What's Next">
-        <p>
-          We&apos;ve computed z = 0.61, but this raw number isn&apos;t very useful yet. In the next
-          steps, we&apos;ll learn about the <strong>dot product</strong> (a cleaner way to write this
-          calculation) and then the <strong>activation function</strong> that turns z into an actual
-          probability between 0 and 1.
-        </p>
-      </ExplanationBox>
     </div>
   );
 }

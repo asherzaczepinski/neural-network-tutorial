@@ -39,9 +39,6 @@ export default function Step1() {
           <strong>Algebra</strong> — Seriously, that&apos;s it. We&apos;ll explain derivatives
           from scratch when we need them. No calculus prerequisite.
         </p>
-        <p>
-          If you remember what y = mx + b means, you&apos;re ready.
-        </p>
       </ExplanationBox>
 
       <ExplanationBox title="What We'll Cover">
