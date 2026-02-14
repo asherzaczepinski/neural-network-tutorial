@@ -1,4 +1,4 @@
-export const TOTAL_STEPS = 17;
+export const TOTAL_STEPS = 18;
 
 export const STEPS = [
   { id: 1, title: 'Welcome', shortTitle: 'Intro' },
@@ -9,13 +9,14 @@ export const STEPS = [
   { id: 6, title: 'Computing Pre-activation', shortTitle: 'Pre-activation' },
   { id: 7, title: 'The Sigmoid Function Pt. 1', shortTitle: 'Sigmoid Pt. 1' },
   { id: 8, title: 'The Sigmoid Function Pt. 2', shortTitle: 'Sigmoid Pt. 2' },
-  { id: 9, title: 'Your First Complete Neuron', shortTitle: 'Complete Neuron' },
-  { id: 10, title: 'How Information Flows Through a Network', shortTitle: 'Network Flow' },
-  { id: 11, title: 'Building a Layer of Neurons', shortTitle: 'Layers' },
-  { id: 12, title: 'Connecting Layers', shortTitle: 'Connecting' },
-  { id: 13, title: 'Forward Propagation', shortTitle: 'Forward Pass' },
-  { id: 14, title: 'Measuring Error: The Loss Function', shortTitle: 'Loss' },
-  { id: 15, title: 'Derivatives and Gradients', shortTitle: 'Derivatives' },
-  { id: 16, title: 'Backpropagation', shortTitle: 'Backprop' },
-  { id: 17, title: 'Gradient Descent & Training', shortTitle: 'Training' },
+  { id: 9, title: 'The Sigmoid Function Pt. 3', shortTitle: 'Sigmoid Pt. 3' },
+  { id: 10, title: 'Your First Complete Neuron', shortTitle: 'Complete Neuron' },
+  { id: 11, title: 'How Information Flows Through a Network', shortTitle: 'Network Flow' },
+  { id: 12, title: 'Building a Layer of Neurons', shortTitle: 'Layers' },
+  { id: 13, title: 'Connecting Layers', shortTitle: 'Connecting' },
+  { id: 14, title: 'Forward Propagation', shortTitle: 'Forward Pass' },
+  { id: 15, title: 'Measuring Error: The Loss Function', shortTitle: 'Loss' },
+  { id: 16, title: 'Derivatives and Gradients', shortTitle: 'Derivatives' },
+  { id: 17, title: 'Backpropagation', shortTitle: 'Backprop' },
+  { id: 18, title: 'Gradient Descent & Training', shortTitle: 'Training' },
 ];

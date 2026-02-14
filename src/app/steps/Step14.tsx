@@ -6,126 +6,126 @@ import WorkedExample from '@/components/WorkedExample';
 import CalcStep from '@/components/CalcStep';
 
 
-export default function Step15() {
+export default function Step14() {
   return (
     <div>
-      <ExplanationBox title="What Is a Derivative?">
+      <ExplanationBox title="Measuring Error: The Loss Function">
         <p>
-          A derivative tells you <strong>how fast something is changing</strong>. If y = f(x),
-          then the derivative dy/dx tells you: &quot;if I increase x by a tiny amount, how much does y change?&quot;
+          To train a neural network, we need to know <strong>how wrong it is</strong>. This is
+          what the loss function (also called cost function or error function) measures. It
+          takes the network&apos;s prediction and the correct answer (target) and returns a single
+          number representing how bad the prediction was.
         </p>
         <p>
-          For neural networks, we care about: &quot;if I change this weight by a tiny amount, how much
-          does the loss change?&quot; If we know that, we can adjust weights to reduce loss!
+          A good loss function has these properties:
         </p>
-        <p>
-          A positive derivative means increasing the input increases the output.
-          A negative derivative means increasing the input decreases the output.
-          The magnitude tells us how sensitive the output is to the input.
-        </p>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>Returns 0 when prediction equals target (perfect)</li>
+          <li>Returns larger values for worse predictions</li>
+          <li>Is differentiable (we need to compute gradients)</li>
+        </ul>
       </ExplanationBox>
 
-      <MathFormula label="The Core Question">
-        ∂Loss/∂weight = &quot;How much does loss change when we tweak this weight?&quot;
+      <MathFormula label="Mean Squared Error (MSE)">
+        Loss = (prediction - target)²
       </MathFormula>
 
-      <ExplanationBox title="Derivatives We Need">
+      <ExplanationBox title="Why Squared Error?">
         <p>
-          For our network, we need derivatives of two functions:
+          We could just use <code>|prediction - target|</code> (absolute difference), but we
+          square it instead. Here&apos;s why:
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>1. Sigmoid derivative:</strong> How does sigmoid&apos;s output change with its input?
-        </p>
-        <div className="math-formula" style={{ margin: '1rem 0' }}>
-          d/dz[sigmoid(z)] = sigmoid(z) × (1 - sigmoid(z))
-        </div>
         <p>
-          This beautiful formula means we can compute the derivative using just the output!
-          If s = sigmoid(z), then the derivative is s × (1 - s).
+          <strong>1. Makes all errors positive:</strong> Whether we overshoot (prediction &gt; target)
+          or undershoot (prediction &lt; target), squaring gives a positive number. We don&apos;t want
+          errors to cancel out.
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>2. MSE derivative:</strong> How does loss change with prediction?
-        </p>
-        <div className="math-formula" style={{ margin: '1rem 0' }}>
-          d/dp[(p - t)²] = 2 × (p - t)
-        </div>
         <p>
-          This comes from the power rule: the derivative of x² is 2x.
+          <strong>2. Penalizes large errors more:</strong> An error of 0.1 gives loss 0.01, but an
+          error of 0.5 gives loss 0.25 (25x worse, not 5x). This pushes the network hard to fix
+          big mistakes.
+        </p>
+        <p>
+          <strong>3. Smooth derivative:</strong> The derivative of x² is 2x, which is simple and
+          smooth. This makes gradient computation easy.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Why These Derivatives Matter">
-        <p>Let&apos;s trace through an example. Say our prediction is 0.7 but target is 1.0:</p>
+      <WorkedExample title="Computing Loss">
+        <CalcStep number={1}>prediction = 0.7, target = 1.0</CalcStep>
+        <CalcStep number={2}>error = 0.7 - 1.0 = -0.3</CalcStep>
+        <CalcStep number={3}>loss = (-0.3)² = 0.09</CalcStep>
 
-        <CalcStep number={1}>MSE derivative = 2 × (0.7 - 1.0) = 2 × (-0.3) = -0.6</CalcStep>
+        <p style={{ marginTop: '1rem' }}>Compare to a better prediction:</p>
+
+        <CalcStep number={4}>prediction = 0.9, target = 1.0</CalcStep>
+        <CalcStep number={5}>error = 0.9 - 1.0 = -0.1</CalcStep>
+        <CalcStep number={6}>loss = (-0.1)² = 0.01</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          The negative sign tells us: <em>prediction is too low</em>. To reduce loss,
-          we need to increase the prediction. If we had pred=1.3 and target=1.0:
-        </p>
-
-        <CalcStep number={2}>MSE derivative = 2 × (1.3 - 1.0) = 2 × (0.3) = 0.6</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          Positive sign means: <em>prediction is too high</em>. We need to decrease it.
-          The derivative is our compass pointing toward improvement!
+          The second prediction (0.9) has 1/9th the loss of the first (0.7), even though
+          the raw error only decreased by a factor of 3. Squaring emphasizes improvement.
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="The Sigmoid Derivative Shape">
+      <ExplanationBox title="Loss Over the Whole Dataset">
         <p>
-          The sigmoid derivative has an interesting shape - it&apos;s largest in the middle
-          and smallest at the extremes:
+          For XOR, we have 4 training examples. We compute loss for each one and typically
+          average them:
         </p>
-        <div style={{
-          background: 'var(--bg-tertiary)',
+        <pre style={{
+          background: 'var(--bg-code)',
           padding: '1rem',
           borderRadius: '8px',
-          fontFamily: 'monospace',
           marginTop: '1rem'
         }}>
-          <pre style={{ background: 'transparent', padding: 0 }}>
-{`Derivative
-0.25|     *****
-    |    *     *
-0.1 |   *       *
-    |  *         *
-0.0 |**           **
-    +------|------|------> z
-         -2     0     2`}
-          </pre>
-        </div>
+{`total_loss = 0
+for each (input, target) in training_data:
+    prediction = forward(input)
+    total_loss += mse_loss(prediction, target)
+average_loss = total_loss / 4`}
+        </pre>
         <p style={{ marginTop: '1rem' }}>
-          At z=0, the derivative is 0.25 (maximum). At z=±5, it&apos;s nearly 0.
-          This means sigmoid &quot;saturates&quot; at extremes - small changes in z cause
-          almost no change in output. This can slow down learning (the &quot;vanishing gradient&quot; problem).
+          This average loss tells us how well the network is doing overall. Training aims
+          to minimize this average.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Computing Sigmoid Derivative">
-        <p>At z = 0.78 (our earlier example):</p>
+      <WorkedExample title="XOR Loss with Random Weights">
+        <p>With untrained network outputting ~0.65 for everything:</p>
 
-        <CalcStep number={1}>sigmoid(0.78) = 0.686</CalcStep>
-        <CalcStep number={2}>derivative = 0.686 × (1 - 0.686)</CalcStep>
-        <CalcStep number={3}>derivative = 0.686 × 0.314 = 0.215</CalcStep>
+        <CalcStep number={1}>[0,0]: pred=0.65, target=0, loss=(0.65-0)²=0.4225</CalcStep>
+        <CalcStep number={2}>[0,1]: pred=0.65, target=1, loss=(0.65-1)²=0.1225</CalcStep>
+        <CalcStep number={3}>[1,0]: pred=0.65, target=1, loss=(0.65-1)²=0.1225</CalcStep>
+        <CalcStep number={4}>[1,1]: pred=0.65, target=0, loss=(0.65-0)²=0.4225</CalcStep>
+        <CalcStep number={5}>Total: 0.4225+0.1225+0.1225+0.4225=1.09</CalcStep>
+        <CalcStep number={6}>Average: 1.09/4 = 0.2725</CalcStep>
 
         <p style={{ marginTop: '1rem' }}>
-          This tells us: at z=0.78, a small increase in z causes the sigmoid output
-          to increase by about 0.215 times that amount.
+          After training, we want average loss near 0. Getting from 0.27 to ~0.01 is what
+          training accomplishes!
         </p>
       </WorkedExample>
 
-      <ExplanationBox title="The Power of Derivatives">
+      <ExplanationBox title="The Training Objective">
         <p>
-          You now have the mathematical tools to answer: &quot;which direction should I adjust
-          this value to reduce error?&quot; But there&apos;s a problem: our network has many layers,
-          and we need to know how the <em>final</em> loss depends on weights in <em>earlier</em>
-          layers.
+          We now have:
         </p>
-        <p>
-          This is where the <strong>chain rule</strong> comes in. It tells us how to
-          combine derivatives when functions are composed (like layers in a network).
-          That&apos;s the next step!
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>✓ Forward pass - compute predictions from inputs</li>
+          <li>✓ Loss function - measure how wrong predictions are</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          What we need next:
+        </p>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
+          <li>A way to know which direction to change weights (derivatives)</li>
+          <li>A way to propagate error backward through layers (chain rule)</li>
+          <li>A method to actually update the weights (gradient descent)</li>
+        </ul>
+        <p style={{ marginTop: '1rem' }}>
+          The next step introduces derivatives - the mathematical tool that tells us how
+          changing a weight affects the loss.
         </p>
       </ExplanationBox>
     </div>
