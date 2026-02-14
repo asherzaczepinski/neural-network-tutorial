@@ -1,282 +1,262 @@
 'use client';
 
 import ExplanationBox from '@/components/ExplanationBox';
-import WorkedExample from '@/components/WorkedExample';
-import CalcStep from '@/components/CalcStep';
-import LayerCollapseDemo from '@/components/LayerCollapseDemo';
 
 export default function Step9() {
   return (
     <div>
-      <ExplanationBox title="Why Sigmoid Also Enables Deep Learning">
+      <ExplanationBox title="The Problem: z Can Go Anywhere">
         <p>
-          Sigmoid doesn&apos;t just give us nice probabilities — it&apos;s also what makes
-          multi-layer networks actually work. Let&apos;s see this with our weather example.
+          We just saw that sigmoid only works well when z is between -4 and +4. But remember
+          what z actually is:
+        </p>
+        <div style={{
+          background: '#f8fafc',
+          border: '1px solid #e2e8f0',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginTop: '0.75rem',
+          fontFamily: 'Georgia, serif',
+          fontSize: '18px',
+          textAlign: 'center'
+        }}>
+          z = (input<sub>1</sub> × weight<sub>1</sub>) + (input<sub>2</sub> × weight<sub>2</sub>) + ... + bias
+        </div>
+        <p style={{ marginTop: '0.75rem' }}>
+          Since z is a sum of many input × weight terms, the more inputs you have, the more
+          terms get added together — and z can easily become massive, way beyond the -4 to +4
+          range where sigmoid actually works. That&apos;s exactly what weight initialization and
+          normalization are designed to prevent.
         </p>
       </ExplanationBox>
 
-      <WorkedExample title="Without Sigmoid: Layers Collapse">
-        <p>Imagine a two-layer network for rain prediction, but WITHOUT sigmoid:</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 1:</strong></p>
-        <CalcStep number={1}>Input: [temp=0.7, humid=0.8], weights=[-0.3, 0.9]</CalcStep>
-        <CalcStep number={2}>Output: 0.7×(-0.3) + 0.8×0.9 = 0.51</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 2:</strong></p>
-        <CalcStep number={3}>Input: 0.51, weight=0.5</CalcStep>
-        <CalcStep number={4}>Output: 0.51 × 0.5 = 0.255</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>But here&apos;s the problem:</strong></p>
+      <ExplanationBox title="Solution 1: Weight Initialization (Fixing the Weights)">
         <p>
-          We can get the EXACT same result with just ONE layer using combined weights:
-        </p>
-        <CalcStep number={5}>Combined weights: [-0.3×0.5, 0.9×0.5] = [-0.15, 0.45]</CalcStep>
-        <CalcStep number={6}>Single layer: 0.7×(-0.15) + 0.8×0.45 = 0.255</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Same answer!</strong> The second layer did nothing useful. We wasted
-          computation on a layer that added zero capability.
-        </p>
-      </WorkedExample>
-
-      <WorkedExample title="With Sigmoid: Each Layer Adds Power">
-        <p>Now the SAME network, but with sigmoid after each layer:</p>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 1:</strong></p>
-        <CalcStep number={1}>Linear: 0.7×(-0.3) + 0.8×0.9 = 0.51</CalcStep>
-        <CalcStep number={2}>After sigmoid: sigmoid(0.51) = 0.625</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Layer 2:</strong></p>
-        <CalcStep number={3}>Linear: 0.625 × 0.5 = 0.3125</CalcStep>
-        <CalcStep number={4}>After sigmoid: sigmoid(0.3125) = 0.578</CalcStep>
-
-        <p style={{ marginTop: '1rem' }}><strong>Can we replicate this with one layer?</strong></p>
-        <p>
-          Try to find ANY weights that give 0.578 from inputs [0.7, 0.8] in one step.
-          <strong> You can&apos;t!</strong> The sigmoid transformation creates a result
-          that no single linear combination can produce.
+          Before training starts, we need to pick starting values for every weight.
+          This matters more than you&apos;d think.
         </p>
 
-        <p style={{ marginTop: '1rem' }}>
-          This is why sigmoid matters for deep learning: it makes each layer genuinely
-          add computational power. A 10-layer network with sigmoid can learn patterns
-          that a 1-layer network simply cannot represent.
-        </p>
-      </WorkedExample>
-
-      <ExplanationBox title="What This Means for Weather Prediction">
-        <p>
-          Think about what a single layer without sigmoid can do. It can only learn
-          <strong> one simple rule</strong>. Something like:
-        </p>
-        <p style={{ marginTop: '1rem', padding: '1rem', background: '#f9fafb', borderRadius: '8px' }}>
-          &quot;If humidity is above 0.6, predict rain. Otherwise, predict no rain.&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          That&apos;s it. One rule. One cutoff. The network looks at humidity, checks if it&apos;s
-          above or below 0.6, and makes its prediction. It completely ignores any
-          complex relationships between temperature AND humidity together.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="But Real Weather Doesn't Follow One Simple Rule">
-        <p>
-          Real rain depends on <strong>combinations</strong> of things:
-        </p>
-        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
-          <li>High humidity AND moderate temperature → rain</li>
-          <li>High humidity BUT freezing cold → snow, not rain</li>
-          <li>High humidity BUT extremely hot → the moisture evaporates, no rain</li>
-          <li>Low humidity → no rain, regardless of temperature</li>
-        </ul>
-        <p style={{ marginTop: '1rem' }}>
-          See how the answer depends on checking multiple conditions together?
-          A single layer can&apos;t do this. It can only check one thing at a time.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="Why Sigmoid Makes Each Layer 'Mean Something Different'">
-        <p>
-          Here&apos;s the key insight: sigmoid <strong>warps</strong> the numbers.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Without sigmoid, if layer 1 outputs 0.51, layer 2 just multiplies it.
-          The 0.51 passes through unchanged in meaning — it&apos;s still just &quot;0.51&quot;.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          With sigmoid, that 0.51 gets transformed to 0.625. But here&apos;s the magic:
-          sigmoid doesn&apos;t transform all numbers the same way. Small numbers get
-          pushed toward 0.5. Big positive numbers get pushed toward 1. Big negative
-          numbers get pushed toward 0.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          This &quot;warping&quot; means <strong>each layer&apos;s output now has a different meaning</strong>.
-          Layer 1&apos;s output of 0.625 isn&apos;t just a number anymore — it&apos;s been squeezed
-          into a range where it represents &quot;how confident am I about this first question?&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          When layer 2 receives 0.625, it&apos;s receiving a <em>confidence level</em>, not just
-          a raw number. It can then ask its own question and output its own confidence.
-          The layers stay separate because each one is working with transformed,
-          meaningful values — not just raw numbers that can be collapsed.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="The Two Big Things Sigmoid Does">
-        <p style={{ fontWeight: 600, fontSize: '1.1rem', marginBottom: '1rem' }}>
-          Sigmoid isn&apos;t just a fancy mathematical trick — it fundamentally changes what neural networks can do:
+        <p style={{ marginTop: '0.75rem' }}>
+          You might be thinking: &quot;Can&apos;t the network just <em>learn</em> its way to better weights
+          during training? Why does the starting point matter?&quot;
         </p>
 
         <div style={{
           background: '#f0f9ff',
-          border: '2px solid #0ea5e9',
-          borderRadius: '12px',
-          padding: '1.25rem',
-          marginBottom: '1rem'
+          border: '1px solid #bae6fd',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginTop: '0.75rem'
         }}>
-          <h4 style={{ margin: '0 0 0.75rem 0', color: '#0369a1' }}>
-            1. True Probabilities, Not Just Yes/No
-          </h4>
-          <p>
-            Without sigmoid, you just get a raw number. Is 0.61 high? Is -2.3 low? Who knows!
-            But sigmoid <strong>squishes everything into the 0-1 range</strong>, giving you actual probabilities.
+          <p><strong>Why the network can&apos;t just fix bad weights on its own:</strong></p>
+          <p style={{ marginTop: '0.5rem' }}>
+            Remember how the network learns — it looks at how wrong it was, then nudges each weight
+            a tiny bit in the right direction. But that nudge depends on the <strong>gradient</strong> (how
+            much the output changes when you change a weight). If z is way out in the flat zone of
+            sigmoid (like z = 50), the gradient is basically <strong>zero</strong>. Zero gradient means
+            zero nudge. The network <em>wants</em> to fix the weights but it literally has no signal
+            telling it which direction to move them.
           </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            Now instead of &quot;rain&quot; or &quot;no rain&quot;, you get <strong>&quot;64.8% chance of rain&quot;</strong>.
-            That&apos;s real information you can use! You could still take derivatives from the slope
-            to measure certainty, but sigmoid condenses everything into one intuitive probability value.
+          <p style={{ marginTop: '0.5rem' }}>
+            It&apos;s like being lost in a perfectly flat desert with no landmarks — you know you need
+            to go somewhere, but there&apos;s no slope to follow, no hill to climb. You&apos;re stuck.
+          </p>
+          <p style={{ marginTop: '0.5rem' }}>
+            And even if the gradient isn&apos;t completely zero, a bad starting point means the network
+            has to waste tons of training steps just getting the weights to a reasonable range before
+            it can start actually learning useful patterns. That&apos;s wasted time, wasted computation,
+            and in deep networks with many layers, the tiny gradients can compound and become so
+            small that the early layers <em>never</em> learn at all.
           </p>
         </div>
+
+        <p style={{ marginTop: '0.75rem' }}>
+          So we need to start smart. The solution is called <strong>Xavier initialization</strong>: pick
+          small random numbers, where &quot;how small&quot; depends on how many inputs the neuron has.
+          The core idea is simple:
+        </p>
+        <div style={{
+          background: '#f0fdf4',
+          border: '1px solid #bbf7d0',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginTop: '0.75rem',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontFamily: 'Georgia, serif', fontSize: '18px' }}>
+            More inputs → smaller weights
+          </div>
+        </div>
+        <p style={{ marginTop: '0.75rem' }}>
+          Why? Because z is a <em>sum</em>. If a neuron has 100 inputs, that&apos;s 100 terms being
+          added together. Each term needs to be small so the total doesn&apos;t explode. If it only
+          has 2 inputs, the weights can be a bit bigger since there are fewer terms adding up.
+        </p>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>2 inputs →</strong> weights around ±0.7</li>
+          <li><strong>10 inputs →</strong> weights around ±0.3</li>
+          <li><strong>100 inputs →</strong> weights around ±0.1</li>
+        </ul>
+
+        <p style={{ marginTop: '0.75rem' }}>
+          But where do those numbers come from? Here&apos;s the actual math behind Xavier initialization:
+        </p>
+        <div style={{
+          background: '#f8fafc',
+          border: '1px solid #e2e8f0',
+          borderRadius: '8px',
+          padding: '1.5rem',
+          marginTop: '0.75rem'
+        }}>
+          <p>
+            We want z to end up with a <strong>spread of about 1</strong> (so it stays in the -3 to +3
+            range). Each term in the z sum is input × weight. If our inputs already have a spread of
+            1 (thanks to normalization), then:
+          </p>
+          <ul style={{ marginTop: '0.75rem', lineHeight: '2' }}>
+            <li>The spread of one term = spread of input × spread of weight = 1 × spread of weight</li>
+            <li>When you add up n terms, the total spread = n × (spread of one term)</li>
+            <li>We want the total spread to be 1, so: n × (spread of weight) = 1</li>
+          </ul>
+          <p style={{ marginTop: '0.75rem' }}>Solving for the spread of each weight:</p>
+          <div style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '20px',
+            textAlign: 'center',
+            margin: '0.75rem 0',
+            padding: '0.75rem',
+            background: 'white',
+            borderRadius: '6px',
+            border: '1px solid #e2e8f0'
+          }}>
+            spread of weights = 1 / n
+          </div>
+          <p style={{ marginTop: '0.75rem' }}>
+            The &quot;spread&quot; here is technically called <strong>variance</strong>. To get the actual
+            size of the weights, we take the square root (called <strong>standard deviation</strong>):
+          </p>
+          <div style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '20px',
+            textAlign: 'center',
+            margin: '0.75rem 0',
+            padding: '0.75rem',
+            background: 'white',
+            borderRadius: '6px',
+            border: '1px solid #e2e8f0'
+          }}>
+            weight size = 1 / √n
+          </div>
+          <p style={{ marginTop: '0.75rem' }}>That&apos;s where our numbers come from:</p>
+          <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
+            <li>2 inputs → 1/√2 ≈ <strong>0.71</strong></li>
+            <li>10 inputs → 1/√10 ≈ <strong>0.32</strong></li>
+            <li>100 inputs → 1/√100 = <strong>0.10</strong></li>
+          </ul>
+        </div>
+      </ExplanationBox>
+
+      <ExplanationBox title="Solution 2: Better Normalization (Fixing the Inputs)">
+        <p>
+          Back in Step 3, we learned to normalize inputs to a 0-1 range using:
+        </p>
+        <div style={{
+          background: '#f8fafc',
+          border: '1px solid #e2e8f0',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginTop: '0.75rem',
+          fontFamily: 'Georgia, serif',
+          fontSize: '18px',
+          textAlign: 'center'
+        }}>
+          normalized = (value - min) / (max - min)
+        </div>
+        <p style={{ marginTop: '0.75rem' }}>
+          This works — it gets all our inputs onto the same scale so no single input dominates.
+          But there&apos;s a problem: all the values end up between <strong>0 and 1</strong>. They&apos;re
+          all positive. Look at what that does to z:
+        </p>
 
         <div style={{
-          background: '#fdf4ff',
-          border: '2px solid #c026d3',
-          borderRadius: '12px',
-          padding: '1.25rem',
-          marginBottom: '1rem'
+          background: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginTop: '0.75rem'
         }}>
-          <h4 style={{ margin: '0 0 0.75rem 0', color: '#a21caf' }}>
-            2. Curved Boundaries That Can Learn Complex Patterns
-          </h4>
-          <p>
-            This is where it gets interesting. When we &quot;squish&quot; the function down, different
-            input values get squished by different amounts. This creates <strong>curvature</strong>.
+          <p><strong>The problem with 0-1 normalization:</strong></p>
+          <p style={{ marginTop: '0.5rem' }}>
+            If all inputs are positive (between 0 and 1), and we multiply them by positive weights,
+            every term in the z sum is positive. The terms can only <em>add up</em>, never cancel each
+            other out. This pushes z away from 0 and toward the edges of sigmoid&apos;s effective zone.
           </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            Think about our 2D temperature/humidity graph. With a linear function, you can only
-            draw one straight line to divide &quot;rain&quot; from &quot;no rain&quot;. That&apos;s pretty limiting!
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            But with sigmoid&apos;s curvature, the boundary can <strong>bend and curve</strong> to
-            capture more complex relationships. The network can learn that rain happens when
-            it&apos;s humid AND warm, but NOT when it&apos;s too hot (even if humid).
+          <p style={{ marginTop: '0.5rem' }}>
+            It also means the weights can only all increase together or all decrease together during
+            learning — they can&apos;t move independently. This slows training down significantly.
           </p>
         </div>
 
+        <p style={{ marginTop: '0.75rem' }}>
+          A better approach is to center the values <strong>around 0</strong> instead:
+        </p>
         <div style={{
-          background: '#fefce8',
-          border: '2px solid #ca8a04',
-          borderRadius: '12px',
-          padding: '1.25rem'
+          background: '#f0f9ff',
+          border: '1px solid #bae6fd',
+          borderRadius: '8px',
+          padding: '1rem',
+          marginTop: '0.75rem'
         }}>
-          <h4 style={{ margin: '0 0 0.75rem 0', color: '#a16207' }}>
-            What About Higher Dimensions?
-          </h4>
-          <p>
-            Our weather example uses 2 inputs (temperature, humidity), so we can visualize it
-            on a 2D graph. But real neural networks might have 4, 100, or even millions of inputs!
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            With 3 inputs, you&apos;d need a 3D space. With 4 inputs, a 4D space (which we can&apos;t
-            visualize!). This is where <strong>Euclidean geometry</strong> comes in — it&apos;s the
-            math that lets us work with distances and boundaries in any number of dimensions.
-          </p>
-          <p style={{ marginTop: '0.75rem' }}>
-            The cool part: sigmoid&apos;s curvature works the same way in 4D, 100D, or any dimension.
-            Instead of a curved line, you get a curved &quot;hypersurface&quot; that can divide up the
-            space in complex ways. Each neuron carves out its own region, and stacking layers
-            lets you combine these regions into incredibly sophisticated decision boundaries.
-          </p>
-          <p style={{ marginTop: '0.75rem', fontStyle: 'italic', color: '#666' }}>
-            Example: To find how &quot;far&quot; a point is from a decision boundary in 4D, you use
-            the Euclidean distance formula: √(x₁² + x₂² + x₃² + x₄²). The math scales perfectly!
-          </p>
+          <p><strong>1. Find the average</strong> of all values for that input</p>
+          <p style={{ marginTop: '0.5rem' }}><strong>2. Find the spread</strong> (how far values typically are from the average)</p>
+          <p style={{ marginTop: '0.5rem' }}><strong>3. For each value:</strong> subtract the average, then divide by the spread</p>
+          <div style={{
+            fontFamily: 'Georgia, serif',
+            fontSize: '18px',
+            textAlign: 'center',
+            margin: '0.75rem 0',
+            padding: '0.5rem',
+            background: 'white',
+            borderRadius: '6px'
+          }}>
+            normalized value = (value - average) / spread
+          </div>
         </div>
-      </ExplanationBox>
-
-      <ExplanationBox title="See It For Yourself">
-        <p>
-          Play with the sliders below. Watch how the linear version always collapses
-          to one layer, but the sigmoid version creates something unique. Notice how
-          the sigmoid graph shows a <strong>gradient of colors</strong> — that&apos;s the
-          probability changing smoothly, not just jumping between &quot;rain&quot; and &quot;no rain&quot;:
+        <p style={{ marginTop: '0.75rem' }}>
+          Now values are centered around 0 — some positive, some negative. This means the terms
+          in the z equation can cancel each other out, keeping z closer to 0 (right in the sweet
+          spot of sigmoid). And because inputs can be positive or negative, weights can update
+          independently during learning.
         </p>
-        <LayerCollapseDemo />
-      </ExplanationBox>
-
-      <ExplanationBox title="How This Lets Us Check Multiple Conditions">
-        <p>
-          Because sigmoid keeps each layer&apos;s meaning separate, we can stack layers
-          where each one asks a different question:
+        <p style={{ marginTop: '0.75rem' }}>
+          For example, if we&apos;re predicting house purchases and we have incomes like
+          $40,000, $85,000, and $120,000 — with an average of $81,667 and a spread of ~$32,800:
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Layer 1 asks:</strong> &quot;Is it warm enough for rain?&quot;
-          <br />
-          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Layer 2 asks:</strong> &quot;Is it too hot for rain?&quot;
-          <br />
-          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Layer 3 asks:</strong> &quot;Is humidity high enough?&quot;
-          <br />
-          Outputs high confidence (near 1) if yes, low confidence (near 0) if no.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>Final layer combines them:</strong> &quot;Warm enough AND not too hot AND humid?&quot;
-          <br />
-          Only if ALL conditions are right, predict rain.
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          Without sigmoid, all these layers would mathematically collapse into one.
-          You&apos;d be stuck with one simple rule. Sigmoid is what keeps each layer&apos;s
-          question separate and meaningful.
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
+          <li>$40,000 → (40,000 - 81,667) / 32,800 = <strong>-1.27</strong></li>
+          <li>$85,000 → (85,000 - 81,667) / 32,800 = <strong>0.10</strong></li>
+          <li>$120,000 → (120,000 - 81,667) / 32,800 = <strong>1.17</strong></li>
+        </ul>
+        <p style={{ marginTop: '0.75rem' }}>
+          Most values end up between <strong>-3 and +3</strong> — safely inside sigmoid&apos;s effective zone!
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="The Simple Summary">
+      <ExplanationBox title="Putting It All Together">
         <p>
-          <strong>Without sigmoid:</strong> Your network can only learn one simple rule,
-          no matter how many layers you add. &quot;If X is above some number, predict yes.&quot;
+          Here&apos;s why these two techniques work together so nicely:
         </p>
-        <p style={{ marginTop: '1rem' }}>
-          <strong>With sigmoid:</strong> Each layer can ask a new question. More layers
-          means you can check more conditions. &quot;Is A true? Is B true? Is C true?
-          Only if all of them, predict yes.&quot;
-        </p>
-        <p style={{ marginTop: '1rem' }}>
-          That&apos;s why sigmoid (and activation functions like it) are essential.
-          They let neural networks learn complex patterns instead of just simple rules.
-        </p>
-      </ExplanationBox>
-
-      <ExplanationBox title="The Complete Picture So Far">
-        <p>
-          You now have all the pieces for a complete neuron:
-        </p>
-        <ol style={{ marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>Inputs</strong> — temperature (0.7) and humidity (0.8)</li>
-          <li><strong>Weights</strong> — how much each input matters (-0.3 and 0.9)</li>
-          <li><strong>Bias</strong> — the baseline tendency (0.1)</li>
-          <li><strong>Weighted sum + bias</strong> — gives us z = 0.61</li>
-          <li><strong>Sigmoid</strong> — converts z to probability = 0.648 (64.8%)</li>
-        </ol>
-        <p style={{ marginTop: '1rem' }}>
-          In the next step, we&apos;ll combine all these pieces into a single, reusable
-          <code>neuron()</code> function. Then we&apos;ll build layers of neurons and
-          connect them into a full network!
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
+          <li><strong>Better normalization</strong> makes inputs small and centered around 0</li>
+          <li><strong>Xavier initialization</strong> makes weights small (scaled to the number of inputs)</li>
+          <li><strong>Small × small = small</strong> — each input × weight term is a small number</li>
+          <li><strong>Small terms added up = still small</strong> — z stays in the -3 to +3 range</li>
+        </ul>
+        <p style={{ marginTop: '0.75rem' }}>
+          And -3 to +3 is right in the middle of sigmoid&apos;s effective zone (-4 to +4). The neuron
+          can produce meaningfully different outputs, tell its inputs apart, and actually learn.
+          This isn&apos;t a coincidence — normalization and Xavier initialization were specifically
+          designed to work together to keep z exactly where sigmoid works best.
         </p>
       </ExplanationBox>
     </div>
