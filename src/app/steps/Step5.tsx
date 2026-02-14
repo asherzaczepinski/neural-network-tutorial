@@ -88,8 +88,12 @@ export default function Step5() {
             style={{ width: '100%', maxWidth: '460px', height: 'auto', display: 'block' }}
           >
             <defs>
+              <linearGradient id="neuronGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#a78bfa"/>
+                <stop offset="100%" stopColor="#7c3aed"/>
+              </linearGradient>
               <filter id="shadowA" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#7c3aed" floodOpacity="0.2"/>
+                <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#7c3aed" floodOpacity="0.3"/>
               </filter>
               <filter id="shadowOut" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#22c55e" floodOpacity="0.2"/>
@@ -120,15 +124,15 @@ export default function Step5() {
             <line x1="120" y1="155" x2="175" y2="95" stroke="#cbd5e1" strokeWidth="1.5"/>
             <line x1="120" y1="155" x2="175" y2="150" stroke="#cbd5e1" strokeWidth="1.5"/>
 
-            {/* Hidden neurons — flat purple */}
-            <circle cx="200" cy="40" r="25" fill="#7c3aed" filter="url(#shadowA)"/>
-            <text x="200" y="44" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">A</text>
+            {/* Hidden neurons — same gradient as Step2 */}
+            <circle cx="200" cy="40" r="25" fill="url(#neuronGrad5)" filter="url(#shadowA)"/>
+            <text x="200" y="44" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700">A</text>
 
-            <circle cx="200" cy="95" r="25" fill="#7c3aed" filter="url(#shadowA)"/>
-            <text x="200" y="99" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">B</text>
+            <circle cx="200" cy="95" r="25" fill="url(#neuronGrad5)" filter="url(#shadowA)"/>
+            <text x="200" y="99" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700">B</text>
 
-            <circle cx="200" cy="150" r="25" fill="#7c3aed" filter="url(#shadowA)"/>
-            <text x="200" y="154" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">C</text>
+            <circle cx="200" cy="150" r="25" fill="url(#neuronGrad5)" filter="url(#shadowA)"/>
+            <text x="200" y="154" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="700">C</text>
 
             {/* Connections: hidden → output */}
             <line x1="225" y1="40" x2="305" y2="95" stroke="#86efac" strokeWidth="1.5"/>
@@ -137,8 +141,7 @@ export default function Step5() {
 
             {/* Output neuron */}
             <circle cx="330" cy="95" r="25" fill="#22c55e" filter="url(#shadowOut)"/>
-            <text x="330" y="92" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">rain?</text>
-            <text x="330" y="104" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">82%</text>
+            <text x="330" y="99" textAnchor="middle" fill="#fff" fontSize="9" fontWeight="700">Rain (%)</text>
           </svg>
         </div>
 
