@@ -1,6 +1,168 @@
 'use client';
 
+import { useState } from 'react';
 import ExplanationBox from '@/components/ExplanationBox';
+
+// Generate a random number from a normal distribution using Box-Muller transform
+function randomNormal(mean: number, stdDev: number): number {
+  const u1 = Math.random();
+  const u2 = Math.random();
+  const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  return mean + z * stdDev;
+}
+
+function BellCurveGraph({ stdDev, weights }: { stdDev: number; weights: number[] }) {
+  const width = 600;
+  const height = 200;
+  const padding = 40;
+  const graphW = width - padding * 2;
+  const graphH = height - 50;
+
+  const xMin = -stdDev * 3.5;
+  const xMax = stdDev * 3.5;
+
+  const toX = (v: number) => padding + ((v - xMin) / (xMax - xMin)) * graphW;
+  const gaussian = (x: number) => Math.exp(-(x * x) / (2 * stdDev * stdDev));
+  const toY = (gVal: number) => 20 + (1 - gVal) * graphH;
+
+  const curvePoints: string[] = [];
+  for (let i = 0; i <= 200; i++) {
+    const x = xMin + (i / 200) * (xMax - xMin);
+    const y = gaussian(x);
+    curvePoints.push(`${i === 0 ? 'M' : 'L'}${toX(x).toFixed(1)},${toY(y).toFixed(1)}`);
+  }
+
+  const fillPath = curvePoints.join(' ') + ` L${toX(xMax).toFixed(1)},${(20 + graphH).toFixed(1)} L${toX(xMin).toFixed(1)},${(20 + graphH).toFixed(1)} Z`;
+  const ticks = [-3, -2, -1, 0, 1, 2, 3].map(m => m * stdDev).filter(v => v >= xMin && v <= xMax);
+  const y1Sigma = toY(gaussian(stdDev));
+
+  return (
+    <div style={{ margin: '1rem 0' }}>
+      <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+        <path d={fillPath} fill="#3b82f6" opacity="0.1" />
+        <path d={curvePoints.join(' ')} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1={padding} y1={20 + graphH} x2={width - padding} y2={20 + graphH} stroke="#94a3b8" strokeWidth="1" />
+        <line x1={toX(0)} y1={15} x2={toX(0)} y2={20 + graphH} stroke="#94a3b8" strokeWidth="1" strokeDasharray="4,4" />
+        {/* ±1σ shaded zone + dashed lines */}
+        <rect x={toX(-stdDev)} y={15} width={toX(stdDev) - toX(-stdDev)} height={graphH + 5} fill="#3b82f6" opacity="0.08" rx="3" />
+        <line x1={toX(-stdDev)} y1={y1Sigma} x2={toX(-stdDev)} y2={20 + graphH} stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" />
+        <line x1={toX(stdDev)} y1={y1Sigma} x2={toX(stdDev)} y2={20 + graphH} stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" />
+        <text x={(toX(-stdDev) + toX(stdDev)) / 2} y={12} textAnchor="middle" fontSize="10" fill="#3b82f6" fontWeight="600">
+          68% of weights land here
+        </text>
+        {ticks.map(v => (
+          <g key={v}>
+            <line x1={toX(v)} y1={20 + graphH - 3} x2={toX(v)} y2={20 + graphH + 3} stroke="#94a3b8" strokeWidth="1" />
+            <text x={toX(v)} y={20 + graphH + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">
+              {v === 0 ? '0' : v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)}
+            </text>
+          </g>
+        ))}
+        {weights.map((w, i) => {
+          const wx = toX(Math.max(xMin, Math.min(xMax, w)));
+          const wy = 20 + graphH - 4;
+          return (
+            <g key={i}>
+              <text x={wx} y={wy - 12} textAnchor="middle" fontSize="9" fill="#ef4444" fontWeight="600">
+                w{i + 1}
+              </text>
+              <circle cx={wx} cy={wy} r="5" fill="#ef4444" stroke="white" strokeWidth="1.5" />
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
+function WeightGenerator() {
+  const n = 5;
+  const stdDev = 1 / Math.sqrt(n); // 0.447
+  const [weights, setWeights] = useState<number[]>(() =>
+    Array.from({ length: 5 }, () => randomNormal(0, stdDev))
+  );
+
+  const generateWeights = () => {
+    const newWeights = Array.from({ length: 5 }, () => randomNormal(0, stdDev));
+    setWeights(newWeights);
+  };
+
+  return (
+    <div>
+      <BellCurveGraph stdDev={stdDev} weights={weights} />
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        gap: '0.5rem',
+        marginTop: '0.5rem',
+      }}>
+        {weights.map((w, i) => (
+          <div key={i} style={{
+            background: 'white',
+            border: '1px solid #e2e8f0',
+            borderRadius: '6px',
+            padding: '0.5rem',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '12px', color: '#64748b' }}>w{i + 1}</div>
+            <div style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              fontFamily: 'Georgia, serif',
+              color: '#1e293b'
+            }}>
+              {w >= 0 ? '+' : ''}{w.toFixed(3)}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: '0.75rem' }}>
+        <button
+          onClick={generateWeights}
+          style={{
+            background: '#2563eb',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '0.6rem 1.5rem',
+            fontSize: '15px',
+            fontWeight: '600',
+            cursor: 'pointer',
+          }}
+        >
+          Pick 5 New Random Weights
+        </button>
+      </div>
+
+      <div style={{
+        background: '#fffbeb',
+        border: '1px solid #fde68a',
+        borderRadius: '8px',
+        padding: '0.75rem',
+        marginTop: '1rem',
+        fontSize: '14px'
+      }}>
+        <p style={{ color: '#64748b' }}>
+          <strong style={{ color: '#1e293b' }}>Why random at all?</strong> If every neuron started
+          with the same perfectly-spaced weights, they&apos;d all compute the exact same thing and
+          learn the exact same way — you&apos;d have 100 identical neurons instead of 100 different
+          ones. Randomness is what gives each neuron its own &quot;personality&quot; so they can
+          specialize and learn different patterns.
+        </p>
+        <p style={{ marginTop: '0.5rem', color: '#64748b' }}>
+          <strong style={{ color: '#1e293b' }}>Why a bell curve specifically?</strong> We want
+          most weights near 0 (to keep z small) but with enough variety that neurons behave
+          differently. A bell curve does exactly that — it clusters most values near the center
+          while still allowing some spread. If we used a flat/uniform distribution instead
+          (every value equally likely), too many weights would end up near the extremes, making
+          z less predictable.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default function Step9() {
   return (
@@ -34,7 +196,7 @@ export default function Step9() {
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Solution 1: Xavier Initialization (Fixing the Weights)">
+      <ExplanationBox title="Improvement 1: Xavier Initialization (Fixing the Weights)">
         <p>
           We know each weight needs to be a small random number. But <em>how</em> small?
           <strong> Xavier initialization</strong> gives us the exact formula:
@@ -61,10 +223,42 @@ export default function Step9() {
           <div style={{ fontSize: '13px', color: '#64748b', marginTop: '0.5rem' }}>
             where n = number of inputs to the neuron
           </div>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '0.25rem' }}>
+            (standard deviation = the average distance each weight is from the mean)
+          </div>
+        </div>
+
+        <div style={{
+          background: '#f0f9ff',
+          border: '1px solid #bae6fd',
+          borderRadius: '8px',
+          padding: '0.75rem',
+          marginTop: '0.75rem',
+          fontSize: '14px'
+        }}>
+          <strong>Quick refresher: bell curves and standard deviation</strong>
+          <p style={{ marginTop: '0.25rem', color: '#64748b' }}>
+            A <strong style={{ color: '#1e293b' }}>bell curve</strong> (normal distribution) is a
+            shape where values cluster near the center and get rarer the further out you go.
+            The <strong style={{ color: '#1e293b' }}>standard deviation</strong> controls how wide
+            the bell is — it tells you how far most values land from the center. For any bell curve:
+          </p>
+          <ul style={{ marginTop: '0.25rem', color: '#64748b', lineHeight: '1.8' }}>
+            <li><strong style={{ color: '#1e293b' }}>68%</strong> of values fall within ±1 standard deviation</li>
+            <li><strong style={{ color: '#1e293b' }}>95%</strong> of values fall within ±2 standard deviations</li>
+            <li><strong style={{ color: '#1e293b' }}>99.7%</strong> of values fall within ±3 standard deviations</li>
+          </ul>
+          <p style={{ marginTop: '0.25rem', color: '#64748b' }}>
+            So if our standard deviation is 0.447, about 68% of weights will land between
+            -0.447 and +0.447, and almost all will be between -1.34 and +1.34. These are
+            exactly the small values we need — when you multiply them by normalized inputs
+            (also small) and add them up, z naturally stays in sigmoid&apos;s effective zone of -4 to +4!
+          </p>
         </div>
 
         <p style={{ marginTop: '0.75rem' }}>
-          Let&apos;s see exactly what this does. Say we have a neuron with <strong>10 inputs</strong>:
+          Let&apos;s see exactly what this does. Say we have a neuron with <strong>5 inputs</strong>.
+          First we calculate the standard deviation:
         </p>
 
         <div style={{
@@ -74,148 +268,30 @@ export default function Step9() {
           padding: '1.5rem',
           marginTop: '0.75rem'
         }}>
-          <p style={{ fontWeight: '700', marginBottom: '1rem' }}>Example: initializing weights for a neuron with 10 inputs</p>
-
-          <div style={{ marginBottom: '1.5rem' }}>
-            <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b', fontSize: '16px' }}>
-              Step 1: Calculate the standard deviation
-            </div>
-            <div style={{ fontFamily: 'Georgia, serif', marginBottom: '0.75rem' }}>
-              <span style={{ fontSize: '18px' }}>standard deviation = </span>
-              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
-                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
-                <div style={{ borderTop: '2px solid #1e293b', width: '40px' }}></div>
-                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√10</div>
-              </span>
-              <span style={{ fontSize: '18px' }}> = </span>
-              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
-                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
-                <div style={{ borderTop: '2px solid #1e293b', width: '50px' }}></div>
-                <div style={{ fontSize: '20px', paddingTop: '2px' }}>3.16</div>
-              </span>
-              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.316</strong></span>
-            </div>
-            <div style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.5' }}>
-              This means most weights will land between -0.316 and +0.316.
-            </div>
+          <div style={{ fontFamily: 'Georgia, serif', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '18px' }}>standard deviation = </span>
+            <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+              <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+              <div style={{ borderTop: '2px solid #1e293b', width: '40px' }}></div>
+              <div style={{ fontSize: '20px', paddingTop: '2px' }}>√5</div>
+            </span>
+            <span style={{ fontSize: '18px' }}> = </span>
+            <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+              <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+              <div style={{ borderTop: '2px solid #1e293b', width: '50px' }}></div>
+              <div style={{ fontSize: '20px', paddingTop: '2px' }}>2.24</div>
+            </span>
+            <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.447</strong></span>
           </div>
-
-          <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
-            <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b', fontSize: '16px' }}>
-              Step 2: The algorithm picks 10 random weights from a bell curve with this standard deviation
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '0.75rem' }}>
-              A bell curve centered at 0 means most numbers cluster near 0, some land a bit
-              further out, and very few land far away — like throwing darts at a target where
-              most hit near the bullseye. Here&apos;s what 10 weights might look like:
-            </p>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(5, 1fr)',
-              gap: '0.5rem',
-              marginTop: '0.5rem'
-            }}>
-              {[
-                { label: 'w₁', value: '-0.21' },
-                { label: 'w₂', value: '+0.08' },
-                { label: 'w₃', value: '+0.35' },
-                { label: 'w₄', value: '-0.14' },
-                { label: 'w₅', value: '+0.29' },
-                { label: 'w₆', value: '-0.03' },
-                { label: 'w₇', value: '+0.18' },
-                { label: 'w₈', value: '-0.31' },
-                { label: 'w₉', value: '+0.11' },
-                { label: 'w₁₀', value: '-0.25' },
-              ].map(w => (
-                <div key={w.label} style={{
-                  background: 'white',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '6px',
-                  padding: '0.5rem',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '12px', color: '#64748b' }}>{w.label}</div>
-                  <div style={{ fontSize: '16px', fontWeight: '600', fontFamily: 'Georgia, serif', color: '#1e293b' }}>{w.value}</div>
-                </div>
-              ))}
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748b', marginTop: '0.75rem' }}>
-              Notice: all small numbers, all different, all clustered around 0. Most are within
-              ±0.316, with a few slightly outside. Every time you train the network, you get
-              a <em>different</em> set of random weights — but they&apos;ll always be in this same range.
-            </p>
-          </div>
-
-          <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', marginTop: '1rem' }}>
-            <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b', fontSize: '16px' }}>
-              What about different numbers of inputs?
-            </div>
-            <div style={{ fontFamily: 'Georgia, serif', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '18px' }}>2 inputs: </span>
-              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
-                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
-                <div style={{ borderTop: '2px solid #1e293b', width: '30px' }}></div>
-                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√2</div>
-              </span>
-              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.71</strong></span>
-              <span style={{ fontSize: '14px', color: '#64748b' }}> → weights between ±0.7</span>
-            </div>
-            <div style={{ fontFamily: 'Georgia, serif', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '18px' }}>10 inputs: </span>
-              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
-                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
-                <div style={{ borderTop: '2px solid #1e293b', width: '40px' }}></div>
-                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√10</div>
-              </span>
-              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.32</strong></span>
-              <span style={{ fontSize: '14px', color: '#64748b' }}> → weights between ±0.3</span>
-            </div>
-            <div style={{ fontFamily: 'Georgia, serif' }}>
-              <span style={{ fontSize: '18px' }}>100 inputs: </span>
-              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
-                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
-                <div style={{ borderTop: '2px solid #1e293b', width: '50px' }}></div>
-                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√100</div>
-              </span>
-              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.10</strong></span>
-              <span style={{ fontSize: '14px', color: '#64748b' }}> → weights between ±0.1</span>
-            </div>
-            <p style={{ fontSize: '14px', color: '#64748b', marginTop: '0.75rem' }}>
-              More inputs = more terms adding up in z = each weight needs to be smaller so the
-              total doesn&apos;t explode.
-            </p>
+          <div style={{ fontSize: '14px', color: '#64748b' }}>
+            This means the algorithm will pick random weights from a bell curve where most
+            values land between -0.447 and +0.447. Here&apos;s what that bell curve looks like — try
+            generating weights from it:
           </div>
         </div>
-      </ExplanationBox>
 
-      <ExplanationBox title="Why 1/√n and Not Just 1/n?">
-        <p>
-          You might wonder: if we have n inputs and want to keep z small, why not just make each
-          weight 1/n? Why the square root?
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          Here&apos;s the key: when you add up random numbers, they don&apos;t just stack on top of each
-          other perfectly. Some are positive, some are negative — they partially cancel out. So
-          adding 100 random terms doesn&apos;t make the total 100× bigger, it makes it about <strong>√100
-          = 10×</strong> bigger. This is a fundamental property of randomness.
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          So if each input × weight term has a certain size, and we add up n of them:
-        </p>
-        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
-          <li>The total z grows by a factor of <strong>√n</strong> (not n)</li>
-          <li>We want z to stay around 1</li>
-          <li>So each term needs to be <strong>1/√n</strong> to cancel out the √n growth</li>
-        </ul>
-        <p style={{ marginTop: '0.75rem' }}>
-          If we used 1/n instead, the weights would be <em>too small</em>. With 100 inputs,
-          1/n = 0.01 — those weights are so tiny that z would always be close to 0, and every
-          neuron would output ~0.5 no matter what. The network couldn&apos;t tell any inputs apart.
-        </p>
-        <p style={{ marginTop: '0.75rem' }}>
-          1/√n is the sweet spot: small enough that z doesn&apos;t explode, big enough that
-          the neuron can still tell its inputs apart.
-        </p>
+        <WeightGenerator />
+
       </ExplanationBox>
 
       <ExplanationBox title="Why Good Starting Weights Matter">
@@ -257,7 +333,7 @@ export default function Step9() {
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Solution 2: Better Normalization (Fixing the Inputs)">
+      <ExplanationBox title="Improvement 2: Better Normalization (Fixing the Inputs)">
         <p>
           Back in Step 3, we learned to normalize inputs to a 0-1 range using:
         </p>
@@ -345,7 +421,7 @@ export default function Step9() {
 
       <ExplanationBox title="Putting It All Together">
         <p>
-          Here&apos;s why these two techniques work together so nicely:
+          Here&apos;s why these two improvements work together so nicely:
         </p>
         <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
           <li><strong>Better normalization</strong> makes inputs small and centered around 0</li>
