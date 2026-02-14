@@ -25,55 +25,19 @@ export default function Step9() {
         <p style={{ marginTop: '0.75rem' }}>
           Since z is a sum of many input × weight terms, the more inputs you have, the more
           terms get added together — and z can easily become massive, way beyond the -4 to +4
-          range where sigmoid actually works. That&apos;s exactly what weight initialization and
-          normalization are designed to prevent.
+          range where sigmoid actually works.
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          We already learned about weights and normalization in earlier steps — now we&apos;re going
+          to learn the precise math behind how to set them up so z stays in range. Let&apos;s start
+          with the weights.
         </p>
       </ExplanationBox>
 
-      <ExplanationBox title="Solution 1: Weight Initialization (Fixing the Weights)">
+      <ExplanationBox title="Solution 1: Xavier Initialization (Fixing the Weights)">
         <p>
-          Before training starts, we need to pick starting values for every weight.
-          This matters more than you&apos;d think.
-        </p>
-
-        <p style={{ marginTop: '0.75rem' }}>
-          You might be thinking: &quot;Can&apos;t the network just <em>learn</em> its way to better weights
-          during training? Why does the starting point matter?&quot;
-        </p>
-
-        <div style={{
-          background: '#f0f9ff',
-          border: '1px solid #bae6fd',
-          borderRadius: '8px',
-          padding: '1rem',
-          marginTop: '0.75rem'
-        }}>
-          <p><strong>Why the network can&apos;t just fix bad weights on its own:</strong></p>
-          <p style={{ marginTop: '0.5rem' }}>
-            Remember how the network learns — it looks at how wrong it was, then nudges each weight
-            a tiny bit in the right direction. But that nudge depends on the <strong>gradient</strong> (how
-            much the output changes when you change a weight). If z is way out in the flat zone of
-            sigmoid (like z = 50), the gradient is basically <strong>zero</strong>. Zero gradient means
-            zero nudge. The network <em>wants</em> to fix the weights but it literally has no signal
-            telling it which direction to move them.
-          </p>
-          <p style={{ marginTop: '0.5rem' }}>
-            It&apos;s like being lost in a perfectly flat desert with no landmarks — you know you need
-            to go somewhere, but there&apos;s no slope to follow, no hill to climb. You&apos;re stuck.
-          </p>
-          <p style={{ marginTop: '0.5rem' }}>
-            And even if the gradient isn&apos;t completely zero, a bad starting point means the network
-            has to waste tons of training steps just getting the weights to a reasonable range before
-            it can start actually learning useful patterns. That&apos;s wasted time, wasted computation,
-            and in deep networks with many layers, the tiny gradients can compound and become so
-            small that the early layers <em>never</em> learn at all.
-          </p>
-        </div>
-
-        <p style={{ marginTop: '0.75rem' }}>
-          So we need to start smart. The solution is called <strong>Xavier initialization</strong>: pick
-          small random numbers, where &quot;how small&quot; depends on how many inputs the neuron has.
-          The core idea is simple:
+          We know each weight needs to be a small random number. But <em>how</em> small?
+          <strong> Xavier initialization</strong> gives us the exact formula:
         </p>
         <div style={{
           background: '#f0fdf4',
@@ -83,24 +47,26 @@ export default function Step9() {
           marginTop: '0.75rem',
           textAlign: 'center'
         }}>
-          <div style={{ fontFamily: 'Georgia, serif', fontSize: '18px' }}>
-            More inputs → smaller weights
+          <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '0.5rem' }}>
+            Pick each weight randomly from a bell curve centered at 0, with:
+          </div>
+          <div style={{ fontFamily: 'Georgia, serif' }}>
+            <span style={{ fontSize: '18px' }}>standard deviation = </span>
+            <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+              <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+              <div style={{ borderTop: '2px solid #1e293b', width: '40px' }}></div>
+              <div style={{ fontSize: '20px', paddingTop: '2px' }}>√n</div>
+            </span>
+          </div>
+          <div style={{ fontSize: '13px', color: '#64748b', marginTop: '0.5rem' }}>
+            where n = number of inputs to the neuron
           </div>
         </div>
-        <p style={{ marginTop: '0.75rem' }}>
-          Why? Because z is a <em>sum</em>. If a neuron has 100 inputs, that&apos;s 100 terms being
-          added together. Each term needs to be small so the total doesn&apos;t explode. If it only
-          has 2 inputs, the weights can be a bit bigger since there are fewer terms adding up.
-        </p>
-        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
-          <li><strong>2 inputs →</strong> weights around ±0.7</li>
-          <li><strong>10 inputs →</strong> weights around ±0.3</li>
-          <li><strong>100 inputs →</strong> weights around ±0.1</li>
-        </ul>
 
         <p style={{ marginTop: '0.75rem' }}>
-          But where do those numbers come from? Here&apos;s the actual math behind Xavier initialization:
+          Let&apos;s see exactly what this does. Say we have a neuron with <strong>10 inputs</strong>:
         </p>
+
         <div style={{
           background: '#f8fafc',
           border: '1px solid #e2e8f0',
@@ -108,52 +74,187 @@ export default function Step9() {
           padding: '1.5rem',
           marginTop: '0.75rem'
         }}>
-          <p>
-            We want z to end up with a <strong>spread of about 1</strong> (so it stays in the -3 to +3
-            range). Each term in the z sum is input × weight. If our inputs already have a spread of
-            1 (thanks to normalization), then:
-          </p>
-          <ul style={{ marginTop: '0.75rem', lineHeight: '2' }}>
-            <li>The spread of one term = spread of input × spread of weight = 1 × spread of weight</li>
-            <li>When you add up n terms, the total spread = n × (spread of one term)</li>
-            <li>We want the total spread to be 1, so: n × (spread of weight) = 1</li>
-          </ul>
-          <p style={{ marginTop: '0.75rem' }}>Solving for the spread of each weight:</p>
-          <div style={{
-            fontFamily: 'Georgia, serif',
-            fontSize: '20px',
-            textAlign: 'center',
-            margin: '0.75rem 0',
-            padding: '0.75rem',
-            background: 'white',
-            borderRadius: '6px',
-            border: '1px solid #e2e8f0'
-          }}>
-            spread of weights = 1 / n
+          <p style={{ fontWeight: '700', marginBottom: '1rem' }}>Example: initializing weights for a neuron with 10 inputs</p>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b', fontSize: '16px' }}>
+              Step 1: Calculate the standard deviation
+            </div>
+            <div style={{ fontFamily: 'Georgia, serif', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '18px' }}>standard deviation = </span>
+              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+                <div style={{ borderTop: '2px solid #1e293b', width: '40px' }}></div>
+                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√10</div>
+              </span>
+              <span style={{ fontSize: '18px' }}> = </span>
+              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+                <div style={{ borderTop: '2px solid #1e293b', width: '50px' }}></div>
+                <div style={{ fontSize: '20px', paddingTop: '2px' }}>3.16</div>
+              </span>
+              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.316</strong></span>
+            </div>
+            <div style={{ fontSize: '14px', color: '#64748b', lineHeight: '1.5' }}>
+              This means most weights will land between -0.316 and +0.316.
+            </div>
           </div>
-          <p style={{ marginTop: '0.75rem' }}>
-            The &quot;spread&quot; here is technically called <strong>variance</strong>. To get the actual
-            size of the weights, we take the square root (called <strong>standard deviation</strong>):
-          </p>
-          <div style={{
-            fontFamily: 'Georgia, serif',
-            fontSize: '20px',
-            textAlign: 'center',
-            margin: '0.75rem 0',
-            padding: '0.75rem',
-            background: 'white',
-            borderRadius: '6px',
-            border: '1px solid #e2e8f0'
-          }}>
-            weight size = 1 / √n
+
+          <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
+            <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b', fontSize: '16px' }}>
+              Step 2: The algorithm picks 10 random weights from a bell curve with this standard deviation
+            </div>
+            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '0.75rem' }}>
+              A bell curve centered at 0 means most numbers cluster near 0, some land a bit
+              further out, and very few land far away — like throwing darts at a target where
+              most hit near the bullseye. Here&apos;s what 10 weights might look like:
+            </p>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(5, 1fr)',
+              gap: '0.5rem',
+              marginTop: '0.5rem'
+            }}>
+              {[
+                { label: 'w₁', value: '-0.21' },
+                { label: 'w₂', value: '+0.08' },
+                { label: 'w₃', value: '+0.35' },
+                { label: 'w₄', value: '-0.14' },
+                { label: 'w₅', value: '+0.29' },
+                { label: 'w₆', value: '-0.03' },
+                { label: 'w₇', value: '+0.18' },
+                { label: 'w₈', value: '-0.31' },
+                { label: 'w₉', value: '+0.11' },
+                { label: 'w₁₀', value: '-0.25' },
+              ].map(w => (
+                <div key={w.label} style={{
+                  background: 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '6px',
+                  padding: '0.5rem',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>{w.label}</div>
+                  <div style={{ fontSize: '16px', fontWeight: '600', fontFamily: 'Georgia, serif', color: '#1e293b' }}>{w.value}</div>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: '14px', color: '#64748b', marginTop: '0.75rem' }}>
+              Notice: all small numbers, all different, all clustered around 0. Most are within
+              ±0.316, with a few slightly outside. Every time you train the network, you get
+              a <em>different</em> set of random weights — but they&apos;ll always be in this same range.
+            </p>
           </div>
-          <p style={{ marginTop: '0.75rem' }}>That&apos;s where our numbers come from:</p>
-          <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
-            <li>2 inputs → 1/√2 ≈ <strong>0.71</strong></li>
-            <li>10 inputs → 1/√10 ≈ <strong>0.32</strong></li>
-            <li>100 inputs → 1/√100 = <strong>0.10</strong></li>
+
+          <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', marginTop: '1rem' }}>
+            <div style={{ fontWeight: '600', marginBottom: '0.75rem', color: '#1e293b', fontSize: '16px' }}>
+              What about different numbers of inputs?
+            </div>
+            <div style={{ fontFamily: 'Georgia, serif', marginBottom: '1rem' }}>
+              <span style={{ fontSize: '18px' }}>2 inputs: </span>
+              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+                <div style={{ borderTop: '2px solid #1e293b', width: '30px' }}></div>
+                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√2</div>
+              </span>
+              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.71</strong></span>
+              <span style={{ fontSize: '14px', color: '#64748b' }}> → weights between ±0.7</span>
+            </div>
+            <div style={{ fontFamily: 'Georgia, serif', marginBottom: '1rem' }}>
+              <span style={{ fontSize: '18px' }}>10 inputs: </span>
+              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+                <div style={{ borderTop: '2px solid #1e293b', width: '40px' }}></div>
+                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√10</div>
+              </span>
+              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.32</strong></span>
+              <span style={{ fontSize: '14px', color: '#64748b' }}> → weights between ±0.3</span>
+            </div>
+            <div style={{ fontFamily: 'Georgia, serif' }}>
+              <span style={{ fontSize: '18px' }}>100 inputs: </span>
+              <span style={{ display: 'inline-block', textAlign: 'center', verticalAlign: 'middle', marginLeft: '8px', marginRight: '8px' }}>
+                <div style={{ fontSize: '20px', paddingBottom: '2px' }}>1</div>
+                <div style={{ borderTop: '2px solid #1e293b', width: '50px' }}></div>
+                <div style={{ fontSize: '20px', paddingTop: '2px' }}>√100</div>
+              </span>
+              <span style={{ fontSize: '18px' }}> = <strong style={{ color: '#2563eb' }}>0.10</strong></span>
+              <span style={{ fontSize: '14px', color: '#64748b' }}> → weights between ±0.1</span>
+            </div>
+            <p style={{ fontSize: '14px', color: '#64748b', marginTop: '0.75rem' }}>
+              More inputs = more terms adding up in z = each weight needs to be smaller so the
+              total doesn&apos;t explode.
+            </p>
+          </div>
+        </div>
+      </ExplanationBox>
+
+      <ExplanationBox title="Why 1/√n and Not Just 1/n?">
+        <p>
+          You might wonder: if we have n inputs and want to keep z small, why not just make each
+          weight 1/n? Why the square root?
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          Here&apos;s the key: when you add up random numbers, they don&apos;t just stack on top of each
+          other perfectly. Some are positive, some are negative — they partially cancel out. So
+          adding 100 random terms doesn&apos;t make the total 100× bigger, it makes it about <strong>√100
+          = 10×</strong> bigger. This is a fundamental property of randomness.
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          So if each input × weight term has a certain size, and we add up n of them:
+        </p>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '2' }}>
+          <li>The total z grows by a factor of <strong>√n</strong> (not n)</li>
+          <li>We want z to stay around 1</li>
+          <li>So each term needs to be <strong>1/√n</strong> to cancel out the √n growth</li>
+        </ul>
+        <p style={{ marginTop: '0.75rem' }}>
+          If we used 1/n instead, the weights would be <em>too small</em>. With 100 inputs,
+          1/n = 0.01 — those weights are so tiny that z would always be close to 0, and every
+          neuron would output ~0.5 no matter what. The network couldn&apos;t tell any inputs apart.
+        </p>
+        <p style={{ marginTop: '0.75rem' }}>
+          1/√n is the sweet spot: small enough that z doesn&apos;t explode, big enough that
+          the neuron can still tell its inputs apart.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Why Good Starting Weights Matter">
+        <div style={{
+          background: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '8px',
+          padding: '1rem'
+        }}>
+          <p><strong>What goes wrong with bad weights:</strong></p>
+          <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
+            <li>
+              <strong>Weights too big</strong> — if each weight is large and you&apos;re adding up
+              many input × weight terms, z explodes. sigmoid(50) = basically 1. The neuron is stuck.
+            </li>
+            <li style={{ marginTop: '0.5rem' }}>
+              <strong>Weights too small</strong> — tiny weights make z ≈ 0 no matter the input.
+              Every neuron outputs ~0.5. The network can&apos;t tell inputs apart.
+            </li>
+            <li style={{ marginTop: '0.5rem' }}>
+              <strong>All weights the same</strong> — every neuron computes the same thing and
+              learns the same way forever. You basically have one neuron pretending to be many.
+            </li>
           </ul>
         </div>
+
+        <p style={{ marginTop: '0.75rem' }}>
+          You might think: &quot;Can&apos;t the network just <em>fix</em> bad weights during
+          training?&quot; The problem is that learning depends on the <strong>gradient</strong> — how
+          much the output changes when you tweak a weight. If z is way out in sigmoid&apos;s flat
+          zone (like z = 50), the gradient is basically <strong>zero</strong>. The network has no
+          signal telling it which direction to move. It&apos;s like being lost in a perfectly flat
+          desert — you know you need to go somewhere, but there&apos;s no slope to follow. You&apos;re stuck.
+        </p>
+        <p style={{ marginTop: '0.5rem' }}>
+          Even if the gradient isn&apos;t completely zero, a bad starting point means the network
+          wastes tons of training steps just getting weights to a reasonable range before it can
+          start learning useful patterns. Starting smart with Xavier saves all of that.
+        </p>
       </ExplanationBox>
 
       <ExplanationBox title="Solution 2: Better Normalization (Fixing the Inputs)">
