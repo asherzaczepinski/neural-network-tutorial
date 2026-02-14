@@ -177,12 +177,24 @@ export default function Step5() {
           The exact same calculation, the exact same output. Now the network checks its prediction
           against the right answer—as you&apos;ll learn later, it calculates a number representing
           how far off it was, then works backward to figure out how much to nudge each weight.
-          But since every neuron produced the same output, they all contributed to the mistake
+          But since every neuron produced the same output (0), they all contributed to the mistake
           equally—so the network gives them all the <strong>exact same correction</strong>. After
           updating, all three neurons have the same new weights. They&apos;re still identical. Next
           round, the same thing happens. And the next. <strong>Forever.</strong> Three neurons, but
           they&apos;re all stuck doing one job—you&apos;ve wasted two of them. This is called
           the <strong>symmetry problem</strong>.
+        </p>
+
+        <p style={{ marginTop: '1rem' }}>
+          You might be thinking: &quot;But after they adjust, won&apos;t the new inputs break them
+          out of it?&quot; Remember—every neuron in a layer receives the <em>same</em> inputs. That&apos;s
+          by design, because each neuron is supposed to learn a <em>different pattern</em> from those
+          shared inputs. So the inputs alone can&apos;t save you. If all the weights are identical—whether
+          they&apos;re all 0 or all 2,000—every neuron computes the same output, gets the same correction,
+          and updates the same way. They stay locked in sync. However, if even <em>one</em> weight differs
+          between two neurons, their outputs will differ, which means the corrections they receive will
+          differ, which means their weights drift further apart over time. That one small difference is
+          all it takes to break the symmetry.
         </p>
 
         <p style={{ marginTop: '1rem' }}>
