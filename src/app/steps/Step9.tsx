@@ -11,19 +11,20 @@ function randomNormal(mean: number, stdDev: number): number {
   return mean + z * stdDev;
 }
 
-function BellCurveGraph({ stdDev, weights }: { stdDev: number; weights: number[] }) {
+function BellCurveGraph({ stdDev, weights, onRegenerate }: { stdDev: number; weights: number[]; onRegenerate: () => void }) {
   const width = 600;
-  const height = 200;
+  const height = 240;
   const padding = 40;
   const graphW = width - padding * 2;
-  const graphH = height - 50;
+  const graphH = height - 60;
 
   const xMin = -stdDev * 3.5;
   const xMax = stdDev * 3.5;
 
   const toX = (v: number) => padding + ((v - xMin) / (xMax - xMin)) * graphW;
   const gaussian = (x: number) => Math.exp(-(x * x) / (2 * stdDev * stdDev));
-  const toY = (gVal: number) => 20 + (1 - gVal) * graphH;
+  const topPad = 30;
+  const toY = (gVal: number) => topPad + (1 - gVal) * graphH;
 
   const curvePoints: string[] = [];
   for (let i = 0; i <= 200; i++) {
@@ -32,35 +33,41 @@ function BellCurveGraph({ stdDev, weights }: { stdDev: number; weights: number[]
     curvePoints.push(`${i === 0 ? 'M' : 'L'}${toX(x).toFixed(1)},${toY(y).toFixed(1)}`);
   }
 
-  const fillPath = curvePoints.join(' ') + ` L${toX(xMax).toFixed(1)},${(20 + graphH).toFixed(1)} L${toX(xMin).toFixed(1)},${(20 + graphH).toFixed(1)} Z`;
+  const baseY = topPad + graphH;
+  const fillPath = curvePoints.join(' ') + ` L${toX(xMax).toFixed(1)},${baseY.toFixed(1)} L${toX(xMin).toFixed(1)},${baseY.toFixed(1)} Z`;
   const ticks = [-3, -2, -1, 0, 1, 2, 3].map(m => m * stdDev).filter(v => v >= xMin && v <= xMax);
   const y1Sigma = toY(gaussian(stdDev));
 
   return (
     <div style={{ margin: '1rem 0' }}>
       <svg width="100%" viewBox={`0 0 ${width} ${height}`} style={{ background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+        {/* Regenerate button */}
+        <g onClick={onRegenerate} style={{ cursor: 'pointer' }}>
+          <rect x="8" y="8" width="119" height="30" rx="6" fill="#2563eb" />
+          <text x="68" y="28" textAnchor="middle" fontSize="15" fill="white" fontWeight="600">Regenerate ↻</text>
+        </g>
         <path d={fillPath} fill="#3b82f6" opacity="0.1" />
         <path d={curvePoints.join(' ')} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1={padding} y1={20 + graphH} x2={width - padding} y2={20 + graphH} stroke="#94a3b8" strokeWidth="1" />
-        <line x1={toX(0)} y1={15} x2={toX(0)} y2={20 + graphH} stroke="#94a3b8" strokeWidth="1" strokeDasharray="4,4" />
+        <line x1={padding} y1={baseY} x2={width - padding} y2={baseY} stroke="#94a3b8" strokeWidth="1" />
+        <line x1={toX(0)} y1={topPad - 5} x2={toX(0)} y2={baseY} stroke="#94a3b8" strokeWidth="1" strokeDasharray="4,4" />
         {/* ±1σ shaded zone + dashed lines */}
-        <rect x={toX(-stdDev)} y={15} width={toX(stdDev) - toX(-stdDev)} height={graphH + 5} fill="#3b82f6" opacity="0.08" rx="3" />
-        <line x1={toX(-stdDev)} y1={y1Sigma} x2={toX(-stdDev)} y2={20 + graphH} stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" />
-        <line x1={toX(stdDev)} y1={y1Sigma} x2={toX(stdDev)} y2={20 + graphH} stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" />
-        <text x={(toX(-stdDev) + toX(stdDev)) / 2} y={12} textAnchor="middle" fontSize="10" fill="#3b82f6" fontWeight="600">
-          68% of weights land here
+        <rect x={toX(-stdDev)} y={topPad - 5} width={toX(stdDev) - toX(-stdDev)} height={graphH + 5} fill="#3b82f6" opacity="0.08" rx="3" />
+        <line x1={toX(-stdDev)} y1={y1Sigma} x2={toX(-stdDev)} y2={baseY} stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" />
+        <line x1={toX(stdDev)} y1={y1Sigma} x2={toX(stdDev)} y2={baseY} stroke="#3b82f6" strokeWidth="1" strokeDasharray="4,4" />
+        <text x={(toX(-stdDev) + toX(stdDev)) / 2} y={topPad - 10} textAnchor="middle" fontSize="10" fill="#3b82f6" fontWeight="600">
+          ~ 68% of weights
         </text>
         {ticks.map(v => (
           <g key={v}>
-            <line x1={toX(v)} y1={20 + graphH - 3} x2={toX(v)} y2={20 + graphH + 3} stroke="#94a3b8" strokeWidth="1" />
-            <text x={toX(v)} y={20 + graphH + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">
+            <line x1={toX(v)} y1={baseY - 3} x2={toX(v)} y2={baseY + 3} stroke="#94a3b8" strokeWidth="1" />
+            <text x={toX(v)} y={baseY + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">
               {v === 0 ? '0' : v > 0 ? `+${v.toFixed(2)}` : v.toFixed(2)}
             </text>
           </g>
         ))}
         {weights.map((w, i) => {
           const wx = toX(Math.max(xMin, Math.min(xMax, w)));
-          const wy = 20 + graphH - 4;
+          const wy = baseY;
           return (
             <g key={i}>
               <text x={wx} y={wy - 12} textAnchor="middle" fontSize="9" fill="#ef4444" fontWeight="600">
@@ -89,7 +96,7 @@ function WeightGenerator() {
 
   return (
     <div>
-      <BellCurveGraph stdDev={stdDev} weights={weights} />
+      <BellCurveGraph stdDev={stdDev} weights={weights} onRegenerate={generateWeights} />
 
       <div style={{
         display: 'grid',
@@ -118,22 +125,9 @@ function WeightGenerator() {
         ))}
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: '0.75rem' }}>
-        <button
-          onClick={generateWeights}
-          style={{
-            background: '#2563eb',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '0.6rem 1.5rem',
-            fontSize: '15px',
-            fontWeight: '600',
-            cursor: 'pointer',
-          }}
-        >
-          Pick 5 New Random Weights
-        </button>
+      <div style={{ fontSize: '13px', color: '#64748b', marginTop: '0.75rem', fontStyle: 'italic' }}>
+        Note: bell curve random uses a special formula that makes values near the center far more
+        likely to be picked — it&apos;s not the same as generating random values evenly across the range.
       </div>
 
       <div style={{
@@ -141,7 +135,7 @@ function WeightGenerator() {
         border: '1px solid #fde68a',
         borderRadius: '8px',
         padding: '0.75rem',
-        marginTop: '1rem',
+        marginTop: '0.75rem',
         fontSize: '14px'
       }}>
         <p style={{ color: '#64748b' }}>
@@ -316,21 +310,20 @@ export default function Step9() {
               learns the same way forever. You basically have one neuron pretending to be many.
             </li>
           </ul>
+          <p style={{ marginTop: '0.75rem' }}>
+            You might think: &quot;Can&apos;t the network just <em>fix</em> bad weights during
+            training?&quot; The problem is that learning depends on the <strong>gradient</strong> — how
+            much the output changes when you tweak a weight. If z is way out in sigmoid&apos;s flat
+            zone (like z = 50), the gradient is basically <strong>zero</strong>. The network has no
+            signal telling it which direction to move. It&apos;s like being lost in a perfectly flat
+            desert — you know you need to go somewhere, but there&apos;s no slope to follow. You&apos;re stuck.
+          </p>
+          <p style={{ marginTop: '0.5rem' }}>
+            Even if the gradient isn&apos;t completely zero, a bad starting point means the network
+            wastes tons of training steps just getting weights to a reasonable range before it can
+            start learning useful patterns. Starting smart with Xavier saves all of that.
+          </p>
         </div>
-
-        <p style={{ marginTop: '0.75rem' }}>
-          You might think: &quot;Can&apos;t the network just <em>fix</em> bad weights during
-          training?&quot; The problem is that learning depends on the <strong>gradient</strong> — how
-          much the output changes when you tweak a weight. If z is way out in sigmoid&apos;s flat
-          zone (like z = 50), the gradient is basically <strong>zero</strong>. The network has no
-          signal telling it which direction to move. It&apos;s like being lost in a perfectly flat
-          desert — you know you need to go somewhere, but there&apos;s no slope to follow. You&apos;re stuck.
-        </p>
-        <p style={{ marginTop: '0.5rem' }}>
-          Even if the gradient isn&apos;t completely zero, a bad starting point means the network
-          wastes tons of training steps just getting weights to a reasonable range before it can
-          start learning useful patterns. Starting smart with Xavier saves all of that.
-        </p>
       </ExplanationBox>
 
       <ExplanationBox title="Improvement 2: Better Normalization (Fixing the Inputs)">
