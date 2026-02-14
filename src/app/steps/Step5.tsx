@@ -44,23 +44,160 @@ export default function Step5() {
 
       <ExplanationBox title="How Neural Networks Initialize Bias">
         <p>
-          When a neural network first starts, it doesn&apos;t know anything yet—so how should bias
-          be set? The most common approach is to initialize all biases to <strong>zero</strong>.
+          When a neural network first starts, the most common approach is to initialize all biases
+          to <strong>zero</strong>.
         </p>
         <p style={{ marginTop: '1rem' }}>
-          Why zero? Starting at zero means the neuron begins with no preference—it&apos;s completely
-          neutral. This works well because:
+          Why zero? Because bias is meant to be <em>learned</em>, not assumed. Starting at zero
+          means the neuron has no built-in preference—it&apos;s a blank slate. Bias just needs to
+          stay out of the way at first, then adjust naturally during training.
+        </p>
+        <p style={{ marginTop: '1rem' }}>
+          But how does the network know when and how much to adjust bias? That&apos;s where
+          {' '}<strong>backpropagation</strong> comes in—a process we&apos;ll explore soon, where the
+          network looks at its mistakes and nudges both weights and biases to do better next time.
+        </p>
+      </ExplanationBox>
+
+      <ExplanationBox title="Why Weights Can't Start at Zero">
+        <p>
+          Bias starts at zero—but weights start as small <em>random</em> values. Why can&apos;t
+          weights start at zero too? Let&apos;s walk through an example.
+        </p>
+
+        <p style={{ marginTop: '1rem' }}>
+          Imagine a network with 3 neurons in a hidden layer, each taking in temperature, humidity,
+          and wind speed. All three neurons feed into one final output neuron that predicts rain:
+        </p>
+
+        {/* Network diagram */}
+        <div style={{
+          background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+          borderRadius: '16px',
+          padding: '32px 12px',
+          marginTop: '1rem',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
+          <svg
+            viewBox="0 0 400 190"
+            preserveAspectRatio="xMidYMid meet"
+            style={{ width: '100%', maxWidth: '460px', height: 'auto', display: 'block' }}
+          >
+            <defs>
+              <filter id="shadowA" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#7c3aed" floodOpacity="0.2"/>
+              </filter>
+              <filter id="shadowOut" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#22c55e" floodOpacity="0.2"/>
+              </filter>
+            </defs>
+
+            {/* Input labels */}
+            <rect x="30" y="18" width="90" height="34" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
+            <text x="75" y="30" textAnchor="middle" fill="#64748b" fontSize="8" fontWeight="500">temperature</text>
+            <text x="75" y="44" textAnchor="middle" fill="#334155" fontSize="12" fontWeight="600">72°F</text>
+
+            <rect x="30" y="78" width="90" height="34" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
+            <text x="75" y="90" textAnchor="middle" fill="#64748b" fontSize="8" fontWeight="500">humidity</text>
+            <text x="75" y="104" textAnchor="middle" fill="#334155" fontSize="12" fontWeight="600">85%</text>
+
+            <rect x="30" y="138" width="90" height="34" rx="8" fill="#fff" stroke="#e2e8f0" strokeWidth="1.5"/>
+            <text x="75" y="150" textAnchor="middle" fill="#64748b" fontSize="8" fontWeight="500">wind speed</text>
+            <text x="75" y="164" textAnchor="middle" fill="#334155" fontSize="12" fontWeight="600">15 mph</text>
+
+            {/* Connections: inputs → hidden */}
+            <line x1="120" y1="35" x2="175" y2="40" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="35" x2="175" y2="95" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="35" x2="175" y2="150" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="95" x2="175" y2="40" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="95" x2="175" y2="95" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="95" x2="175" y2="150" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="155" x2="175" y2="40" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="155" x2="175" y2="95" stroke="#cbd5e1" strokeWidth="1.5"/>
+            <line x1="120" y1="155" x2="175" y2="150" stroke="#cbd5e1" strokeWidth="1.5"/>
+
+            {/* Hidden neurons — flat purple */}
+            <circle cx="200" cy="40" r="25" fill="#7c3aed" filter="url(#shadowA)"/>
+            <text x="200" y="44" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">A</text>
+
+            <circle cx="200" cy="95" r="25" fill="#7c3aed" filter="url(#shadowA)"/>
+            <text x="200" y="99" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">B</text>
+
+            <circle cx="200" cy="150" r="25" fill="#7c3aed" filter="url(#shadowA)"/>
+            <text x="200" y="154" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">C</text>
+
+            {/* Connections: hidden → output */}
+            <line x1="225" y1="40" x2="305" y2="95" stroke="#86efac" strokeWidth="1.5"/>
+            <line x1="225" y1="95" x2="305" y2="95" stroke="#86efac" strokeWidth="1.5"/>
+            <line x1="225" y1="150" x2="305" y2="95" stroke="#86efac" strokeWidth="1.5"/>
+
+            {/* Output neuron */}
+            <circle cx="330" cy="95" r="25" fill="#22c55e" filter="url(#shadowOut)"/>
+            <text x="330" y="92" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="600">rain?</text>
+            <text x="330" y="104" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">82%</text>
+          </svg>
+        </div>
+
+        <p style={{ marginTop: '1.25rem' }}>
+          Even though every neuron takes in the same three inputs, the goal is for each one to
+          develop its own perspective on that data:
         </p>
         <ul style={{ marginTop: '0.5rem', lineHeight: '1.8' }}>
-          <li>The weights (which start as small random values) can still create diverse initial
-            behaviors across different neurons</li>
-          <li>Zero bias lets the network learn the right threshold during training without any assumptions</li>
-          <li>It prevents neurons from being too active or too quiet at the start</li>
+          <li><strong>Neuron A</strong> might end up learning to focus on temperature—recognizing
+            that extreme cold or heat is a strong rain signal on its own</li>
+          <li><strong>Neuron B</strong> might end up learning to value humidity more than
+            the others, but still pay attention to wind—picking up on muggy, breezy conditions
+            that often lead to storms</li>
+          <li><strong>Neuron C</strong> might end up learning to care most about temperature
+            but also factor in humidity—detecting the hot-and-humid combo that leads to afternoon rain</li>
         </ul>
+        <p style={{ marginTop: '0.75rem' }}>
+          This variability is what lets the network account for different weather scenarios. Each
+          neuron covers patterns that no single neuron could catch alone, and the output neuron
+          combines all three perspectives to make a smarter prediction.
+        </p>
+
         <p style={{ marginTop: '1rem' }}>
-          Some specialized architectures use different initialization strategies (like initializing
-          bias to a small positive value for certain activation functions), but zero is the standard
-          default that works well in most cases.
+          <strong>But if all weights start at zero</strong>, none of that happens. Look at what
+          each neuron computes:
+        </p>
+        <ul style={{ marginTop: '0.5rem', lineHeight: '1.8', fontFamily: 'monospace' }}>
+          <li><strong>Neuron A:</strong> (0 × 72) + (0 × 85) + (0 × 15) = <strong>0</strong></li>
+          <li><strong>Neuron B:</strong> (0 × 72) + (0 × 85) + (0 × 15) = <strong>0</strong></li>
+          <li><strong>Neuron C:</strong> (0 × 72) + (0 × 85) + (0 × 15) = <strong>0</strong></li>
+        </ul>
+        <p style={{ marginTop: '0.75rem' }}>
+          The exact same calculation, the exact same output. Now the network checks its prediction
+          against the right answer—as you&apos;ll learn later, it calculates a number representing
+          how far off it was, then works backward to figure out how much to nudge each weight.
+          But since every neuron produced the same output, they all contributed to the mistake
+          equally—so the network gives them all the <strong>exact same correction</strong>. After
+          updating, all three neurons have the same new weights. They&apos;re still identical. Next
+          round, the same thing happens. And the next. <strong>Forever.</strong> Three neurons, but
+          they&apos;re all stuck doing one job—you&apos;ve wasted two of them. This is called
+          the <strong>symmetry problem</strong>.
+        </p>
+
+        <p style={{ marginTop: '1rem' }}>
+          <strong>How random weights fix it:</strong> give each neuron different starting weights
+          and now they compute different outputs from the same inputs. When the network checks its
+          mistake, each neuron contributed differently—so each one gets a <em>different</em> correction.
+          Those small differences compound over time, and the neurons naturally drift toward
+          specializing in different patterns. Random weights don&apos;t decide what each neuron will
+          eventually detect—they just make sure each neuron has a unique starting point so it
+          {' '}<em>can</em> become something different.
+        </p>
+
+        <p style={{ marginTop: '1rem' }}>
+          <strong>Could neurons accidentally become clones later?</strong> Not really. Each neuron
+          has 3 weights, and for two neurons to become true clones, all 3 would need to land on the
+          exact same values at the exact same time. Since they&apos;re already computing different
+          things, their weights are being pulled in different directions—so this is essentially
+          impossible.
         </p>
       </ExplanationBox>
     </div>
